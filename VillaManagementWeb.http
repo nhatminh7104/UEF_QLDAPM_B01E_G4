@@ -1,0 +1,6 @@
+@VillaManagementWeb_HostAddress = http://localhost:5027
+
+GET {{VillaManagementWeb_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
