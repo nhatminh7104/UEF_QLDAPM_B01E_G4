@@ -1,25 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "/Users/a1111/Documents/ProjectManagement/VillaManagementWeb/VillaManagementWeb.csproj": {}
+    "D:\\Web-core\\QLDAPM\\VillaManagementWeb.csproj": {}
   },
   "projects": {
-    "/Users/a1111/Documents/ProjectManagement/VillaManagementWeb/VillaManagementWeb.csproj": {
+    "D:\\Web-core\\QLDAPM\\VillaManagementWeb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/a1111/Documents/ProjectManagement/VillaManagementWeb/VillaManagementWeb.csproj",
+        "projectUniqueName": "D:\\Web-core\\QLDAPM\\VillaManagementWeb.csproj",
         "projectName": "VillaManagementWeb",
-        "projectPath": "/Users/a1111/Documents/ProjectManagement/VillaManagementWeb/VillaManagementWeb.csproj",
-        "packagesPath": "/Users/a1111/.nuget/packages/",
-        "outputPath": "/Users/a1111/Documents/ProjectManagement/VillaManagementWeb/obj/",
+        "projectPath": "D:\\Web-core\\QLDAPM\\VillaManagementWeb.csproj",
+        "packagesPath": "C:\\Users\\11090\\.nuget\\packages\\",
+        "outputPath": "D:\\Web-core\\QLDAPM\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/Users/a1111/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\11090\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -37,11 +44,46 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Authorization": {
+              "target": "Package",
+              "version": "[8.0.22, )"
+            },
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.22, )"
+            },
+            "Microsoft.EntityFrameworkCore.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.22, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.22, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.22, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.22, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -61,7 +103,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.416/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
