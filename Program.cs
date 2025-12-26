@@ -1,24 +1,46 @@
+﻿using Microsoft.EntityFrameworkCore;
+using VillaManagementWeb.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// 1. Cấu hình DbContext
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Kiểm tra nếu quên chưa cấu hình ConnectionString trong appsettings.json
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+}
+
+builder.Services.AddDbContext<VillaDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+// 2. Đăng ký các dịch vụ MVC
 builder.Services.AddControllersWithViews();
+
+// Thêm cái này nếu bạn muốn các thay đổi ở View tự cập nhật mà không cần restart lại server (cần cài thêm NuGet Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation)
+ builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// 3. Pipeline xử lý Request
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+else
+{
+    // Trong môi trường Dev, nên hiện lỗi chi tiết để nhóm dễ fix bug
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseStaticFiles(); // Cho phép truy cập ảnh, css, js trong wwwroot
 
 app.UseRouting();
 
-app.UseAuthorization();
+app.UseAuthorization(); // Xác thực người dùng 
 
 app.MapControllerRoute(
     name: "default",
