@@ -1,0 +1,24 @@
+@model IEnumerable<VillaManagementWeb.Models.News>
+<section class="news-events py-5" style="background-color: #BD8E62;">
+    <div class="container text-center text-white">
+        <h2 class="display-5 mb-5 fw-bold">Tin tức và sự kiện</h2>
+        <div class="row g-4">
+            @foreach (var item in Model) {
+                <div class="col-md-4">
+                    <div class="card bg-transparent border-0 text-start text-white">
+                        <img src="@item.ImageUrl" class="card-img-top rounded-0 mb-3" alt="@item.Title">
+                        <div class="card-body p-0">
+                            <p class="small mb-1">@item.Category</p>
+                            <h5 class="card-title fw-bold mb-3">@item.Title</h5>
+                            <a href="/News/Details/@item.Id" class="btn btn-outline-light rounded-0">TÌM HIỂU →</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="mt-5 d-flex justify-content-center gap-3">
+            <button class="btn btn-link text-white p-0"><i class="fas fa-arrow-left fa-2x"></i></button>
+            <button class="btn btn-link text-white p-0"><i class="fas fa-arrow-right fa-2x"></i></button>
+        </div>
+    </div>
+</section>

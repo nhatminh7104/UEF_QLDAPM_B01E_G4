@@ -12,6 +12,10 @@
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }    
         public double? SquareFootage { get; set; }
+        public bool HasWifi { get; set; } = true;
+        public bool HasBreakfast { get; set; } = true;
+        public bool HasPool { get; set; } = true;
+        public bool HasTowel { get; set; } = true;
 
         // Quan hệ 1-N với Booking, RoomImages
         public ICollection<Booking> Bookings { get; set; } = null!;

@@ -11,6 +11,7 @@ namespace VillaManagementWeb.Models
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Event> Events { get; set; }
+        public DbSet<News> News { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Tour> Tours { get; set; }
         public DbSet<TourBooking> TourBookings { get; set; }
@@ -38,7 +39,11 @@ namespace VillaManagementWeb.Models
                     RatingStars = 5,
                     IsActive = true,
                     Description = "Villa view rừng cực đẹp",
-                    SquareFootage = 150
+                    SquareFootage = 150,
+                    HasWifi = true,
+                    HasBreakfast = true,
+                    HasPool = true,
+                    HasTowel = true
                 },
                 new Room
                 {
@@ -49,7 +54,11 @@ namespace VillaManagementWeb.Models
                     Capacity = 2,
                     RatingStars = 4,
                     IsActive = true,
-                    Description = "Không gian lãng mạn"
+                    Description = "Không gian lãng mạn",
+                    HasWifi = true,
+                    HasBreakfast = true,
+                    HasPool = true,
+                    HasTowel = true
                 }
             );
 
@@ -134,6 +143,10 @@ namespace VillaManagementWeb.Models
 
             modelBuilder.Entity<RoomImage>().HasData(
                 new RoomImage { Id = 1, RoomId = 1, ImageUrl = "/images/rooms/villa1-1.jpg" }
+            );
+            modelBuilder.Entity<News>().HasData(
+                new News { Id = 1, Title = "Music Concert Night", Category = "Sự kiện âm nhạc", ImageUrl = "/images/news/news1.png" },
+                new News { Id = 2, Title = "New Villa Opening", Category = "Tin tức", ImageUrl = "/images/news/news2.jpg" }
             );
         }
     }
