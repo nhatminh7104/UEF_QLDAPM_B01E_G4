@@ -1,0 +1,63 @@
+﻿@{
+    int height = ViewData["height"] as int? ?? 200;
+    string selector = ViewData["selector"]?.ToString();
+}
+
+@* Chỉ nạp bản Lite để tránh xung đột với Bootstrap 5 *@
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<style>
+    /* Đổi màu nền vùng soạn thảo */
+    .note-editor .note-editable {
+        background-color: #f8f9fa; /* Màu xám nhạt */
+        color: #333;               /* Màu chữ */
+    }
+
+    /* Đổi màu nền của thanh công cụ (Toolbar) nếu muốn */
+    .note-editor.note-frame .note-toolbar {
+        background-color: #e9ecef;
+    }
+</style>
+<script>
+            $(document).ready(function() {
+    $('@selector').summernote({
+        height: @height,
+        callbacks: {
+            onImageUpload: function(files) {
+                uploadImage(files[0]);
+            }
+        },
+        // Cấu hình Toolbar đầy đủ các nhóm chức năng
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'italic', 'underline', 'clear']], // Nhóm edit font chữ
+            ['fontname', ['fontname']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']], // Giữ lại nút picture để upload ảnh
+            ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+    });
+        function uploadImage(file) {
+            var formData = new FormData();
+            formData.append("file", file);
+
+            $.ajax({
+                url: '/Admin/Rooms/SummernoteUploadImage', // Đường dẫn tới Action ở Bước 1
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                type: "POST",
+                success: function(response) {
+                    // Chèn ảnh vào trình soạn thảo sau khi upload thành công
+                    $('@selector').summernote('insertImage', response.url);
+                },
+                error: function() {
+                    alert("Lỗi khi tải ảnh lên!");
+                }
+            });
+        }
+    });
+</script>

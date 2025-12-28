@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.Features;
+using Microsoft.EntityFrameworkCore;
 using VillaManagementWeb.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +15,9 @@ if (string.IsNullOrEmpty(connectionString))
 
 builder.Services.AddDbContext<VillaDbContext>(options =>
     options.UseSqlServer(connectionString));
-
+builder.Services.Configure<FormOptions>(options => {
+    options.MultipartBodyLengthLimit = 104857600; 
+});
 // 2. Đăng ký các dịch vụ MVC
 builder.Services.AddControllersWithViews();
 
@@ -41,7 +44,12 @@ app.UseStaticFiles(); // Cho phép truy cập ảnh, css, js trong wwwroot
 app.UseRouting();
 
 app.UseAuthorization(); // Xác thực người dùng 
-
+// Route cho Areas (Admin)
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+);
+// Route mặc định
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

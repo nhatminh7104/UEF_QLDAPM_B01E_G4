@@ -1,0 +1,258 @@
+﻿@model VillaManagementWeb.Models.Room
+@{
+    ViewData["Title"] = "Thêm Mới Phòng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-inner py-5" style="background-color: #f6f7f8;">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb" style="background: transparent; padding: 0;">
+                <li class="breadcrumb-item"><a href="#" class="text-secondary">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a asp-action="Index" class="text-secondary">Danh sách phòng</a></li>
+                <li class="breadcrumb-item active text-primary fw-bold" aria-current="page">Thêm mới</li>
+            </ol>
+        </nav>
+
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+                <div>
+                    <h1 class="fw-bold mb-1" style="font-size: 1.8rem;">Thêm Mới Phòng</h1>
+                    <p class="text-muted mb-0">Điền thông tin chi tiết để tạo phòng mới trong hệ thống.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a asp-action="Index" class="btn btn-white border px-4">Hủy bỏ</a>
+                    <button type="submit" class="btn btn-primary px-4 d-flex align-items-center gap-2">
+                        <i class="fas fa-save"></i> Lưu thông tin
+                    </button>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                <div class="card-header bg-light border-bottom py-3">
+                    <h5 class="card-title mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+                        <i class="fas fa-info-circle text-primary"></i> Thông tin cơ bản
+                    </h5>
+                </div>
+                <div class="card-body p-4 p-lg-5">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Số phòng (Room No.) <span class="text-danger">*</span></label>
+                            <input asp-for="RoomNumber" class="form-control py-2 shadow-none" placeholder="VD: A-101" />
+                            <span asp-validation-for="RoomNumber" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Loại phòng <span class="text-danger">*</span></label>
+                            <select asp-for="Type" class="form-select py-2 shadow-none">
+                                <option disabled selected>Chọn loại phòng</option>
+                                <option value="Villa">Pool Villa</option>
+                                <option value="Bungalow">Bungalow</option>
+                                <option value="Family">Family Room</option>
+                            </select>
+                            <span asp-validation-for="Type" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Giá mỗi đêm <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input asp-for="PricePerNight" class="form-control py-2 shadow-none" placeholder="0" />
+                                <span class="input-group-text bg-light border-start-0 text-muted">VND</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Diện tích</label>
+                            <div class="input-group">
+                                <input asp-for="SquareFootage" class="form-control py-2 shadow-none" placeholder="0" />
+                                <span class="input-group-text bg-light border-start-0 text-muted">m²</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Sức chứa (Người lớn)</label>
+                            <div class="d-flex align-items-center border rounded-lg overflow-hidden" style="max-width: 150px;">
+                                <button type="button" class="btn btn-light border-0 px-3" onclick="this.parentNode.querySelector('input').stepDown()">-</button>
+                                <input asp-for="Capacity" class="form-control border-0 text-center shadow-none p-0" value="2" min="1" />
+                                <button type="button" class="btn btn-light border-0 px-3" onclick="this.parentNode.querySelector('input').stepUp()">+</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Hạng phòng (Sao)</label>
+                            <div class="d-flex align-items-center gap-2 text-warning" style="font-size: 1.2rem;">
+                                <input type="hidden" asp-for="RatingStars" id="ratingValue" value="4" />
+                                <i class="fas fa-star cursor-pointer star-item" data-value="1"></i>
+                                <i class="fas fa-star cursor-pointer star-item" data-value="2"></i>
+                                <i class="fas fa-star cursor-pointer star-item" data-value="3"></i>
+                                <i class="fas fa-star cursor-pointer star-item" data-value="4"></i>
+                                <i class="far fa-star cursor-pointer star-item" data-value="5"></i>
+                                <span class="ms-2 text-muted small" id="ratingText">(4.0)</span>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input shadow-none" type="checkbox" asp-for="IsActive" id="statusToggle" checked>
+                                <label class="form-check-label fw-bold ms-2" for="statusToggle">Trạng thái hoạt động</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                <div class="card-body p-4 p-lg-5">
+                    <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                        <i class="fas fa-file-alt text-primary"></i> Mô tả chi tiết
+                    </h5>
+                    <div class="form-group mb-5 p-0">
+                        <textarea id="Description" asp-for="Description" class="form-control"></textarea>
+                    </div>
+
+                    <h5 class="fw-bold mb-4 d-flex align-items-center gap-2 border-top pt-5">
+                        <i class="fas fa-images text-primary"></i> Thư viện ảnh
+                    </h5>
+                    <div class="upload-area border-2 border-dashed rounded-3 p-5 text-center bg-light cursor-pointer mb-3" onclick="document.getElementById('imageInput').click()">
+                        <div class="mb-3"><i class="fas fa-cloud-upload-alt fa-3x text-primary"></i></div>
+                        <p class="mb-1 fw-bold">Kéo thả hình ảnh vào đây hoặc <span class="text-primary">tải lên</span></p>
+                        <p class="text-muted small">Hỗ trợ JPG, PNG, WEBP (Tối đa 5MB)</p>
+                        <input type="file" id="imageInput" name="imageFiles" class="d-none" accept="image/*" onchange="previewImages(this)" multiple />
+                    </div>
+                    <div id="imagePreviewContainer" class="row g-3">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .cursor-pointer {
+        cursor: pointer;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #13a4ec;
+    }
+
+    .upload-area:hover {
+        border-color: #13a4ec;
+        background-color: #f0f9ff !important;
+    }
+
+    .btn-white {
+        background-color: white;
+        color: #333;
+    }
+
+        .btn-white:hover {
+            background-color: #f8f9fa;
+        }
+
+    .form-switch .form-check-input {
+        width: 3em;
+        height: 1.5em;
+        cursor: pointer;
+    }
+
+        .form-switch .form-check-input:checked {
+            background-color: #13a4ec;
+            border-color: #13a4ec;
+        }
+</style>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+
+    <script>
+                // Biến toàn cục để lưu trữ danh sách file thực tế sẽ gửi lên server
+                // 1. Hàm vẽ lại toàn bộ preview dựa trên những gì đang có trong thẻ input
+                // Khởi tạo bộ nhớ tạm để giữ tất cả file qua nhiều lần chọn
+        let allFilesDT = new DataTransfer();
+
+        function previewImages(input) {
+            const container = document.getElementById('imagePreviewContainer');
+
+            // 1. Lấy các file MỚI chọn và thêm vào bộ nhớ tạm allFilesDT
+            if (input.files && input.files.length > 0) {
+                for (let i = 0; i < input.files.length; i++) {
+                    allFilesDT.items.add(input.files[i]);
+                }
+            }
+
+            // 2. Cập nhật ngược lại thẻ input để khi submit Form sẽ gửi ĐẦY ĐỦ file
+            input.files = allFilesDT.files;
+
+            // 3. Vẽ lại giao diện từ bộ nhớ tạm
+            renderPreview();
+        }
+
+        function renderPreview() {
+            const container = document.getElementById('imagePreviewContainer');
+            container.innerHTML = ''; // Xóa trắng để vẽ lại chính xác thứ tự
+
+            const files = allFilesDT.files;
+
+            for (let i = 0; i < files.length; i++) {
+                const reader = new FileReader();
+                const fileIndex = i; // Giữ chỉ số cố định cho mỗi lần lặp
+
+                reader.onload = function (e) {
+                    const html = `
+                        <div class="col-md-3 col-6 mb-3 image-item">
+                            <div class="position-relative rounded overflow-hidden shadow-sm border" style="aspect-ratio: 4/3;">
+                                <img src="${e.target.result}" class="w-100 h-100 object-fit-cover" />
+                                ${fileIndex === 0 ? '<span class="position-absolute top-0 start-0 m-2 badge bg-primary shadow-sm">COVER</span>' : ''}
+                                <div class="position-absolute top-0 end-0 m-2">
+                                    <button type="button" class="btn btn-sm btn-danger p-1 rounded-circle shadow"
+                                            onclick="removeImage(${fileIndex})">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>`;
+                    container.insertAdjacentHTML('beforeend', html);
+                };
+                reader.readAsDataURL(files[i]);
+            }
+        }
+
+        function removeImage(fileIndex) {
+            const input = document.getElementById('imageInput');
+            const newDT = new DataTransfer();
+            const files = allFilesDT.files;
+
+            // Lọc bỏ file tại vị trí fileIndex
+            for (let i = 0; i < files.length; i++) {
+                if (i !== fileIndex) {
+                    newDT.items.add(files[i]);
+                }
+            }
+
+            // Cập nhật lại bộ nhớ tạm và thẻ input
+            allFilesDT = newDT;
+            input.files = allFilesDT.files;
+
+            // Vẽ lại giao diện
+            renderPreview();
+        }
+
+        // 2. Xử lý chọn Rating Star bằng click chuột
+        $(document).ready(function() {
+            $('.star-item').on('click', function() {
+                const val = $(this).data('value');
+                $('#ratingValue').val(val);
+                $('#ratingText').text(`(${val}.0)`);
+
+                $('.star-item').each(function(index) {
+                    if (index < val) {
+                        $(this).removeClass('far').addClass('fas');
+                    } else {
+                        $(this).removeClass('fas').addClass('far'); 
+                    }
+                });
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_Summernote", null,
+            new ViewDataDictionary(ViewData) { { "height", 250 }, { "selector", "#Description" } });
+    }
+}

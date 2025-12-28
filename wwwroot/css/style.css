@@ -1,0 +1,128 @@
+﻿/* Tùy chỉnh màu nền đen mờ nhìn xuyên thấu  */
+.custom-navbar {
+    background-color: rgba(0, 0, 0, 0.53) !important; /* Độ mờ ~50% giống mẫu thực tế  */
+    transition: background-color 0.3s ease;
+    backdrop-filter: blur(5px); /* Hiệu ứng làm mờ kính nếu muốn sang trọng hơn */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+    /* Đảm bảo chữ trắng và rõ nét trên nền tối */
+    .custom-navbar .nav-link {
+        color: #fff !important;
+        font-family: 'Barlow', sans-serif;
+        text-transform: uppercase;
+        font-size: 14px;
+        letter-spacing: 1px;
+        padding: 10px 15px !important;
+    }
+
+        .custom-navbar .nav-link:hover {
+            color: #aa8453 !important; /* Màu vàng đồng đặc trưng của mẫu */
+        }
+
+/* Đảm bảo nội dung Body không bị che mất do thanh Nav cố định */
+/* Nếu trang chủ có Header Full màn hình thì không cần padding này */
+body:not(.home) main {
+    padding-top: 80px;
+}
+/* Màu chữ mặc định cho các link */
+.custom-navbar .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    transition: all 0.3s ease;
+    font-family: 'Barlow', sans-serif;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+    /* Màu chữ khi di chuột qua (Hover) */
+    .custom-navbar .nav-link:hover {
+        color: #aa8453 !important;
+    }
+
+    /* Màu chữ cho trang đang hoạt động (Active) */
+    .custom-navbar .nav-link.active {
+        color: #aa8453 !important; /* Màu vàng đồng sang trọng */
+        font-weight: 700;
+        border-bottom: 2px solid #aa8453; /* Thêm gạch chân nếu muốn giống menu cao cấp */
+    }
+
+/* Tùy chỉnh nền đen mờ như file bạn gửi */
+.home .navbar {
+    background-color: #00000087 !important; /*  */
+}
+/* Khung chứa phòng */
+.room-item {
+    height: 400px; /* Bạn có thể tùy chỉnh chiều cao */
+    border-radius: 8px;
+    background-color: #000;
+}
+
+/* Hiệu ứng ảnh khi hover */
+.transition-img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.room-item:hover .transition-img {
+    transform: scale(1.1); /* Phóng nhẹ ảnh khi di chuột vào */
+}
+
+/* Lớp phủ đen mờ dần từ dưới lên */
+.room-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.8) 100%);
+    z-index: 1;
+}
+
+/* Nội dung chữ */
+.room-content {
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    transition: all 0.4s ease;
+}
+
+/* Trạng thái mặc định của phần Details */
+.room-details-hover {
+    opacity: 0;
+    transform: translateY(20px); /* Đẩy xuống dưới để giấu đi */
+    transition: all 0.4s ease;
+}
+
+/* Khi di chuột vào item */
+.room-item:hover .room-details-hover {
+    opacity: 1;
+    transform: translateY(0); /* Trồi lên vị trí cũ */
+}
+
+.room-item:hover .room-content {
+    padding-bottom: 40px !important; /* Đẩy nội dung lên một chút để nhường chỗ cho Details */
+}
+/* Tùy chỉnh icon tiện ích */
+.amenity-icon {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #f1f1f1;
+    border-radius: 5px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Form đặt phòng */
+.booking-card {
+    background: #fff;
+    border-radius: 2px;
+}
+
+    .booking-card h5 {
+        font-family: 'Gilda Display', serif;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 15px;
+    }

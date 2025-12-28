@@ -1,49 +1,95 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - VillaManagementWeb</title>
+    <title>@ViewData["Title"] - The Wandering Rose</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700&family=Gilda+Display&family=Barlow:wght@300;400&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/VillaManagementWeb.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">VillaManagementWeb</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+<body class="home">
+    @{
+        var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+    }
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="~/images/logo.png" style="height:50px;">
+            </a>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")"
+                           href="/">Trang Chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "About" ? "active" : "")"
+                           href="/About">Giới Thiệu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Rooms" ? "active" : "")"
+                           href="/Rooms">Giới Thiệu Phòng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Services" ? "active" : "")"
+                           href="/services">Dịch vụ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Pictures" ? "active" : "")"
+                           href="/pictures">Hình ảnh</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "News" ? "active" : "")"
+                           href="/news">Tin tức</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Contacts" ? "active" : "")"
+                           href="/contacts">Liên hệ</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="footer bg-dark text-white p-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h3>The Wandering Rose</h3>
+                    <p>Villa & Homestay giữa rừng Ba Vì. Cách Hà Nội chỉ 1 giờ lái xe, nơi đây là chốn nghỉ dưỡng dành cho những ai yêu thiên nhiên và âm nhạc.</p>
+                </div>
+                <div class="col-md-4">
+                    <h3>Khám phá</h3>
+                    <a href="/" class="text-white d-block mb-2">Trang Chủ</a>
+                    <a href="/" class="text-white d-block mb-2">Giới thiệu</a>
+                    <a href="/" class="text-white d-block mb-2">Liên hệ</a>
+                    <a href="/" class="text-white d-block mb-2">Trang Chủ</a>
+                </div>
+                <div class="col-md-4">
+                    <h3>Liên hệ</h3>
+                    <p>Thôn Mít Mái, Ba Vì, Hà Nội </p>
+                    <p>Hotline: 092 959 6699 </p>
+                    <p>Booking@thewanderingrosebavi.com </p>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - VillaManagementWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 1000, once: true });
+</script>

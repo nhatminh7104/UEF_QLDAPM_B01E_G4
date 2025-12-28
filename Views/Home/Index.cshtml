@@ -1,8 +1,102 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<VillaManagementWeb.Models.Room>
+@{
+    ViewData["Title"] = "Trang chủ";
 }
+<div class="hero-wrapper" style="position: relative;">
+    <header class="header text-white text-center d-flex align-items-center"
+            style="background: url('/images/hero-bg-scaled.jpg') no-repeat center center;
+               background-size: cover; height: 100vh; width: 100%;">
+        <div class="container" style="padding-bottom: 100px;">
+            <div class="animate-fadeInUp">
+                <span class="mb-2 d-block">
+                    <i class="star-rating text-warning small">★★★★★</i>
+                </span>
+                <h4 class="animate-delay-1s">Villa & Homestay giữa rừng Ba Vì</h4>
+            </div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+            <h1 class="animate-fadeInUp animate-delay-1s mt-3">
+                Tìm thấy sự bình<br>yên trong từng<br>khoảnh khắc
+            </h1>
+
+            <div class="animate-fadeInUp animate-delay-2s mt-4">
+                <a href="#rooms" class="btn btn-outline-light px-4 py-2 text-uppercase"
+                   style="letter-spacing: 2px; font-size: 13px;">
+                    Xem phòng
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section id="booking" class="booking-wrapper">
+        <div class="container">
+            <div class="booking-inner shadow-lg">
+                <form class="row g-0 align-items-center" action="/LienHe" method="GET">
+                    <div class="col-md-3 border-end">
+                        <div class="p-3">
+                            <label class="small text-uppercase fw-bold">Ngày đến </label>
+                            <input type="date" class="form-control border-0 p-0" name="check_in" placeholder="Ngày đến">
+                        </div>
+                    </div>
+                    <div class="col-md-3 border-end">
+                        <div class="p-3">
+                            <label class="small text-uppercase fw-bold">Ngày đi </label>
+                            <input type="date" class="form-control border-0 p-0" name="check_out" placeholder="Ngày đi">
+                        </div>
+                    </div>
+                    <div class="col-md-2 border-end">
+                        <div class="p-3">
+                            <label class="small text-uppercase fw-bold">Người lớn</label>
+                            <select class="form-select border-0 p-0" name="adult_count">
+                                <option value="1">1 Người lớn </option>
+                                <option value="2">2 Người lớn </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2 border-end">
+                        <div class="p-3">
+                            <label class="small text-uppercase fw-bold">Trẻ em </label>
+                            <select class="form-select border-0 p-0" name="children_count">
+                                <option value="0">0 Trẻ em</option>
+                                <option value="1">1 Trẻ em</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2 p-0">
+                        <button type="submit" class="btn btn-dark w-100 h-100 rounded-0 py-4 fw-bold">ĐẶT PHÒNG</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
 </div>
+
+<section id="rooms" class="section-padding py-5 bg-cream">
+    <div class="container mt-5">
+        <div class="section-subtitle animate-fadeInUp">Villa & Homestay giữa rừng Ba Vì</div>
+        <h2 class="section-title mb-5 animate-fadeInUp">Tất cả phòng</h2>
+        <div class="row">
+            @foreach (var room in Model)
+            {
+                <div class="col-md-4 mb-4" data-aos="fade-up">
+                    <a asp-controller="Bookings" asp-action="Details" asp-route-id="@room.Id" class="text-decoration-none text-white">
+                        <div class="room-item position-relative overflow-hidden shadow-sm">
+                            <img src="~/images/room-sample.jpg" class="img-fluid transition-img" alt="@room.RoomNumber">
+
+                            <div class="room-overlay"></div>
+
+                            <div class="room-content position-absolute p-4 w-100 border-box">
+                                <h6 class="small text-uppercase mb-1 opacity-75">@room.Type</h6>
+                                <h5 class="fw-bold mb-1">@room.RoomNumber - @room.PricePerNight.ToString("N0") VNĐ</h5>
+                                <p class="small mb-0"><i class="ti-user me-2"></i>Sức chứa: @room.Capacity người</p>
+
+                                <div class="room-details-hover mt-3">
+                                    <span class="text-uppercase small fw-bold">Details <i class="ti-arrow-right"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>

@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -19,4 +19,112 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+/* Làm cho Navbar đè lên Header */
+.navbar {
+    position: absolute;
+    width: 100%;
+    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.3) !important; /* Đen mờ trong suốt */
+}
+
+/* Đảm bảo ảnh không bị khoảng trắng ở trên */
+body, html {
+    margin: 0;
+    padding: 0;
+}
+/* Container bao quát cả Header và Booking */
+.hero-wrapper {
+    width: 100%;
+    overflow: visible;
+}
+
+/* Thanh Booking nằm đè lên đáy ảnh */
+.booking-wrapper {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    transform: translateY(50%); /* Đưa thanh lên 50% để nó lơ lửng giữa 2 phần  */
+}
+
+.booking-inner {
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+    /* Tùy chỉnh input để giống trang mẫu */
+    .booking-inner label {
+        display: block;
+        color: #333;
+        margin-bottom: 5px;
+        font-size: 11px;
+        letter-spacing: 1px;
+    }
+
+    .booking-inner .form-control,
+    .booking-inner .form-select {
+        font-size: 15px;
+        font-weight: 500;
+        color: #1b1b1b;
+    }
+
+/* Responsive cho Mobile  */
+@media (max-width: 767.98px) {
+    .booking-wrapper {
+        position: relative;
+        transform: none;
+        margin-top: 20px;
+        padding: 0 15px;
+    }
+
+    .header {
+        height: 70vh !important;
+    }
+}
+/* Font chữ theo style The Wandering Rose */
+h1 {
+    font-family: 'Gilda Display', serif;
+    font-size: 65px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+h4, .section-subtitle {
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    font-weight: 400;
+}
+
+body {
+    font-family: 'Barlow', sans-serif;
+}
+
+/* Hiệu ứng xuất hiện khi load trang */
+.animate-fadeInUp {
+    animation: fadeInUp;
+    animation-duration: 1.5s;
+}
+
+.animate-delay-1s {
+    animation-delay: 0.5s;
+}
+
+.animate-delay-2s {
+    animation-delay: 1s;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 40px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
 }
