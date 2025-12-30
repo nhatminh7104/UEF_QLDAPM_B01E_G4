@@ -28,4 +28,11 @@
     <None Include="wwwroot\images\hero-bg.jpg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\Implementations\" />
+    <Folder Include="Repositories\Interfaces\" />
+    <Folder Include="Services\Interfaces\" />
+    <Folder Include="Services\Implementations\" />
+  </ItemGroup>
+
 </Project>

@@ -1,75 +1,171 @@
 ﻿@model VillaManagementWeb.Models.Room
-
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh sửa thông tin phòng";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="page-inner py-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a asp-action="Index">Rooms</a></li>
+            <li class="breadcrumb-item active">Edit Room @Model.RoomNumber</li>
+        </ol>
+    </nav>
 
-<h4>Room</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="RoomNumber" class="control-label"></label>
-                <input asp-for="RoomNumber" class="form-control" />
-                <span asp-validation-for="RoomNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Type" class="control-label"></label>
-                <input asp-for="Type" class="form-control" />
-                <span asp-validation-for="Type" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PricePerNight" class="control-label"></label>
-                <input asp-for="PricePerNight" class="form-control" />
-                <span asp-validation-for="PricePerNight" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Capacity" class="control-label"></label>
-                <input asp-for="Capacity" class="form-control" />
-                <span asp-validation-for="Capacity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RatingStars" class="control-label"></label>
-                <input asp-for="RatingStars" class="form-control" />
-                <span asp-validation-for="RatingStars" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SquareFootage" class="control-label"></label>
-                <input asp-for="SquareFootage" class="form-control" />
-                <span asp-validation-for="SquareFootage" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Chỉnh Sửa Thông Tin Phòng</h2>
+            <p class="text-muted small">Cập nhật thông tin chi tiết cho phòng @Model.RoomNumber</p>
+        </div>
+        <span class="badge @(Model.IsActive ? "bg-success-light text-success" : "bg-danger-light text-danger") px-3 py-2">
+            @(Model.IsActive ? "Active" : "Inactive")
+        </span>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <div class="col-md-12 mb-4">
+            <label class="form-label small fw-bold">Hình ảnh đại diện</label>
+            <div class="d-flex align-items-center gap-4 p-3 border rounded bg-light">
+                <div class="current-image">
+                    <img src="@Model.ImageUrl" class="rounded shadow-sm" style="width: 120px; height: 80px; object-fit: cover;" id="oldImage" />
+                    <p class="small text-muted mt-1 mb-0 text-center">Ảnh hiện tại</p>
+                </div>
+
+                <div class="flex-grow-1">
+                    <input type="file" name="imageFiles" class="form-control" onchange="document.getElementById('oldImage').src = window.URL.createObjectURL(this.files[0])" />
+                    <small class="text-muted mt-2 d-block">Chọn ảnh mới nếu muốn thay đổi (Hỗ trợ JPG, PNG, WEBP)</small>
+                </div>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                    <i class="fas fa-info-circle text-primary"></i> Thông tin cơ bản
+                </h5>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Số phòng <span class="text-danger">*</span></label>
+                        <input asp-for="RoomNumber" class="form-control" placeholder="Nhập số phòng" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Loại phòng <span class="text-danger">*</span></label>
+                        <select asp-for="Type" class="form-select">
+                            <option value="Villa">Pool Villa</option>
+                            <option value="Bungalow">Bungalow</option>
+                            <option value="Deluxe Ocean View">Deluxe Ocean View</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Giá mỗi đêm (VND) <span class="text-danger">*</span></label>
+                        <input asp-for="PricePerNight" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Sức chứa (Người)</label>
+                        <input asp-for="Capacity" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Diện tích (m²)</label>
+                        <input asp-for="SquareFootage" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold d-block">Đánh giá sao</label>
+                        <div class="text-warning fs-5">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <i class="@(i <= Model.RatingStars ? "fas" : "far") fa-star"></i>
+                            }
+                            <span class="text-muted small ms-2">(@Model.RatingStars.0)</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="bg-light p-3 rounded d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0 fw-bold">Đang hoạt động</h6>
+                                <small class="text-muted">Cho phép khách đặt phòng này</small>
+                            </div>
+                            <div class="form-check form-switch p-0">
+                                <input class="form-check-input ms-0" type="checkbox" asp-for="IsActive" style="width: 45px; height: 22px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <div class="row g-5">
+                    <div class="col-md-8">
+                        <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                            <i class="fas fa-file-alt text-primary"></i> Chi tiết & Tiện ích
+                        </h5>
+                        <label class="form-label small fw-bold">Mô tả chi tiết</label>
+                        <textarea id="Description" asp-for="Description" class="form-control"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="fw-bold mb-4">Tiện nghi có sẵn</h5>
+                        <div class="bg-light p-4 rounded">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" asp-for="HasWifi" id="wifi">
+                                <label class="form-check-label ms-2" for="wifi">Free Wi-Fi</label>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" asp-for="HasBreakfast" id="breakfast">
+                                <label class="form-check-label ms-2" for="breakfast">Bữa sáng miễn phí</label>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" asp-for="HasPool" id="pool">
+                                <label class="form-check-label ms-2" for="pool">Hồ bơi</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" asp-for="HasTowel" id="towel">
+                                <label class="form-check-label ms-2" for="towel">Khăn tắm & Đồ dùng</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex gap-3 justify-content-end mb-5">
+            <a asp-action="Index" class="btn btn-outline-secondary px-4">Hủy</a>
+            <button type="submit" class="btn btn-primary px-5 shadow-sm">Lưu thay đổi</button>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
+    @{
+        await Html.RenderPartialAsync("_Summernote", null,
+            new ViewDataDictionary(ViewData) { { "height", 300 }, { "selector", "#Description" } });
+    }
 }
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 10px 15px;
+        border: 1px solid #dee2e6;
+    }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(19, 164, 236, 0.15);
+            border-color: #13a4ec;
+        }
+
+    .bg-success-light {
+        background-color: #e8f5e9;
+    }
+
+    .bg-danger-light {
+        background-color: #ffebee;
+    }
+</style>

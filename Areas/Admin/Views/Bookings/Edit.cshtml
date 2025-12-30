@@ -1,95 +1,203 @@
 ﻿@model VillaManagementWeb.Models.Booking
-
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh sửa đặt phòng";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="page-inner py-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a asp-action="Index">Bookings</a></li>
+            <li class="breadcrumb-item active">Edit Booking #@Model.Id</li>
+        </ol>
+    </nav>
 
-<h4>Booking</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="RoomId" class="control-label"></label>
-                <select asp-for="RoomId" class="form-control" asp-items="ViewBag.RoomId"></select>
-                <span asp-validation-for="RoomId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CustomerName" class="control-label"></label>
-                <input asp-for="CustomerName" class="form-control" />
-                <span asp-validation-for="CustomerName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CustomerPhone" class="control-label"></label>
-                <input asp-for="CustomerPhone" class="form-control" />
-                <span asp-validation-for="CustomerPhone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AdultsCount" class="control-label"></label>
-                <input asp-for="AdultsCount" class="form-control" />
-                <span asp-validation-for="AdultsCount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ChildrenCount" class="control-label"></label>
-                <input asp-for="ChildrenCount" class="form-control" />
-                <span asp-validation-for="ChildrenCount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CustomerEmail" class="control-label"></label>
-                <input asp-for="CustomerEmail" class="form-control" />
-                <span asp-validation-for="CustomerEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CheckIn" class="control-label"></label>
-                <input asp-for="CheckIn" class="form-control" />
-                <span asp-validation-for="CheckIn" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CheckOut" class="control-label"></label>
-                <input asp-for="CheckOut" class="form-control" />
-                <span asp-validation-for="CheckOut" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalAmount" class="control-label"></label>
-                <input asp-for="TotalAmount" class="form-control" />
-                <span asp-validation-for="TotalAmount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PaymentMethod" class="control-label"></label>
-                <input asp-for="PaymentMethod" class="form-control" />
-                <span asp-validation-for="PaymentMethod" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <input asp-for="Notes" class="form-control" />
-                <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+    <form asp-action="Edit" method="post">
+        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="CreatedAt" />
 
-<div>
-    <a asp-action="Index">Back to List</a>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Chỉnh Sửa Đặt Phòng</h2>
+                <p class="text-muted small">Cập nhật thông tin đặt phòng #@Model.Id</p>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div>
+                    <label class="form-label small fw-bold mb-1 d-block">Trạng thái</label>
+                    <select asp-for="Status" class="form-select form-select-sm">
+                        <option value="Pending">Đang chờ</option>
+                        <option value="Confirmed">Đã xác nhận</option>
+                        <option value="Cancelled">Đã hủy</option>
+                    </select>
+                </div>
+                <span class="badge @(Model.Status == "Confirmed" ? "bg-success-light text-success" : Model.Status == "Cancelled" ? "bg-danger-light text-danger" : "bg-warning-light text-warning") px-3 py-2" id="statusBadge">
+                    @Model.Status
+                </span>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Left Column: Stay Information -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                            <i class="fas fa-calendar-alt text-primary"></i> Thông tin lưu trú
+                        </h5>
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Phòng <span class="text-danger">*</span></label>
+                                <select asp-for="RoomId" class="form-select" asp-items="ViewBag.RoomId">
+                                </select>
+                                <span asp-validation-for="RoomId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Ngày check-in <span class="text-danger">*</span></label>
+                                <input asp-for="CheckIn" class="form-control" type="datetime-local" value="@Model.CheckIn.ToString("yyyy-MM-ddTHH:mm")" />
+                                <span asp-validation-for="CheckIn" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Ngày check-out <span class="text-danger">*</span></label>
+                                <input asp-for="CheckOut" class="form-control" type="datetime-local" value="@Model.CheckOut.ToString("yyyy-MM-ddTHH:mm")" />
+                                <span asp-validation-for="CheckOut" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Tổng tiền (VND) <span class="text-danger">*</span></label>
+                                <input asp-for="TotalAmount" class="form-control" type="number" step="0.01" />
+                                <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Phương thức thanh toán <span class="text-danger">*</span></label>
+                                <select asp-for="PaymentMethod" class="form-select">
+                                    <option value="cash">Tiền mặt</option>
+                                    <option value="credit card">Thẻ tín dụng</option>
+                                    <option value="online">Thanh toán online</option>
+                                </select>
+                                <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Ghi chú</label>
+                                <textarea asp-for="Notes" class="form-control" rows="4" placeholder="Nhập ghi chú (nếu có)"></textarea>
+                                <span asp-validation-for="Notes" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Customer Details -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                            <i class="fas fa-user text-primary"></i> Thông tin khách hàng
+                        </h5>
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Tên khách hàng <span class="text-danger">*</span></label>
+                                <input asp-for="CustomerName" class="form-control" placeholder="Nhập tên khách hàng" />
+                                <span asp-validation-for="CustomerName" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Số điện thoại <span class="text-danger">*</span></label>
+                                <input asp-for="CustomerPhone" class="form-control" placeholder="Nhập số điện thoại" />
+                                <span asp-validation-for="CustomerPhone" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Email</label>
+                                <input asp-for="CustomerEmail" class="form-control" type="email" placeholder="Nhập email (tùy chọn)" />
+                                <span asp-validation-for="CustomerEmail" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Số người lớn <span class="text-danger">*</span></label>
+                                <input asp-for="AdultsCount" class="form-control" type="number" min="1" />
+                                <span asp-validation-for="AdultsCount" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Số trẻ em</label>
+                                <input asp-for="ChildrenCount" class="form-control" type="number" min="0" />
+                                <span asp-validation-for="ChildrenCount" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <div class="bg-light p-3 rounded">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="small text-muted">Ngày tạo</span>
+                                        <span class="small fw-bold">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex gap-3 justify-content-end mb-5">
+            <a asp-action="Index" class="btn btn-outline-secondary px-4">Hủy</a>
+            <button type="submit" class="btn btn-primary px-5 shadow-sm">Lưu thay đổi</button>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Update badge when status changes
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusSelect = document.querySelector('select[name="Status"]');
+            const statusBadge = document.getElementById('statusBadge');
+            
+            if (statusSelect && statusBadge) {
+                statusSelect.addEventListener('change', function() {
+                    const status = this.value;
+                    statusBadge.textContent = status;
+                    
+                    // Update badge classes
+                    statusBadge.className = 'badge px-3 py-2';
+                    if (status === 'Confirmed') {
+                        statusBadge.classList.add('bg-success-light', 'text-success');
+                    } else if (status === 'Cancelled') {
+                        statusBadge.classList.add('bg-danger-light', 'text-danger');
+                    } else {
+                        statusBadge.classList.add('bg-warning-light', 'text-warning');
+                    }
+                });
+            }
+        });
+    </script>
 }
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 10px 15px;
+        border: 1px solid #dee2e6;
+    }
+
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 3px rgba(19, 164, 236, 0.15);
+            border-color: #13a4ec;
+        }
+
+    .bg-success-light {
+        background-color: #e8f5e9;
+    }
+
+    .bg-danger-light {
+        background-color: #ffebee;
+    }
+
+    .bg-warning-light {
+        background-color: #fff3e0;
+    }
+
+    .text-warning {
+        color: #f57c00 !important;
+    }
+</style>

@@ -316,32 +316,45 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,RoomNumber,Type,PricePerNight,Capacity,RatingStars,IsActive,Description,ImageUrl,SquareFootage")] Room room)
+        public async Task<IActionResult> Edit(int id, Room room, List<IFormFile> imageFiles)
         {
-            if (id != room.Id)
-            {
-                return NotFound();
-            }
+            if (id != room.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(room);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RoomExists(room.Id))
+                    // 1. Lấy thông tin phòng hiện tại từ DB để giữ lại đường dẫn ảnh cũ nếu không đổi ảnh
+                    var existingRoom = await _context.Rooms.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
+
+                    if (imageFiles != null && imageFiles.Count > 0)
                     {
-                        return NotFound();
+                        // Logic xử lý upload ảnh giống trang Create (Lưu vào thư mục /images/rooms/)
+                        string wwwRootPath = _hostEnvironment.WebRootPath;
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFiles[0].FileName);
+                        string path = Path.Combine(wwwRootPath, "images", "rooms", fileName);
+
+                        using (var fileStream = new FileStream(path, FileMode.Create))
+                        {
+                            await imageFiles[0].CopyToAsync(fileStream);
+                        }
+                        room.ImageUrl = "/images/rooms/" + fileName;
                     }
                     else
                     {
-                        throw;
+                        // Nếu không chọn ảnh mới, giữ lại đường dẫn ảnh cũ
+                        room.ImageUrl = existingRoom.ImageUrl;
                     }
+
+                    _context.Update(room);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!RoomExists(room.Id)) return NotFound();
+                    else throw;
+                }
             }
             return View(room);
         }

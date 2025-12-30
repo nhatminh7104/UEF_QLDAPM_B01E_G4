@@ -23,8 +23,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         // GET: Controllers/Bookings
         public async Task<IActionResult> Index()
         {
-            var villaDbContext = _context.Bookings.Include(b => b.Room);
-            return View(await villaDbContext.ToListAsync());
+            return View(await _context.Bookings.Include(b => b.Room).ToListAsync());
         }
 
         // GET: Controllers/Bookings/Details/5
@@ -49,7 +48,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         // GET: Controllers/Bookings/Create
         public IActionResult Create()
         {
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "Id");
+            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "RoomNumber");
             return View();
         }
 
@@ -60,13 +59,19 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,RoomId,CustomerName,CustomerPhone,AdultsCount,ChildrenCount,CustomerEmail,CheckIn,CheckOut,TotalAmount,Status,PaymentMethod,Notes,CreatedAt")] Booking booking)
         {
+            // Server-side validation: CheckOut must be later than CheckIn
+            if (booking.CheckOut <= booking.CheckIn)
+            {
+                ModelState.AddModelError("CheckOut", "Ngày check-out phải sau ngày check-in.");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(booking);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "Id", booking.RoomId);
+            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "RoomNumber", booking.RoomId);
             return View(booking);
         }
 
@@ -83,7 +88,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "Id", booking.RoomId);
+            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "RoomNumber", booking.RoomId);
             return View(booking);
         }
 
@@ -99,11 +104,37 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            // Server-side validation: CheckOut must be later than CheckIn
+            if (booking.CheckOut <= booking.CheckIn)
+            {
+                ModelState.AddModelError("CheckOut", "Ngày check-out phải sau ngày check-in.");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(booking);
+                    // Get existing booking to avoid navigation property validation issues
+                    var existingBooking = await _context.Bookings.FindAsync(id);
+                    if (existingBooking == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Update only the properties that are bound
+                    existingBooking.RoomId = booking.RoomId;
+                    existingBooking.CustomerName = booking.CustomerName;
+                    existingBooking.CustomerPhone = booking.CustomerPhone;
+                    existingBooking.AdultsCount = booking.AdultsCount;
+                    existingBooking.ChildrenCount = booking.ChildrenCount;
+                    existingBooking.CustomerEmail = booking.CustomerEmail;
+                    existingBooking.CheckIn = booking.CheckIn;
+                    existingBooking.CheckOut = booking.CheckOut;
+                    existingBooking.TotalAmount = booking.TotalAmount;
+                    existingBooking.Status = booking.Status;
+                    existingBooking.PaymentMethod = booking.PaymentMethod;
+                    existingBooking.Notes = booking.Notes;
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -119,7 +150,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "Id", booking.RoomId);
+            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "RoomNumber", booking.RoomId);
             return View(booking);
         }
 

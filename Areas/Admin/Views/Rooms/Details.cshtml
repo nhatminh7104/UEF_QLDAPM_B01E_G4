@@ -65,6 +65,21 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.SquareFootage)
         </dd>
+        <dt class="col-sm-3">Tiện ích</dt>
+        <dd class="col-sm-9">
+            <span class="badge @(Model.HasWifi ? "badge-primary" : "badge-count") mr-2">
+                <i class="fas fa-wifi"></i> Wifi
+            </span>
+            <span class="badge @(Model.HasBreakfast ? "badge-success" : "badge-count") mr-2">
+                <i class="fas fa-utensils"></i> Bữa sáng
+            </span>
+            <span class="badge @(Model.HasPool ? "badge-info" : "badge-count") mr-2">
+                <i class="fas fa-swimming-pool"></i> Hồ bơi
+            </span>
+            <span class="badge @(Model.HasTowel ? "badge-warning" : "badge-count")">
+                <i class="fas fa-broom"></i> Khăn tắm
+            </span>
+        </dd>
     </dl>
 </div>
 <div>
