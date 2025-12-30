@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VillaManagementWeb")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6a782392c952e72b10b7738f38c71e5122958405")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9eeaf01c3c92b966ed120a1df75ccdf9e7584048")]
 [assembly: System.Reflection.AssemblyProductAttribute("VillaManagementWeb")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VillaManagementWeb")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

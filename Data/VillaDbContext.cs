@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Net.Sockets;
 using System.Security.Cryptography.Pkcs;
+using VillaManagementWeb.Models;
 
-namespace VillaManagementWeb.Models
+namespace VillaManagementWeb.Data
 {
     public class VillaDbContext : DbContext
     {
@@ -149,5 +150,6 @@ namespace VillaManagementWeb.Models
                 new News { Id = 2, Title = "New Villa Opening", Category = "Tin tức", ImageUrl = "/images/news/news2.jpg" }
             );
         }
+        public DbSet<VillaManagementWeb.Models.RoomImage> RoomImage { get; set; } = default!;
     }
 }

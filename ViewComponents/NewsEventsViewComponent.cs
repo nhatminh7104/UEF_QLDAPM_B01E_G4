@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using VillaManagementWeb.Models;
+using VillaManagementWeb.Data;
+
 namespace VillaManagementWeb.ViewComponents;
 public class NewsEventsViewComponent : ViewComponent
 {

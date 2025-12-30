@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
-using VillaManagementWeb.Models;
+using VillaManagementWeb.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
