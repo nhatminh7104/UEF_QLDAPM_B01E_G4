@@ -2,10 +2,11 @@
 using System.Net.Sockets;
 using System.Security.Cryptography.Pkcs;
 using VillaManagementWeb.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace VillaManagementWeb.Data
 {
-    public class VillaDbContext : DbContext
+    public class VillaDbContext : IdentityDbContext<User>
     {
         public VillaDbContext(DbContextOptions<VillaDbContext> options) : base(options) { }
 

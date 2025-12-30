@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using VillaManagementWeb.Data;
+using Microsoft.AspNetCore.Identity;
+using VillaManagementWeb.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,16 +17,32 @@ if (string.IsNullOrEmpty(connectionString))
 
 builder.Services.AddDbContext<VillaDbContext>(options =>
     options.UseSqlServer(connectionString));
-builder.Services.Configure<FormOptions>(options => {
-    options.MultipartBodyLengthLimit = 104857600; 
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 104857600;
 });
 // 2. Đăng ký các dịch vụ MVC
 builder.Services.AddControllersWithViews();
 
 // Thêm cái này nếu bạn muốn các thay đổi ở View tự cập nhật mà không cần restart lại server (cần cài thêm NuGet Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation)
- builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<VillaDbContext>().AddDefaultTokenProviders();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+    options.LogoutPath = "/Account/Logout";
+    options.AccessDeniedPath = "/Account/AccessDenied";
+});
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    if (!await roleManager.RoleExistsAsync("Admin"))
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+}
 
 // 3. Pipeline xử lý Request
 if (!app.Environment.IsDevelopment())
