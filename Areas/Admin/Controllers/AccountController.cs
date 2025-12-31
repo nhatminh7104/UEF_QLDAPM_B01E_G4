@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using VillaManagementWeb.Models;
 using VillaManagementWeb.ViewModels;
 
-namespace VillaManagementWeb.Controllers
+namespace VillaManagementWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class AccountController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -29,6 +30,7 @@ namespace VillaManagementWeb.Controllers
             var user = new User
             {
                 Email = model.Email,
+                UserName = model.Email,   // ⚠️ Identity bắt buộc phải có UserName
                 FullName = model.FullName
             };
 
@@ -37,7 +39,7 @@ namespace VillaManagementWeb.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
             foreach (var error in result.Errors)
@@ -58,11 +60,11 @@ namespace VillaManagementWeb.Controllers
                 model.Email,
                 model.Password,
                 model.RememberMe,
-                lockoutOnFailure: false
+                false
             );
 
             if (result.Succeeded)
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
 
             ModelState.AddModelError("", "Invalid login");
             return View(model);
@@ -71,8 +73,7 @@ namespace VillaManagementWeb.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "" });
         }
     }
-
 }

@@ -2,12 +2,13 @@
 @model RegisterVM
 @{
     ViewData["Title"] = "Đăng ký";
+    Layout = "_AuthLayout";
 }
 
-<section class="py-5" style="background:#f7f7f7; margin-top:80px;">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
+<section>
+    <div class="container auth-container d-flex justify-content-center align-items-center">
+        <div class="row w-100 justify-content-center">
+            <div class="col-12 col-md-6 col-lg-5">
 
                 <div class="card shadow border-0 rounded-4">
                     <div class="card-body p-5">
@@ -43,7 +44,7 @@
                                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                             </div>
 
-                            <button type="submit" class="btn w-100 rounded-pill fw-bold text-white"
+                            <button type="submit" class="btn w-100 rounded-pill fw-bold text-white pt-1"
                                 style="background:#f35525;">
                                 Đăng ký
                             </button>

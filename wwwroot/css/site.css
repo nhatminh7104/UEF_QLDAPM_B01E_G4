@@ -140,6 +140,42 @@ body {
     opacity: .9;
 }
 
+.auth-bg {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    background: url("/uploads/summernote/e4993e45-8b5e-46a3-9151-ee8f2ff6dc82.jpg") center/cover no-repeat fixed;
+    background-position: bottom center;
+}
+
+/* lớp phủ xám mờ */
+.auth-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    pointer-events: none;
+    /* chỉnh đậm nhạt ở đây */
+}
+
+.auth-container {
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.card {
+    max-width: 480px;
+    margin: auto;
+}
+
+.auth-container .col-md-6 {
+    flex: 0 0 480px;
+    max-width: 480px;
+    padding-bottom: 50px;
+}
 
 @keyframes fadeInUp {
     from {

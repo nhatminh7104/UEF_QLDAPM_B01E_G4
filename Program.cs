@@ -6,36 +6,38 @@ using VillaManagementWeb.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Cấu hình DbContext
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-// Kiểm tra nếu quên chưa cấu hình ConnectionString trong appsettings.json
-if (string.IsNullOrEmpty(connectionString))
-{
-    throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-}
+// DbContext
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<VillaDbContext>(options =>
     options.UseSqlServer(connectionString));
+
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 104857600;
+    options.MultipartBodyLengthLimit = 104857600;   // 100MB
 });
-// 2. Đăng ký các dịch vụ MVC
-builder.Services.AddControllersWithViews();
 
-// Thêm cái này nếu bạn muốn các thay đổi ở View tự cập nhật mà không cần restart lại server (cần cài thêm NuGet Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation)
-builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
-builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<VillaDbContext>().AddDefaultTokenProviders();
+// MVC + Runtime Compilation
+builder.Services.AddControllersWithViews()
+    .AddRazorRuntimeCompilation();
+
+// Identity
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<VillaDbContext>()
+    .AddDefaultTokenProviders();
+
+// Cookie paths (vì Account nằm trong Admin Area)
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Account/Login";
-    options.LogoutPath = "/Account/Logout";
-    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.LoginPath = "/Admin/Account/Login";
+    options.LogoutPath = "/Admin/Account/Logout";
+    options.AccessDeniedPath = "/Admin/Account/AccessDenied";
 });
 
 var app = builder.Build();
 
+// Seed Role
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -44,7 +46,7 @@ using (var scope = app.Services.CreateScope())
         await roleManager.CreateAsync(new IdentityRole("Admin"));
 }
 
-// 3. Pipeline xử lý Request
+// Pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -52,22 +54,24 @@ if (!app.Environment.IsDevelopment())
 }
 else
 {
-    // Trong môi trường Dev, nên hiện lỗi chi tiết để nhóm dễ fix bug
     app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); // Cho phép truy cập ảnh, css, js trong wwwroot
+app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization(); // Xác thực người dùng 
-// Route cho Areas (Admin)
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Areas Route
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
 );
-// Route mặc định
+
+// Default Route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
