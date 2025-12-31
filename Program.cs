@@ -7,11 +7,9 @@ using VillaManagementWeb.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // DbContext
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddDbContext<VillaDbContext>(options =>
-    options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<VillaDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.Configure<FormOptions>(options =>
 {
@@ -19,13 +17,10 @@ builder.Services.Configure<FormOptions>(options =>
 });
 
 // MVC + Runtime Compilation
-builder.Services.AddControllersWithViews()
-    .AddRazorRuntimeCompilation();
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 // Identity
-builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<VillaDbContext>()
-    .AddDefaultTokenProviders();
+builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<VillaDbContext>().AddDefaultTokenProviders();
 
 // Cookie paths (vì Account nằm trong Admin Area)
 builder.Services.ConfigureApplicationCookie(options =>

@@ -6,6 +6,7 @@ using VillaManagementWeb.ViewModels;
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class AccountController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -38,6 +39,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
 
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, "User");
                 await _signInManager.SignInAsync(user, false);
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
@@ -74,6 +76,11 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home", new { area = "" });
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

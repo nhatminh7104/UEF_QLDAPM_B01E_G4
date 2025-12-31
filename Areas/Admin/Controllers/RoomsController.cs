@@ -12,6 +12,7 @@ using VillaManagementWeb.Models;
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class RoomsController : Controller
     {
         private readonly VillaDbContext _context;
@@ -197,8 +198,8 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                                 {
                                     // Create RoomImage with navigation property set
                                     // EF Core will automatically set RoomId when Room is saved
-                                    room.RoomImages.Add(new RoomImage 
-                                    { 
+                                    room.RoomImages.Add(new RoomImage
+                                    {
                                         ImageUrl = dbPath,
                                         Room = room // Set navigation property so EF handles RoomId
                                     });

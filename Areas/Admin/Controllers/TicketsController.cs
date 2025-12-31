@@ -11,6 +11,7 @@ using VillaManagementWeb.Models;
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class TicketsController : Controller
     {
         private readonly VillaDbContext _context;
