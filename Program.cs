@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using VillaManagementWeb.Data;
+using VillaManagementWeb.Repositories.Interfaces;
+using VillaManagementWeb.Repositories.Implementations;
+using VillaManagementWeb.Services.Interfaces;
+using VillaManagementWeb.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +22,18 @@ builder.Services.AddDbContext<VillaDbContext>(options =>
 builder.Services.Configure<FormOptions>(options => {
     options.MultipartBodyLengthLimit = 104857600; 
 });
+
+// Register Repositories
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<INewsRepository, NewsRepository>();
+
+// Register Services
+builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<INewsService, NewsService>();
+
 // 2. Đăng ký các dịch vụ MVC
 builder.Services.AddControllersWithViews();
 

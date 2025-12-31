@@ -1,4 +1,4 @@
-﻿@model IEnumerable<VillaManagementWeb.Models.Room>
+﻿@model IEnumerable<VillaManagementWeb.ViewModels.RoomIndexVM>
 @{
     ViewData["Title"] = "Quản lý phòng";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
@@ -24,7 +24,8 @@
                             <th>Loại phòng</th>
                             <th>Giá/Đêm</th>
                             <th>Tiện nghi</th>
-                            <th>Hoạt động</th>
+                            <th>Tình trạng thuê</th>
+                            <th>Vận hành</th>
                             <th style="width: 10%">Thao tác</th>
                         </tr>
                     </thead>
@@ -47,6 +48,9 @@
                                         <i class="fas fa-broom @(item.HasTowel ? "text-warning" : "opacity-25")" title="Khăn tắm"></i>
                                     </div>
                                     <small class="text-muted">@item.Capacity người | @item.SquareFootage m²</small>
+                                </td>
+                                <td>
+                                    <span class="badge @item.StatusColor">@item.StatusLabel</span>
                                 </td>
                                 <td>
                                     @if (item.IsActive)

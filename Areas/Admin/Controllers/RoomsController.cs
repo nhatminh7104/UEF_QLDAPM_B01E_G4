@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VillaManagementWeb.Data;
 using VillaManagementWeb.Models;
+using VillaManagementWeb.Services.Interfaces;
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
@@ -16,17 +17,20 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
     {
         private readonly VillaDbContext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly IRoomService _roomService;
 
-        public RoomsController(VillaDbContext context, IWebHostEnvironment hostEnvironment)
+        public RoomsController(VillaDbContext context, IWebHostEnvironment hostEnvironment, IRoomService roomService)
         {
             _context = context;
             _hostEnvironment = hostEnvironment;
+            _roomService = roomService;
         }
 
         // GET: Controllers/Rooms
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Rooms.ToListAsync());
+            var roomsWithStatus = await _roomService.GetRoomsWithStatusAsync();
+            return View(roomsWithStatus);
         }
 
         // GET: Controllers/Rooms/Details/5

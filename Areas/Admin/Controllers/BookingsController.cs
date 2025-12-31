@@ -1,29 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using VillaManagementWeb.Data;
 using VillaManagementWeb.Models;
+using VillaManagementWeb.Services.Interfaces;
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class BookingsController : Controller
     {
-        private readonly VillaDbContext _context;
+        private readonly IBookingService _bookingService;
+        private readonly IRoomService _roomService;
 
-        public BookingsController(VillaDbContext context)
+        public BookingsController(IBookingService bookingService, IRoomService roomService)
         {
-            _context = context;
+            _bookingService = bookingService;
+            _roomService = roomService;
         }
 
         // GET: Controllers/Bookings
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Bookings.Include(b => b.Room).ToListAsync());
+            return View(await _bookingService.GetBookingsWithRoomsAsync());
         }
 
         // GET: Controllers/Bookings/Details/5
@@ -34,9 +33,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var booking = await _context.Bookings
-                .Include(b => b.Room)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var booking = await _bookingService.GetBookingByIdAsync(id.Value);
             if (booking == null)
             {
                 return NotFound();
@@ -46,9 +43,10 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         }
 
         // GET: Controllers/Bookings/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "RoomNumber");
+            var rooms = await _roomService.GetAllRoomsAsync();
+            ViewData["RoomId"] = new SelectList(rooms, "Id", "RoomNumber");
             return View();
         }
 
@@ -59,19 +57,24 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,RoomId,CustomerName,CustomerPhone,AdultsCount,ChildrenCount,CustomerEmail,CheckIn,CheckOut,TotalAmount,Status,PaymentMethod,Notes,CreatedAt")] Booking booking)
         {
-            // Server-side validation: CheckOut must be later than CheckIn
-            if (booking.CheckOut <= booking.CheckIn)
-            {
-                ModelState.AddModelError("CheckOut", "Ngày check-out phải sau ngày check-in.");
-            }
-
             if (ModelState.IsValid)
             {
-                _context.Add(booking);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _bookingService.CreateBookingAsync(booking);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (ArgumentException ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
             }
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "RoomNumber", booking.RoomId);
+            var rooms = await _roomService.GetAllRoomsAsync();
+            ViewData["RoomId"] = new SelectList(rooms, "Id", "RoomNumber", booking.RoomId);
             return View(booking);
         }
 
@@ -83,12 +86,13 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var booking = await _context.Bookings.FindAsync(id);
+            var booking = await _bookingService.GetBookingByIdAsync(id.Value);
             if (booking == null)
             {
                 return NotFound();
             }
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "RoomNumber", booking.RoomId);
+            var rooms = await _roomService.GetAllRoomsAsync();
+            ViewData["RoomId"] = new SelectList(rooms, "Id", "RoomNumber", booking.RoomId);
             return View(booking);
         }
 
@@ -104,53 +108,24 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            // Server-side validation: CheckOut must be later than CheckIn
-            if (booking.CheckOut <= booking.CheckIn)
-            {
-                ModelState.AddModelError("CheckOut", "Ngày check-out phải sau ngày check-in.");
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Get existing booking to avoid navigation property validation issues
-                    var existingBooking = await _context.Bookings.FindAsync(id);
-                    if (existingBooking == null)
-                    {
-                        return NotFound();
-                    }
-
-                    // Update only the properties that are bound
-                    existingBooking.RoomId = booking.RoomId;
-                    existingBooking.CustomerName = booking.CustomerName;
-                    existingBooking.CustomerPhone = booking.CustomerPhone;
-                    existingBooking.AdultsCount = booking.AdultsCount;
-                    existingBooking.ChildrenCount = booking.ChildrenCount;
-                    existingBooking.CustomerEmail = booking.CustomerEmail;
-                    existingBooking.CheckIn = booking.CheckIn;
-                    existingBooking.CheckOut = booking.CheckOut;
-                    existingBooking.TotalAmount = booking.TotalAmount;
-                    existingBooking.Status = booking.Status;
-                    existingBooking.PaymentMethod = booking.PaymentMethod;
-                    existingBooking.Notes = booking.Notes;
-
-                    await _context.SaveChangesAsync();
+                    await _bookingService.UpdateBookingAsync(booking);
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (ArgumentException ex)
                 {
-                    if (!BookingExists(booking.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError("", ex.Message);
                 }
-                return RedirectToAction(nameof(Index));
+                catch (InvalidOperationException ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
             }
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "RoomNumber", booking.RoomId);
+            var rooms = await _roomService.GetAllRoomsAsync();
+            ViewData["RoomId"] = new SelectList(rooms, "Id", "RoomNumber", booking.RoomId);
             return View(booking);
         }
 
@@ -162,9 +137,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var booking = await _context.Bookings
-                .Include(b => b.Room)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var booking = await _bookingService.GetBookingByIdAsync(id.Value);
             if (booking == null)
             {
                 return NotFound();
@@ -178,19 +151,8 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var booking = await _context.Bookings.FindAsync(id);
-            if (booking != null)
-            {
-                _context.Bookings.Remove(booking);
-            }
-
-            await _context.SaveChangesAsync();
+            await _bookingService.DeleteBookingAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool BookingExists(int id)
-        {
-            return _context.Bookings.Any(e => e.Id == id);
         }
     }
 }
