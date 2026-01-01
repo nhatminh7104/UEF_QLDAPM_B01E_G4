@@ -102,6 +102,7 @@ StyleCopReport.xml
 bin/
 obj/
 .vscode/
+.vs/
 # Chutzpah Test files
 _Chutzpah*
 
