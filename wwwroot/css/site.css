@@ -1,38 +1,46 @@
-﻿html {
-  font-size: 14px;
+html {
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
+
 /* Làm cho Navbar đè lên Header */
 .navbar {
     position: absolute;
     width: 100%;
     z-index: 999;
-    background-color: rgba(0, 0, 0, 0.3) !important; /* Đen mờ trong suốt */
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    /* Đen mờ trong suốt */
 }
 
 /* Đảm bảo ảnh không bị khoảng trắng ở trên */
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
 }
+
 /* Container bao quát cả Header và Booking */
 .hero-wrapper {
     width: 100%;
@@ -46,7 +54,8 @@ body, html {
     left: 0;
     right: 0;
     z-index: 10;
-    transform: translateY(50%); /* Đưa thanh lên 50% để nó lơ lửng giữa 2 phần  */
+    transform: translateY(50%);
+    /* Đưa thanh lên 50% để nó lơ lửng giữa 2 phần  */
 }
 
 .booking-inner {
@@ -55,21 +64,21 @@ body, html {
     overflow: hidden;
 }
 
-    /* Tùy chỉnh input để giống trang mẫu */
-    .booking-inner label {
-        display: block;
-        color: #333;
-        margin-bottom: 5px;
-        font-size: 11px;
-        letter-spacing: 1px;
-    }
+/* Tùy chỉnh input để giống trang mẫu */
+.booking-inner label {
+    display: block;
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 11px;
+    letter-spacing: 1px;
+}
 
-    .booking-inner .form-control,
-    .booking-inner .form-select {
-        font-size: 15px;
-        font-weight: 500;
-        color: #1b1b1b;
-    }
+.booking-inner .form-control,
+.booking-inner .form-select {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1b1b1b;
+}
 
 /* Responsive cho Mobile  */
 @media (max-width: 767.98px) {
@@ -84,6 +93,7 @@ body, html {
         height: 70vh !important;
     }
 }
+
 /* Font chữ theo style The Wandering Rose */
 h1 {
     font-family: 'Gilda Display', serif;
@@ -92,7 +102,8 @@ h1 {
     text-transform: uppercase;
 }
 
-h4, .section-subtitle {
+h4,
+.section-subtitle {
     font-family: 'Barlow Condensed', sans-serif;
     text-transform: uppercase;
     letter-spacing: 5px;
@@ -115,6 +126,55 @@ body {
 
 .animate-delay-2s {
     animation-delay: 1s;
+}
+
+.card {
+    border-radius: 20px;
+}
+
+.form-control {
+    padding: 12px 18px;
+}
+
+.btn:hover {
+    opacity: .9;
+}
+
+.auth-bg {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    background: url("/uploads/summernote/e4993e45-8b5e-46a3-9151-ee8f2ff6dc82.jpg") center/cover no-repeat fixed;
+    background-position: bottom center;
+}
+
+/* lớp phủ xám mờ */
+.auth-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    pointer-events: none;
+    /* chỉnh đậm nhạt ở đây */
+}
+
+.auth-container {
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.card {
+    max-width: 480px;
+    margin: auto;
+}
+
+.auth-container .col-md-6 {
+    flex: 0 0 480px;
+    max-width: 480px;
+    padding-bottom: 50px;
 }
 
 @keyframes fadeInUp {
