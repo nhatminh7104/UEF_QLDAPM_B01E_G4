@@ -28,11 +28,19 @@ builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
+builder.Services.AddScoped<ITourRepository, TourRepository>();
+builder.Services.AddScoped<ITourBookingRepository, TourBookingRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 
 // Register Services
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<INewsService, NewsService>();
+builder.Services.AddScoped<ITourService, TourService>();
+builder.Services.AddScoped<ITourBookingService, TourBookingService>();
+builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 // 2. Đăng ký các dịch vụ MVC
 builder.Services.AddControllersWithViews();

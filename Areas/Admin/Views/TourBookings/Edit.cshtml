@@ -1,65 +1,222 @@
 ﻿@model VillaManagementWeb.Models.TourBooking
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh Sửa Đặt Tour";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Edit</h1>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-<h4>TourBooking</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<script>
+    tailwind.config = {
+        corePlugins: {
+            preflight: false,
+            visibility: false
+        },
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#13a4ec",
+                    "primary-dark": "#0b8bc9",
+                    "background-light": "#f6f7f8",
+                    "background-dark": "#101c22",
+                    "surface-light": "#ffffff",
+                    "surface-dark": "#182830",
+                    "text-main": "#0d171b",
+                    "text-secondary": "#4c809a",
+                },
+                fontFamily: {
+                    "display": ["Inter", "sans-serif"]
+                },
+            },
+        },
+    }
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+<div class="flex-1 bg-background-light dark:bg-background-dark font-display text-text-main dark:text-slate-100 p-6">
+    <div class="max-w-[1280px] mx-auto pb-20">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+                <div class="flex items-center gap-2 text-sm text-text-secondary dark:text-slate-400 mb-2">
+                    <a asp-action="Index" class="hover:text-primary transition-colors flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[16px]">grid_view</span>
+                        Bookings
+                    </a>
+                    <span>/</span>
+                    <span class="text-text-main dark:text-slate-300 font-medium">Edit #@Model.Id</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <h1 class="text-3xl font-black tracking-tight text-text-main dark:text-white">
+                        Edit Booking: #@Model.Id
+                    </h1>
+                    @{
+                        var statusColor = Model.Status == "Confirmed" ? "bg-green-100 text-green-700 border-green-200" :
+                        Model.Status == "Pending" ? "bg-yellow-100 text-yellow-700 border-yellow-200" :
+                        "bg-slate-100 text-slate-700 border-slate-200";
+                    }
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border @statusColor">
+                        @Model.Status
+                    </span>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <a asp-action="Index" class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-bold text-text-main dark:text-white transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                    Back to List
+                </a>
+                <button onclick="document.getElementById('editBookingForm').submit()" class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary hover:bg-primary-dark text-white text-sm font-bold shadow-sm transition-all shadow-primary/30">
+                    <span class="material-symbols-outlined text-[20px]">save</span>
+                    Save Changes
+                </button>
+            </div>
+        </div>
+
+        <form id="editBookingForm" asp-action="Edit" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div asp-validation-summary="ModelOnly" class="text-red-500 col-span-full"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="TourId" class="control-label"></label>
-                <select asp-for="TourId" class="form-control" asp-items="ViewBag.TourId"></select>
-                <span asp-validation-for="TourId" class="text-danger"></span>
+
+            <div class="lg:col-span-2 flex flex-col gap-6">
+
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
+                        <h3 class="text-lg font-bold text-text-main dark:text-white flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">tour</span>
+                            Tour Configuration
+                        </h3>
+                    </div>
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="md:col-span-2">
+                            <label asp-for="TourId" class="block text-sm font-medium text-text-secondary dark:text-slate-400 mb-1.5">Select Tour Package</label>
+                            <div class="relative">
+                                <select asp-for="TourId" class="w-full h-12 px-4 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-text-main dark:text-white outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none" asp-items="ViewBag.TourId"></select>
+                                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                            </div>
+                            <span asp-validation-for="TourId" class="text-xs text-red-500 mt-1 block"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="TourDate" class="block text-sm font-medium text-text-secondary dark:text-slate-400 mb-1.5">Tour Date</label>
+                            <div class="relative">
+                                <input asp-for="TourDate" class="w-full h-12 px-4 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-text-main dark:text-white outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" type="datetime-local" />
+                            </div>
+                            <span asp-validation-for="TourDate" class="text-xs text-red-500 mt-1 block"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="Status" class="block text-sm font-medium text-text-secondary dark:text-slate-400 mb-1.5">Booking Status</label>
+                            <div class="relative">
+                                <select asp-for="Status" class="w-full h-12 px-4 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-text-main dark:text-white outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Confirmed">Confirmed</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                            </div>
+                            <span asp-validation-for="Status" class="text-xs text-red-500 mt-1 block"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
+                        <h3 class="text-lg font-bold text-text-main dark:text-white flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">payments</span>
+                            Payment Details
+                        </h3>
+                    </div>
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+                        <div>
+                            <label asp-for="TotalPrice" class="block text-sm font-medium text-text-secondary dark:text-slate-400 mb-1.5">Total Price (VND)</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <span class="text-text-secondary font-bold">$</span>
+                                </div>
+                                <input asp-for="TotalPrice" class="w-full h-12 pl-10 pr-4 text-right font-bold rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-text-main dark:text-white outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" type="number" />
+                            </div>
+                            <span asp-validation-for="TotalPrice" class="text-xs text-red-500 mt-1 block"></span>
+                        </div>
+                        <div class="pb-2">
+                            <p class="text-xs text-text-secondary dark:text-slate-500">
+                                Estimated price based on package and pax. Please verify before saving.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="TourDate" class="control-label"></label>
-                <input asp-for="TourDate" class="form-control" />
-                <span asp-validation-for="TourDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NumberOfPeople" class="control-label"></label>
-                <input asp-for="NumberOfPeople" class="form-control" />
-                <span asp-validation-for="NumberOfPeople" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalPrice" class="control-label"></label>
-                <input asp-for="TotalPrice" class="form-control" />
-                <span asp-validation-for="TotalPrice" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ContactInfo" class="control-label"></label>
-                <input asp-for="ContactInfo" class="form-control" />
-                <span asp-validation-for="ContactInfo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CustomerName" class="control-label"></label>
-                <input asp-for="CustomerName" class="form-control" />
-                <span asp-validation-for="CustomerName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="lg:col-span-1 flex flex-col gap-6">
+
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden h-full flex flex-col">
+                    <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
+                        <h3 class="text-lg font-bold text-text-main dark:text-white flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">person</span>
+                            Guest Details
+                        </h3>
+                    </div>
+                    <div class="p-6 flex flex-col gap-6 flex-1">
+                        <div>
+                            <label asp-for="CustomerName" class="block text-sm font-medium text-text-secondary dark:text-slate-400 mb-1.5">Lead Guest Name</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">badge</span>
+                                <input asp-for="CustomerName" class="w-full h-12 pl-11 pr-4 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-text-main dark:text-white outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="Enter guest name" />
+                            </div>
+                            <span asp-validation-for="CustomerName" class="text-xs text-red-500 mt-1 block"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="ContactInfo" class="block text-sm font-medium text-text-secondary dark:text-slate-400 mb-1.5">Contact Phone / Email</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">contact_phone</span>
+                                <input asp-for="ContactInfo" class="w-full h-12 pl-11 pr-4 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-text-main dark:text-white outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="Phone or Email" />
+                            </div>
+                            <span asp-validation-for="ContactInfo" class="text-xs text-red-500 mt-1 block"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="NumberOfPeople" class="block text-sm font-medium text-text-secondary dark:text-slate-400 mb-1.5">Number of People (Pax)</label>
+                            <div class="flex items-center rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 h-12 px-2">
+                                <button type="button" onclick="document.getElementById('NumberOfPeople').stepDown()" class="size-8 flex items-center justify-center rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 transition-colors">
+                                    <span class="material-symbols-outlined text-[20px]">remove</span>
+                                </button>
+                                <input asp-for="NumberOfPeople" class="flex-1 bg-transparent text-center font-bold text-text-main dark:text-white outline-none px-2 appearance-none" type="number" min="1" />
+                                <button type="button" onclick="document.getElementById('NumberOfPeople').stepUp()" class="size-8 flex items-center justify-center rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 transition-colors">
+                                    <span class="material-symbols-outlined text-[20px]">add</span>
+                                </button>
+                            </div>
+                            <span asp-validation-for="NumberOfPeople" class="text-xs text-red-500 mt-1 block"></span>
+                        </div>
+
+                        <div class="mt-auto pt-6 border-t border-slate-100 dark:border-slate-700">
+                            <div class="flex gap-4 items-center p-3 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20">
+                                <span class="material-symbols-outlined text-red-600 dark:text-red-400">warning</span>
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-bold text-red-700 dark:text-red-400">Danger Zone</span>
+                                    <button type="button" class="text-left text-xs text-red-600 hover:text-red-800 underline dark:text-red-400 dark:hover:text-red-300">
+                                        Cancel this booking
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
+
+        <div class="flex justify-end pt-4">
+            <p class="text-xs text-text-secondary dark:text-slate-500 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">info</span>
+                Last updated by Admin on @DateTime.Now.ToString("MMM dd, yyyy HH:mm")
+            </p>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 }

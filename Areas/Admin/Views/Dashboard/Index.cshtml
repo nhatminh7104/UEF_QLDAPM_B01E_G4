@@ -1,6 +1,208 @@
-﻿@{
-    ViewData["Title"] = "Dashboard";
+﻿@model VillaManagementWeb.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Tổng quan";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-@{
+
+<div class="page-inner">
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">Tổng Quan Kinh Doanh</h3>
+            <h6 class="op-7 mb-2">Báo cáo hoạt động hôm nay</h6>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Doanh thu tổng</p>
+                                <h4 class="card-title">@Model.TotalRevenue.ToString("N0") ₫</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-info bubble-shadow-small">
+                                <i class="fas fa-file-invoice"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Đơn mới hôm nay</p>
+                                <h4 class="card-title">@Model.NewBookingsToday</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-success bubble-shadow-small">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Tỷ lệ lấp đầy</p>
+                                <h4 class="card-title">@Model.OccupancyRate%</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                                <i class="fas fa-luggage-cart"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Check-in hôm nay</p>
+                                <h4 class="card-title">@Model.TotalCheckInsToday</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Biểu đồ doanh thu (7 ngày qua)</div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-round">
+                <div class="card-header">
+                    <div class="card-head-row">
+                        <div class="card-title">Đơn đặt phòng mới</div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table align-items-center mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Khách hàng</th>
+                                    <th scope="col" class="text-end">Phòng</th>
+                                    <th scope="col" class="text-end">Giá</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.RecentBookings)
+                                {
+                                    <tr>
+                                        <th scope="row">
+                                            @item.CustomerName <br/>
+                                            <small class="text-muted">@item.CreatedAt.ToString("dd/MM HH:mm")</small>
+                                        </th>
+                                        <td class="text-end">@(item.Room?.RoomNumber ?? "N/A")</td>
+                                        <td class="text-end">@item.TotalAmount.ToString("#,##0")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        var ctx = document.getElementById('revenueChart').getContext('2d');
+        var revenueChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.ChartLabels)),
+                datasets: [{
+                    label: "Doanh thu (VNĐ)",
+                    borderColor: "#1d7af3",
+                    pointBorderColor: "#FFF",
+                    pointBackgroundColor: "#1d7af3",
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 4,
+                    pointHoverBorderWidth: 1,
+                    pointRadius: 4,
+                    backgroundColor: 'transparent',
+                    fill: true,
+                    borderWidth: 2,
+                    data: @Html.Raw(Json.Serialize(Model.ChartData))
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    position: 'bottom',
+                    labels : {
+                        padding: 10,
+                        fontColor: '#1d7af3',
+                    }
+                },
+                tooltips: {
+                    bodySpacing: 4,
+                    mode:"nearest",
+                    intersect: 0,
+                    position:"nearest",
+                    xPadding:10,
+                    yPadding:10,
+                    caretPadding:10
+                },
+                layout:{
+                    padding:{left:15,right:15,top:15,bottom:15}
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            callback: function(value, index, values) {
+                                return value.toLocaleString() + ' ₫';
+                            }
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
 }

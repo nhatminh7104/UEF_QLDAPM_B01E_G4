@@ -7,24 +7,41 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VillaManagementWeb.Data;
 using VillaManagementWeb.Models;
+using VillaManagementWeb.Services.Interfaces;
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class TourBookingsController : Controller
     {
-        private readonly VillaDbContext _context;
+        private readonly ITourBookingService _tourBookingService;
+        private readonly ITourService _tourService;
 
-        public TourBookingsController(VillaDbContext context)
+        public TourBookingsController(ITourBookingService tourBookingService, ITourService tourService)
         {
-            _context = context;
+            _tourBookingService = tourBookingService;
+            _tourService = tourService;
         }
 
         // GET: Admin/TourBookings
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(DateTime? tourDate, string? status)
         {
-            var villaDbContext = _context.TourBookings.Include(t => t.Tour);
-            return View(await villaDbContext.ToListAsync());
+            IEnumerable<TourBooking> tourBookings;
+
+            if (tourDate.HasValue || !string.IsNullOrWhiteSpace(status))
+            {
+                tourBookings = await _tourBookingService.GetTourBookingsFilteredAsync(tourDate, status);
+            }
+            else
+            {
+                tourBookings = await _tourBookingService.GetTourBookingsWithToursAsync();
+            }
+
+            // Pass filter values to view for maintaining filter state
+            ViewBag.TourDate = tourDate;
+            ViewBag.Status = status;
+
+            return View(tourBookings);
         }
 
         // GET: Admin/TourBookings/Details/5
@@ -35,9 +52,15 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var tourBooking = await _context.TourBookings
-                .Include(t => t.Tour)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var tourBooking = await _tourBookingService.GetTourBookingByIdAsync(id.Value);
+            if (tourBooking == null)
+            {
+                return NotFound();
+            }
+
+            // Load Tour navigation property
+            var tourBookings = await _tourBookingService.GetTourBookingsWithToursAsync();
+            tourBooking = tourBookings.FirstOrDefault(tb => tb.Id == id.Value);
             if (tourBooking == null)
             {
                 return NotFound();
@@ -47,9 +70,10 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         }
 
         // GET: Admin/TourBookings/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["TourId"] = new SelectList(_context.Tours, "Id", "Id");
+            var tours = await _tourService.GetAllToursAsync();
+            ViewData["TourId"] = new SelectList(tours, "Id", "TourName");
             return View();
         }
 
@@ -62,11 +86,23 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(tourBooking);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _tourBookingService.CreateTourBookingAsync(tourBooking);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (ArgumentException ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Lỗi khi tạo tour booking: {ex.Message}");
+                }
             }
-            ViewData["TourId"] = new SelectList(_context.Tours, "Id", "Id", tourBooking.TourId);
+
+            var tours = await _tourService.GetAllToursAsync();
+            ViewData["TourId"] = new SelectList(tours, "Id", "TourName", tourBooking.TourId);
             return View(tourBooking);
         }
 
@@ -78,12 +114,14 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var tourBooking = await _context.TourBookings.FindAsync(id);
+            var tourBooking = await _tourBookingService.GetTourBookingByIdAsync(id.Value);
             if (tourBooking == null)
             {
                 return NotFound();
             }
-            ViewData["TourId"] = new SelectList(_context.Tours, "Id", "Id", tourBooking.TourId);
+
+            var tours = await _tourService.GetAllToursAsync();
+            ViewData["TourId"] = new SelectList(tours, "Id", "TourName", tourBooking.TourId);
             return View(tourBooking);
         }
 
@@ -103,23 +141,21 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(tourBooking);
-                    await _context.SaveChangesAsync();
+                    await _tourBookingService.UpdateTourBookingAsync(tourBooking);
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (ArgumentException ex)
                 {
-                    if (!TourBookingExists(tourBooking.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError("", ex.Message);
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Lỗi khi cập nhật tour booking: {ex.Message}");
+                }
             }
-            ViewData["TourId"] = new SelectList(_context.Tours, "Id", "Id", tourBooking.TourId);
+
+            var tours = await _tourService.GetAllToursAsync();
+            ViewData["TourId"] = new SelectList(tours, "Id", "TourName", tourBooking.TourId);
             return View(tourBooking);
         }
 
@@ -131,9 +167,8 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var tourBooking = await _context.TourBookings
-                .Include(t => t.Tour)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var tourBookings = await _tourBookingService.GetTourBookingsWithToursAsync();
+            var tourBooking = tourBookings.FirstOrDefault(tb => tb.Id == id.Value);
             if (tourBooking == null)
             {
                 return NotFound();
@@ -147,19 +182,13 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tourBooking = await _context.TourBookings.FindAsync(id);
-            if (tourBooking != null)
+            var deleted = await _tourBookingService.DeleteTourBookingAsync(id);
+            if (!deleted)
             {
-                _context.TourBookings.Remove(tourBooking);
+                return NotFound();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TourBookingExists(int id)
-        {
-            return _context.TourBookings.Any(e => e.Id == id);
         }
     }
 }

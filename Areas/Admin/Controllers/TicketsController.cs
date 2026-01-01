@@ -23,25 +23,21 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         // GET: Admin/Tickets
         public async Task<IActionResult> Index()
         {
-            var villaDbContext = _context.Tickets.Include(t => t.Event);
-            return View(await villaDbContext.ToListAsync());
+            // Include Event để hiển thị tên sự kiện trong bảng
+            var tickets = _context.Tickets.Include(t => t.Event);
+            return View(await tickets.ToListAsync());
         }
 
         // GET: Admin/Tickets/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var ticket = await _context.Tickets
                 .Include(t => t.Event)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
+
+            if (ticket == null) return NotFound();
 
             return View(ticket);
         }
@@ -49,55 +45,58 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         // GET: Admin/Tickets/Create
         public IActionResult Create()
         {
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Id");
+            // SỬA: Hiển thị "Title" thay vì "Id" để người dùng dễ chọn
+            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title");
             return View();
         }
 
         // POST: Admin/Tickets/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,EventId,TicketType,Price,CustomerEmail,CustomerName,Quantity,BookingDate,QRCode,IsUsed")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,EventId,TicketType,Price,CustomerEmail,CustomerName,Quantity,BookingDate,IsUsed")] Ticket ticket)
         {
+            // 1. Tự động sinh mã QR (Thay thế giá trị placeholder từ View)
+            // Format ví dụ: TKT-20231025-A1B2
+            string uniqueCode = Guid.NewGuid().ToString().Substring(0, 4).ToUpper();
+            ticket.QRCode = $"TKT-{DateTime.Now:yyyyMMdd}-{uniqueCode}";
+
+            // 2. Kiểm tra nếu BookingDate chưa chọn thì gán ngày hiện tại
+            if (ticket.BookingDate == default)
+            {
+                ticket.BookingDate = DateTime.Now;
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Id", ticket.EventId);
+
+            // Nếu lỗi, load lại dropdown với Title
+            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", ticket.EventId);
             return View(ticket);
         }
 
         // GET: Admin/Tickets/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var ticket = await _context.Tickets.FindAsync(id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Id", ticket.EventId);
+            if (ticket == null) return NotFound();
+
+            // SỬA: Hiển thị Title
+            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", ticket.EventId);
             return View(ticket);
         }
 
         // POST: Admin/Tickets/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,EventId,TicketType,Price,CustomerEmail,CustomerName,Quantity,BookingDate,QRCode,IsUsed")] Ticket ticket)
         {
-            if (id != ticket.Id)
-            {
-                return NotFound();
-            }
+            if (id != ticket.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -108,36 +107,26 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TicketExists(ticket.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!TicketExists(ticket.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Id", ticket.EventId);
+
+            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", ticket.EventId);
             return View(ticket);
         }
 
         // GET: Admin/Tickets/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var ticket = await _context.Tickets
                 .Include(t => t.Event)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
+
+            if (ticket == null) return NotFound();
 
             return View(ticket);
         }
@@ -152,7 +141,6 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             {
                 _context.Tickets.Remove(ticket);
             }
-
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
