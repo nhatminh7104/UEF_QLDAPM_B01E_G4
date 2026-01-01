@@ -1,0 +1,71 @@
+@using VillaManagementWeb.ViewModels
+@model RegisterVM
+@{
+    ViewData["Title"] = "Đăng ký";
+    Layout = "_AuthLayout";
+}
+
+<section>
+    <div class="container auth-container d-flex justify-content-center align-items-center">
+        <div class="row w-100 justify-content-center">
+            <div class="col-12 col-md-6 col-lg-5">
+
+                <div class="card shadow border-0 rounded-4">
+                    <div class="card-body p-5">
+
+                        <h3 class="fw-bold text-center mb-4">Tạo tài khoản</h3>
+
+                        <form asp-action="Register" method="post">
+                            @Html.AntiForgeryToken()
+
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="mb-3">
+                                <label asp-for="FullName" class="form-label"></label>
+                                <input asp-for="FullName" class="form-control rounded-pill" />
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label"></label>
+                                <input asp-for="Email" class="form-control rounded-pill" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Password" class="form-label"></label>
+                                <input asp-for="Password" type="password" class="form-control rounded-pill" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ConfirmPassword" class="form-label"></label>
+                                <input asp-for="ConfirmPassword" type="password" class="form-control rounded-pill" />
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+
+                            <button type="submit" class="btn w-100 rounded-pill fw-bold text-white pt-1"
+                                style="background:#f35525;">
+                                Đăng ký
+                            </button>
+
+                        </form>
+
+                        <p class="text-center mt-4">
+                            Đã có tài khoản?
+                            <a asp-action="Login" class="fw-bold text-decoration-none" style="color:#f35525;">
+                                Đăng nhập
+                            </a>
+                        </p>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

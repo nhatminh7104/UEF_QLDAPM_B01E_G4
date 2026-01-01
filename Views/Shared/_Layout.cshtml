@@ -1,10 +1,12 @@
 ﻿<!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - The Wandering Rose</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700&family=Gilda+Display&family=Barlow:wght@300;400&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700&family=Gilda+Display&family=Barlow:wght@300;400&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -12,6 +14,9 @@
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
+
+
+
 <body class="home">
     @{
         var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
@@ -27,31 +32,29 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
                         <a class="nav-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")"
-                           href="/">Trang Chủ</a>
+                            href="/">Trang Chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(currentController == "About" ? "active" : "")"
-                           href="/About">Giới Thiệu</a>
+                        <a class="nav-link @(currentController == "About" ? "active" : "")" href="/About">Giới Thiệu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(currentController == "Rooms" ? "active" : "")"
-                           href="/Rooms">Giới Thiệu Phòng</a>
+                        <a class="nav-link @(currentController == "Rooms" ? "active" : "")" href="/Rooms">Giới Thiệu
+                            Phòng</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(currentController == "Services" ? "active" : "")"
-                           href="/services">Dịch vụ</a>
+                        <a class="nav-link @(currentController == "Services" ? "active" : "")" href="/services">Dịch
+                            vụ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(currentController == "Pictures" ? "active" : "")"
-                           href="/pictures">Hình ảnh</a>
+                        <a class="nav-link @(currentController == "Pictures" ? "active" : "")" href="/pictures">Hình
+                            ảnh</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(currentController == "News" ? "active" : "")"
-                           href="/news">Tin tức</a>
+                        <a class="nav-link @(currentController == "News" ? "active" : "")" href="/news">Tin tức</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(currentController == "Contacts" ? "active" : "")"
-                           href="/contacts">Liên hệ</a>
+                        <a class="nav-link @(currentController == "Contacts" ? "active" : "")" href="/contacts">Liên
+                            hệ</a>
                     </li>
                 </ul>
             </div>
@@ -63,70 +66,73 @@
     </main>
 
     <footer class="main-footer" style="background-color: #A0734F;">
-    @await Component.InvokeAsync("NewsEvents")
+        @await Component.InvokeAsync("NewsEvents")
 
-    <div class="footer-links py-5 text-white" style="border-top: 1px solid rgba(255,255,255,0.2);">
-        <div class="container text-center mb-5">
-            <img src="~/images/logo_white.png" alt="Logo" class="mb-3" style="height: 100px;">
-        </div>
-        <div class="container">
-            <div class="row g-4 small text-uppercase fw-light">
-                <div class="col-md-2 col-6">
-                    <h6 class="fw-bold mb-3">TRANG CHỦ</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="/About" class="text-white text-decoration-none">Về chúng tôi</a></li>
-                        <li><a href="#" class="text-white text-decoration-none">Sự kiện âm nhạc</a></li>
-                        <li><a href="#" class="text-white text-decoration-none">Thư viện hình ảnh</a></li>
-                        <li><a href="/News" class="text-white text-decoration-none">Tin tức</a></li>
-                        <li><a href="/FAQ" class="text-white text-decoration-none">FAQ</a></li>
-                    </ul>
+        <div class="footer-links py-5 text-white" style="border-top: 1px solid rgba(255,255,255,0.2);">
+            <div class="container text-center mb-5">
+                <img src="~/images/logo_white.png" alt="Logo" class="mb-3" style="height: 100px;">
+            </div>
+            <div class="container">
+                <div class="row g-4 small text-uppercase fw-light">
+                    <div class="col-md-2 col-6">
+                        <h6 class="fw-bold mb-3">TRANG CHỦ</h6>
+                        <ul class="list-unstyled">
+                            <li><a href="/About" class="text-white text-decoration-none">Về chúng tôi</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">Sự kiện âm nhạc</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">Thư viện hình ảnh</a></li>
+                            <li><a href="/News" class="text-white text-decoration-none">Tin tức</a></li>
+                            <li><a href="/FAQ" class="text-white text-decoration-none">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <h6 class="fw-bold mb-3">HẠNG PHÒNG</h6>
+                        <ul class="list-unstyled">
+                            <li><a href="#" class="text-white text-decoration-none">Khu Wooden House</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">Forest Room</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">Deluxe Room</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">Family Room</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <h6 class="fw-bold mb-3">TRẢI NGHIỆM & TOUR</h6>
+                        <ul class="list-unstyled">
+                            <li><a href="#" class="text-white text-decoration-none">Tour Vườn Quốc Gia Ba Vì</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">Tour Ao Vua</a></li>
+                            <li><a href="#" class="text-white text-decoration-none">Khoang Xanh - Suối Tiên</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-12 ms-auto">
+                        <h6 class="fw-bold mb-3">LIÊN HỆ</h6>
+                        <p class="mb-1">092 981 6699</p>
+                        <p class="mb-1">booking@thewanderingrosebavi.com</p>
+                        <p class="mb-3">Thôn Mít Mái, Ba Vì, Hà Nội</p>
+                        <a href="/Contact" class="btn btn-outline-light btn-sm rounded-0">GỬI LIÊN HỆ →</a>
+                    </div>
                 </div>
-                <div class="col-md-2 col-6">
-                    <h6 class="fw-bold mb-3">HẠNG PHÒNG</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-white text-decoration-none">Khu Wooden House</a></li>
-                        <li><a href="#" class="text-white text-decoration-none">Forest Room</a></li>
-                        <li><a href="#" class="text-white text-decoration-none">Deluxe Room</a></li>
-                        <li><a href="#" class="text-white text-decoration-none">Family Room</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3 col-6">
-                    <h6 class="fw-bold mb-3">TRẢI NGHIỆM & TOUR</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-white text-decoration-none">Tour Vườn Quốc Gia Ba Vì</a></li>
-                        <li><a href="#" class="text-white text-decoration-none">Tour Ao Vua</a></li>
-                        <li><a href="#" class="text-white text-decoration-none">Khoang Xanh - Suối Tiên</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3 col-12 ms-auto">
-                    <h6 class="fw-bold mb-3">LIÊN HỆ</h6>
-                    <p class="mb-1">092 981 6699</p>
-                    <p class="mb-1">booking@thewanderingrosebavi.com</p>
-                    <p class="mb-3">Thôn Mít Mái, Ba Vì, Hà Nội</p>
-                    <a href="/Contact" class="btn btn-outline-light btn-sm rounded-0">GỬI LIÊN HỆ →</a>
+
+                <div class="row mt-5 pt-4 border-top border-secondary opacity-75 small">
+                    <div class="col-md-6 text-center text-md-start">
+                        <p>© Copyright 2025 The Wandering Rose</p>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end social-icons">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
                 </div>
             </div>
-
-            <div class="row mt-5 pt-4 border-top border-secondary opacity-75 small">
-                <div class="col-md-6 text-center text-md-start">
-                    <p>© Copyright 2025 The Wandering Rose</p>
-                </div>
-                <div class="col-md-6 text-center text-md-end social-icons">
-                    <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-white me-3"><i class="fab fa-youtube"></i></a>
-                    <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-white"><i class="fab fa-pinterest-p"></i></a>
-                </div>
-            </div>
         </div>
-    </div>
-</footer>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     AOS.init({ duration: 1000, once: true });
-</script>
