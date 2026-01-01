@@ -15,7 +15,9 @@
 
 # Mono auto generated files
 mono_crash.*
-
+# Build outputs
+bin/
+obj/
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -97,7 +99,10 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
-
+bin/
+obj/
+.vscode/
+.vs/
 # Chutzpah Test files
 _Chutzpah*
 

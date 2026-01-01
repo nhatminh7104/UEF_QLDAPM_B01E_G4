@@ -1,4 +1,4 @@
-﻿@model IEnumerable<VillaManagementWeb.Models.Room>
+﻿@model IEnumerable<VillaManagementWeb.ViewModels.RoomIndexVM>
 @{
     ViewData["Title"] = "Quản lý phòng";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
@@ -19,11 +19,13 @@
                 <table id="add-row" class="display table table-striped table-hover">
                     <thead>
                         <tr>
+                            <th>Ảnh</th>
                             <th>Số phòng</th>
                             <th>Loại phòng</th>
                             <th>Giá/Đêm</th>
-                            <th>Sức chứa</th>
-                            <th>Diện tích</th>
+                            <th>Tiện nghi</th>
+                            <th>Tình trạng thuê</th>
+                            <th>Vận hành</th>
                             <th style="width: 10%">Thao tác</th>
                         </tr>
                     </thead>
@@ -31,11 +33,35 @@
                         @foreach (var item in Model)
                         {
                             <tr>
+                                <td>
+                                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/no-image.png" : item.ImageUrl)"
+                                         alt="Room" class="rounded" style="width: 60px; height: 45px; object-fit: cover;" />
+                                </td>
                                 <td>@item.RoomNumber</td>
-                                <td>@item.Type</td>
-                                <td>@item.PricePerNight.ToString("N0") VNĐ</td>
-                                <td>@item.Capacity người</td>
-                                <td>@item.SquareFootage m²</td>
+                                <td><span class="badge badge-info">@item.Type</span></td>
+                                <td class="fw-bold">@item.PricePerNight.ToString("N0") VNĐ</td>
+                                <td>
+                                    <div class="d-flex gap-2 text-muted">
+                                        <i class="fas fa-wifi @(item.HasWifi ? "text-primary" : "opacity-25")" title="Wifi"></i>
+                                        <i class="fas fa-utensils @(item.HasBreakfast ? "text-success" : "opacity-25")" title="Bữa sáng"></i>
+                                        <i class="fas fa-swimming-pool @(item.HasPool ? "text-info" : "opacity-25")" title="Hồ bơi"></i>
+                                        <i class="fas fa-broom @(item.HasTowel ? "text-warning" : "opacity-25")" title="Khăn tắm"></i>
+                                    </div>
+                                    <small class="text-muted">@item.Capacity người | @item.SquareFootage m²</small>
+                                </td>
+                                <td>
+                                    <span class="badge @item.StatusColor">@item.StatusLabel</span>
+                                </td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span >✓</span>
+                                    }
+                                    else
+                                    {
+                                        <span>✘</span>
+                                    }
+                                </td>
                                 <td>
                                     <div class="form-button-action">
                                         <a asp-action="Edit" asp-route-id="@item.Id"
@@ -62,11 +88,10 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            // Khởi tạo Datatable cho bảng #add-row
             $("#add-row").DataTable({
-                pageLength: 5,
+                pageLength: 10,
                 language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json' // Việt hóa bảng
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json'
                 }
             });
         });

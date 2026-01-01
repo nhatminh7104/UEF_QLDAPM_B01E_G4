@@ -1,93 +1,280 @@
 ﻿@model VillaManagementWeb.Models.Booking
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Tạo đặt phòng mới";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Create</h1>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: { primary: "#13a4ec", "background-light": "#f6f7f8", "background-dark": "#101c22" },
+                fontFamily: { display: ["Inter", "sans-serif"] },
+            },
+        },
+    }
+</script>
 
-<h4>Booking</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="RoomId" class="control-label"></label>
-                <select asp-for="RoomId" class ="form-control" asp-items="ViewBag.RoomId"></select>
+<div class="flex-1 bg-background-light p-6 lg:p-10 font-display">
+    <div class="mx-auto max-w-7xl flex flex-col gap-6">
+        
+        <form asp-action="Create" method="post" id="bookingForm">
+            <div asp-validation-summary="ModelOnly" class="text-red-500 mb-4"></div>
+
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 pb-5">
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight text-slate-900 leading-tight">Tạo Đặt Phòng Mới</h1>
+                    <p class="text-sm text-slate-500 mt-1">Thiết lập thông tin lưu trú và khách hàng.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a asp-action="Index" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:text-slate-800 transition-colors">Hủy bỏ</a>
+                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-blue-500 shadow-lg transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                        Xác nhận đặt phòng
+                    </button>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="CustomerName" class="control-label"></label>
-                <input asp-for="CustomerName" class="form-control" />
-                <span asp-validation-for="CustomerName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CustomerPhone" class="control-label"></label>
-                <input asp-for="CustomerPhone" class="form-control" />
-                <span asp-validation-for="CustomerPhone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AdultsCount" class="control-label"></label>
-                <input asp-for="AdultsCount" class="form-control" />
-                <span asp-validation-for="AdultsCount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ChildrenCount" class="control-label"></label>
-                <input asp-for="ChildrenCount" class="form-control" />
-                <span asp-validation-for="ChildrenCount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CustomerEmail" class="control-label"></label>
-                <input asp-for="CustomerEmail" class="form-control" />
-                <span asp-validation-for="CustomerEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CheckIn" class="control-label"></label>
-                <input asp-for="CheckIn" class="form-control" />
-                <span asp-validation-for="CheckIn" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CheckOut" class="control-label"></label>
-                <input asp-for="CheckOut" class="form-control" />
-                <span asp-validation-for="CheckOut" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalAmount" class="control-label"></label>
-                <input asp-for="TotalAmount" class="form-control" />
-                <span asp-validation-for="TotalAmount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PaymentMethod" class="control-label"></label>
-                <input asp-for="PaymentMethod" class="form-control" />
-                <span asp-validation-for="PaymentMethod" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <input asp-for="Notes" class="form-control" />
-                <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mt-6">
+                <div class="lg:col-span-2 flex flex-col gap-6">
+                    
+                    <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 bg-slate-50/50">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-[20px]">hotel</span>
+                                <h3 class="font-bold text-sm text-slate-900 uppercase tracking-wide">Cấu hình lưu trú</h3>
+                            </div>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold text-slate-500 mb-1.5 ml-1">CHỌN PHÒNG</label>
+                                <div class="relative group">
+                                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 group-hover:text-primary transition-colors">key</span>
+                                    <select asp-for="RoomId" asp-items="ViewBag.RoomId" class="w-full rounded-lg border-slate-200 bg-white text-slate-900 py-2.5 pl-10 pr-4 font-medium focus:border-primary focus:ring-primary shadow-sm cursor-pointer appearance-none">
+                                    </select>
+                                    <span class="material-symbols-outlined absolute right-3 top-2.5 text-slate-400 pointer-events-none">expand_more</span>
+                                </div>
+                                <span asp-validation-for="RoomId" class="text-xs text-red-500 mt-1 block"></span>
+                            </div>
+
+                            <div class="md:col-span-2 grid grid-cols-1 lg:grid-cols-3 gap-4">
+    
+                            <div class="lg:col-span-2 bg-slate-50 rounded-lg border border-slate-200 p-1 flex items-center relative">
+                                <div class="flex-1 px-3 py-1">
+                                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-0.5">Check-in</label>
+                                    <input asp-for="CheckIn" type="datetime-local" class="w-full bg-transparent border-0 p-0 text-sm font-semibold text-slate-900 focus:ring-0 cursor-pointer min-w-0" id="CheckIn" />
+                                </div>
+                                
+                                <div class="w-px h-8 bg-slate-200 mx-1 shrink-0"></div>
+                                
+                                <div class="flex-1 px-3 py-1">
+                                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-0.5">Check-out</label>
+                                    <input asp-for="CheckOut" type="datetime-local" class="w-full bg-transparent border-0 p-0 text-sm font-semibold text-slate-900 focus:ring-0 cursor-pointer min-w-0" id="CheckOut" />
+                                </div>
+                                
+                                <div id="nightBadge" class="absolute -top-2.5 right-4 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm hidden">
+                                    0 Đêm
+                                </div>
+                            </div>
+
+                            <div class="flex gap-3">
+                                <div class="flex-1 bg-white rounded-lg border border-slate-200 px-3 py-1.5 flex flex-col justify-center min-w-[100px]">
+                                    <label class="text-[10px] uppercase font-bold text-slate-400 mb-0.5">Người lớn</label>
+                                    <div class="flex items-center justify-between">
+                                        <button type="button" onclick="adjustCount('AdultsCount', -1)" class="text-slate-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">remove</span></button>
+                                        <input asp-for="AdultsCount" id="AdultsCount" class="w-8 text-center border-0 p-0 text-sm font-semibold text-slate-900 focus:ring-0" readonly />
+                                        <button type="button" onclick="adjustCount('AdultsCount', 1)" class="text-slate-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">add</span></button>
+                                    </div>
+                                </div>
+                                <div class="flex-1 bg-white rounded-lg border border-slate-200 px-3 py-1.5 flex flex-col justify-center min-w-[100px]">
+                                    <label class="text-[10px] uppercase font-bold text-slate-400 mb-0.5">Trẻ em</label>
+                                    <div class="flex items-center justify-between">
+                                        <button type="button" onclick="adjustCount('ChildrenCount', -1)" class="text-slate-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">remove</span></button>
+                                        <input asp-for="ChildrenCount" id="ChildrenCount" class="w-8 text-center border-0 p-0 text-sm font-semibold text-slate-900 focus:ring-0" readonly />
+                                        <button type="button" onclick="adjustCount('ChildrenCount', 1)" class="text-slate-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">add</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+                        </div>
+                    </section>
+
+                    <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-[20px]">person</span>
+                                <h3 class="font-bold text-sm text-slate-900 uppercase tracking-wide">Thông tin khách hàng</h3>
+                            </div>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold text-slate-500 mb-1.5 ml-1">HỌ TÊN ĐẦY ĐỦ</label>
+                                <input asp-for="CustomerName" class="w-full rounded-lg border-slate-200 bg-white text-slate-900 py-2 px-3 focus:border-primary focus:ring-primary shadow-sm" placeholder="Ví dụ: Nguyễn Văn A" />
+                                <span asp-validation-for="CustomerName" class="text-xs text-red-500"></span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1.5 ml-1">SỐ ĐIỆN THOẠI</label>
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-[18px]">call</span>
+                                    <input asp-for="CustomerPhone" class="w-full rounded-lg border-slate-200 bg-white text-slate-900 py-2 pl-9 pr-3 focus:border-primary focus:ring-primary shadow-sm" placeholder="0909 123 456" />
+                                </div>
+                                <span asp-validation-for="CustomerPhone" class="text-xs text-red-500"></span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1.5 ml-1">EMAIL</label>
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-[18px]">mail</span>
+                                    <input asp-for="CustomerEmail" class="w-full rounded-lg border-slate-200 bg-white text-slate-900 py-2 pl-9 pr-3 focus:border-primary focus:ring-primary shadow-sm" placeholder="email@example.com" />
+                                </div>
+                                <span asp-validation-for="CustomerEmail" class="text-xs text-red-500"></span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-4 border-b border-slate-100 bg-slate-50/50">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-[20px]">edit_note</span>
+                                <h3 class="font-bold text-sm text-slate-900 uppercase tracking-wide">Ghi chú nội bộ</h3>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <textarea asp-for="Notes" class="w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 py-2 px-3 focus:border-primary focus:ring-primary resize-none text-sm" placeholder="Yêu cầu đặc biệt, dị ứng, hoặc ghi chú nội bộ..." rows="3"></textarea>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <div class="sticky top-24 flex flex-col gap-6">
+                        <section class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                            <div class="p-5 bg-slate-900 text-white flex justify-between items-center">
+                                <h3 class="font-bold text-lg">Tóm tắt đơn</h3>
+                                <span class="bg-white/10 text-xs px-2 py-1 rounded font-medium">Draft</span>
+                            </div>
+                            <div class="p-5 flex flex-col gap-5">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-2 ml-1 uppercase">Trạng thái</label>
+                                    <div class="bg-slate-100 p-1 rounded-lg flex text-xs font-semibold">
+                                        <input type="hidden" asp-for="Status" id="StatusInput" value="Confirmed" />
+                                        
+                                        <div onclick="setStatus('Confirmed')" id="btnConfirmed" class="flex-1 cursor-pointer text-center py-2 rounded-md bg-white text-green-600 shadow-sm transition-all flex items-center justify-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]">check</span> Confirmed
+                                        </div>
+                                        <div onclick="setStatus('Pending')" id="btnPending" class="flex-1 cursor-pointer text-center py-2 rounded-md text-slate-500 transition-all">
+                                            Pending
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-2 ml-1 uppercase">Thanh toán</label>
+                                    <div class="relative">
+                                        <select asp-for="PaymentMethod" class="w-full rounded-lg border-slate-200 bg-white/50 text-slate-900 py-2 px-3 text-sm focus:border-primary focus:ring-primary appearance-none">
+                                            <option value="Credit Card">Thẻ tín dụng</option>
+                                            <option value="Cash">Tiền mặt</option>
+                                            <option value="Transfer">Chuyển khoản</option>
+                                        </select>
+                                        <span class="material-symbols-outlined absolute right-3 top-2 text-slate-400 pointer-events-none text-sm">expand_more</span>
+                                    </div>
+                                </div>
+
+                                <div class="rounded-lg bg-slate-50 p-4 border border-slate-100 space-y-3">
+                                    <div class="flex justify-between text-sm text-slate-600">
+                                        <span id="nightCountLabel">0 Đêm</span>
+                                        <span class="font-medium" id="roomPriceLabel">0 ₫</span>
+                                    </div>
+                                    <div class="border-t border-slate-200 border-dashed"></div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-bold text-slate-900">Tổng cộng</span>
+                                        <input asp-for="TotalAmount" id="TotalAmount" class="text-right font-bold text-xl text-primary bg-transparent border-0 focus:ring-0 p-0 w-32" />
+                                    </div>
+                                    <div class="pt-2 flex justify-end">
+                                        <button type="button" class="text-[10px] font-bold uppercase text-slate-400 hover:text-primary flex items-center gap-1 transition-colors">
+                                            <span class="material-symbols-outlined text-[12px]">edit</span> Sửa giá thủ công
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 px-5 py-4 border-t border-slate-100">
+                                <button type="submit" class="w-full py-2.5 bg-primary hover:bg-blue-600 text-white text-sm font-bold uppercase tracking-wide rounded-lg shadow-sm transition-all flex items-center justify-center gap-2">
+                                    Tạo đơn đặt phòng
+                                </button>
+                            </div>
+                        </section>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Logic tính toán ngày và tiền
+        const checkInInput = document.getElementById('CheckIn');
+        const checkOutInput = document.getElementById('CheckOut');
+        const totalAmountInput = document.getElementById('TotalAmount');
+        const nightBadge = document.getElementById('nightBadge');
+        const nightCountLabel = document.getElementById('nightCountLabel');
+        const statusInput = document.getElementById('StatusInput');
+
+        // Giả định giá phòng mặc định (Bạn nên lấy từ dropdown Room nếu có data-price)
+        const DEFAULT_PRICE_PER_NIGHT = 2000000; 
+
+        function calculateTotal() {
+            const d1 = new Date(checkInInput.value);
+            const d2 = new Date(checkOutInput.value);
+
+            if (d1 && d2 && d2 > d1) {
+                const diffTime = Math.abs(d2 - d1);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                
+                // Cập nhật UI
+                nightBadge.innerText = `${diffDays} Đêm`;
+                nightBadge.classList.remove('hidden');
+                nightCountLabel.innerText = `${diffDays} Đêm x ${DEFAULT_PRICE_PER_NIGHT.toLocaleString()}đ`;
+                
+                // Tính tiền
+                const total = diffDays * DEFAULT_PRICE_PER_NIGHT;
+                totalAmountInput.value = total;
+            } else {
+                nightBadge.classList.add('hidden');
+                nightCountLabel.innerText = "0 Đêm";
+                totalAmountInput.value = 0;
+            }
+        }
+
+        checkInInput.addEventListener('change', calculateTotal);
+        checkOutInput.addEventListener('change', calculateTotal);
+
+        // Logic tăng giảm số lượng
+        function adjustCount(id, delta) {
+            const input = document.getElementById(id);
+            let val = parseInt(input.value) || 0;
+            val += delta;
+            if (val < 0) val = 0;
+            input.value = val;
+        }
+
+        // Logic chọn trạng thái (Radio giả lập)
+        function setStatus(status) {
+            statusInput.value = status;
+            const btnConfirmed = document.getElementById('btnConfirmed');
+            const btnPending = document.getElementById('btnPending');
+
+            if (status === 'Confirmed') {
+                btnConfirmed.className = "flex-1 cursor-pointer text-center py-2 rounded-md bg-white text-green-600 shadow-sm transition-all flex items-center justify-center gap-1";
+                btnPending.className = "flex-1 cursor-pointer text-center py-2 rounded-md text-slate-500 transition-all";
+            } else {
+                btnPending.className = "flex-1 cursor-pointer text-center py-2 rounded-md bg-white text-amber-500 shadow-sm transition-all";
+                btnConfirmed.className = "flex-1 cursor-pointer text-center py-2 rounded-md text-slate-500 transition-all";
+            }
+        }
+    </script>
 }
