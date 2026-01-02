@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using VillaManagementWeb.Models;
@@ -6,7 +7,6 @@ using VillaManagementWeb.ViewModels;
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
     public class AccountController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -31,7 +31,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             var user = new User
             {
                 Email = model.Email,
-                UserName = model.Email,   // ⚠️ Identity bắt buộc phải có UserName
+                UserName = model.Email,
                 FullName = model.FullName
             };
 
@@ -39,9 +39,9 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, "User");
+                await _userManager.AddToRoleAsync(user, "Admin");
                 await _signInManager.SignInAsync(user, false);
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
             }
 
             foreach (var error in result.Errors)
@@ -66,7 +66,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             );
 
             if (result.Succeeded)
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
 
             ModelState.AddModelError("", "Invalid login");
             return View(model);

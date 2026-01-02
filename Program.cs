@@ -21,6 +21,16 @@ builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 // Identity
 builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<VillaDbContext>().AddDefaultTokenProviders();
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;              // Không cần số
+    options.Password.RequireLowercase = false;          // Không cần chữ thường
+    options.Password.RequireUppercase = false;          // Không cần chữ hoa
+    options.Password.RequireNonAlphanumeric = false;    // Không cần ký tự đặc biệt
+    options.Password.RequiredLength = 3;                // Đặt tối thiểu 3 ký tự cũng được
+    options.Password.RequiredUniqueChars = 1;           // Số ký tự khác nhau tối thiểu
+});
+
 
 // Cookie paths (vì Account nằm trong Admin Area)
 builder.Services.ConfigureApplicationCookie(options =>
@@ -32,13 +42,19 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-// Seed Role
+// Seed Roles
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    string[] roles = { "Admin", "User" };
 
-    if (!await roleManager.RoleExistsAsync("Admin"))
-        await roleManager.CreateAsync(new IdentityRole("Admin"));
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
 }
 
 // Pipeline

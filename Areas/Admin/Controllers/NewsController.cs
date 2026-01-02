@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -71,7 +71,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                         // Validate file
                         const long maxFileSize = 5 * 1024 * 1024; // 5MB
                         var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif" };
-                        
+
                         string? fileExtension = Path.GetExtension(imageFile.FileName)?.ToLowerInvariant();
                         if (string.IsNullOrEmpty(fileExtension) || !allowedExtensions.Contains(fileExtension))
                         {
@@ -88,7 +88,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                         // Save file
                         string wwwRootPath = _hostEnvironment.WebRootPath;
                         string newsPath = Path.Combine(wwwRootPath, "images", "news");
-                        
+
                         if (!Directory.Exists(newsPath))
                         {
                             Directory.CreateDirectory(newsPath);
@@ -167,7 +167,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                         // Validate file
                         const long maxFileSize = 5 * 1024 * 1024; // 5MB
                         var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif" };
-                        
+
                         string? fileExtension = Path.GetExtension(imageFile.FileName)?.ToLowerInvariant();
                         if (string.IsNullOrEmpty(fileExtension) || !allowedExtensions.Contains(fileExtension))
                         {
@@ -184,7 +184,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                         // Save file
                         string wwwRootPath = _hostEnvironment.WebRootPath;
                         string newsPath = Path.Combine(wwwRootPath, "images", "news");
-                        
+
                         if (!Directory.Exists(newsPath))
                         {
                             Directory.CreateDirectory(newsPath);
