@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VillaManagementWeb.Data;
 using VillaManagementWeb.Models;
+using VillaManagementWeb.Services.Interfaces;
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
@@ -14,17 +16,17 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class ToursController : Controller
     {
-        private readonly VillaDbContext _context;
+        private readonly ITourService _tourService;
 
-        public ToursController(VillaDbContext context)
+        public ToursController(ITourService tourService)
         {
-            _context = context;
+            _tourService = tourService;
         }
 
         // GET: Admin/Tours
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tours.ToListAsync());
+            return View(await _tourService.GetAllToursAsync());
         }
 
         // GET: Admin/Tours/Details/5
@@ -35,8 +37,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var tour = await _context.Tours
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var tour = await _tourService.GetTourByIdAsync(id.Value);
             if (tour == null)
             {
                 return NotFound();
@@ -60,9 +61,21 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(tour);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _tourService.CreateTourAsync(tour);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (ArgumentException ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                    return View(tour);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Lỗi khi tạo tour: {ex.Message}");
+                    return View(tour);
+                }
             }
             return View(tour);
         }
@@ -75,7 +88,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var tour = await _context.Tours.FindAsync(id);
+            var tour = await _tourService.GetTourByIdAsync(id.Value);
             if (tour == null)
             {
                 return NotFound();
@@ -99,21 +112,19 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(tour);
-                    await _context.SaveChangesAsync();
+                    await _tourService.UpdateTourAsync(tour);
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (ArgumentException ex)
                 {
-                    if (!TourExists(tour.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError("", ex.Message);
+                    return View(tour);
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Lỗi khi cập nhật tour: {ex.Message}");
+                    return View(tour);
+                }
             }
             return View(tour);
         }
@@ -126,8 +137,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var tour = await _context.Tours
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var tour = await _tourService.GetTourByIdAsync(id.Value);
             if (tour == null)
             {
                 return NotFound();
@@ -141,19 +151,13 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tour = await _context.Tours.FindAsync(id);
-            if (tour != null)
+            var deleted = await _tourService.DeleteTourAsync(id);
+            if (!deleted)
             {
-                _context.Tours.Remove(tour);
+                return NotFound();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TourExists(int id)
-        {
-            return _context.Tours.Any(e => e.Id == id);
         }
     }
 }

@@ -13,6 +13,8 @@
     <link rel="icon"
           href="~/Admin-template/assets/img/kaiadmin/favicon.ico"
           type="image/x-icon" />
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
     <!-- Fonts and icons -->
     <script src="~/Admin-template/assets/js/plugin/webfont/webfont.min.js"></script>
@@ -41,6 +43,7 @@
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     @* <link rel="stylesheet" href="~/Admin-template/assets/css/demo.css" /> *@
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <div class="wrapper">
@@ -137,13 +140,27 @@
                                 </ul>
                             </div>
                         </li>
-
-                        <li class="nav-item @(currentController == "Tours" ? "active" : "")">
-                            <a asp-area="Admin" asp-controller="Tours" asp-action="Index">
-                                <i class="fas fa-map-marked-alt"></i>
-                                <p>Quản lý Tour</p>
+                        <li class="nav-item @(currentController == "Tours" || currentController == "Tours" ? "active submenu" : "")">
+                            <a data-bs-toggle="collapse" href="#toursMenu">
+                                <i class="fas fa-ticket-alt"></i>
+                                <p>Tour & Vé</p>
+                                <span class="caret"></span>
                             </a>
-                        </li>
+                            <div class="collapse @(currentController == "Tours" || currentController == "Tours" ? "show" : "")" id="toursMenu">
+                                <ul class="nav nav-collapse">
+                                    <li>
+                                        <a asp-area="Admin" asp-controller="Tours" asp-action="Index">
+                                            <span class="sub-item">Danh sách tour</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-area="Admin" asp-controller="Tourbookings" asp-action="Index">
+                                            <span class="sub-item">Quản lý vé bán</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>                        
 
                         <li class="nav-item @(currentController == "News" ? "active" : "")">
                             <a asp-area="Admin" asp-controller="News" asp-action="Index">
@@ -491,7 +508,6 @@
             <div class="page-inner">
                 @RenderBody()
             </div>
-            
         </div>
 
         <footer class="footer">

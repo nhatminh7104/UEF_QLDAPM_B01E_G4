@@ -1,55 +1,239 @@
 ﻿@model VillaManagementWeb.Models.Event
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi Tiết Sự Kiện";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Details</h1>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-<div>
-    <h4>Event</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EventDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EventDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Location)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalTickets)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalTickets)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageUrl)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<script>
+    tailwind.config = {
+        corePlugins: {
+            preflight: false,
+            visibility: false
+        },
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#13a4ec",
+                    "primary-dark": "#0b8bc9",
+                    "background-light": "#f6f7f8",
+                    "background-dark": "#101c22",
+                    "surface-light": "#ffffff",
+                    "surface-dark": "#182830",
+                    "text-main": "#0d171b",
+                    "text-secondary": "#4c809a",
+                },
+                fontFamily: {
+                    "display": ["Inter", "sans-serif"]
+                },
+            },
+        },
+    }
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+<div class="flex-1 bg-background-light dark:bg-background-dark font-display text-text-main dark:text-slate-200 p-6">
+    <div class="max-w-[1280px] mx-auto">
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <div>
+                <div class="flex items-center gap-2 text-sm mb-2">
+                    <a href="/Admin" class="text-text-secondary dark:text-slate-400 hover:text-primary transition-colors flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[18px]">home</span>
+                        Dashboard
+                    </a>
+                    <span class="text-text-secondary dark:text-slate-500">/</span>
+                    <a asp-action="Index" class="text-text-secondary dark:text-slate-400 hover:text-primary transition-colors">Sự kiện</a>
+                    <span class="text-text-secondary dark:text-slate-500">/</span>
+                    <span class="text-text-main dark:text-slate-200 font-medium">Chi tiết</span>
+                </div>
+                <h1 class="text-text-main dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">
+                    @Model.Title
+                </h1>
+            </div>
+            <div class="flex gap-3 w-full md:w-auto">
+                <a asp-action="Index" class="flex-1 md:flex-none h-10 px-4 flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-[#e7eff3] dark:border-slate-600 rounded-lg text-text-main dark:text-white font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                    Quay lại
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="flex-1 md:flex-none h-10 px-6 flex items-center justify-center gap-2 bg-primary text-white rounded-lg font-bold hover:bg-sky-500 shadow-md shadow-primary/20 transition-all">
+                    <span class="material-symbols-outlined text-[20px]">edit</span>
+                    Chỉnh sửa
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+
+            <div class="lg:col-span-4 flex flex-col gap-6">
+
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-[#e7eff3] dark:border-slate-700/50 group">
+                    <div class="relative aspect-[4/3] w-full overflow-hidden bg-slate-200">
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                                 style="background-image: url('@Model.ImageUrl');">
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="absolute inset-0 flex items-center justify-center text-slate-400">
+                                <span class="material-symbols-outlined text-6xl">image</span>
+                            </div>
+                        }
+
+                        <div class="absolute top-3 left-3">
+                            @if (Model.EventDate >= DateTime.Now)
+                            {
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 shadow-sm border border-green-200 dark:border-green-800">
+                                    <span class="w-1.5 h-1.5 mr-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                                    Sắp diễn ra
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300 shadow-sm border border-slate-200">
+                                    Đã kết thúc
+                                </span>
+                            }
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-bold text-lg text-text-main dark:text-white mb-1">@Model.Title</h3>
+                        <p class="text-sm text-text-secondary dark:text-slate-400">ID: #EVT-@Model.Id</p>
+                    </div>
+                </div>
+
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-5 shadow-sm border border-[#e7eff3] dark:border-slate-700/50">
+                    <h4 class="text-sm font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider mb-4">Thông kê vé</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-3 rounded-lg bg-[#f0f9ff] dark:bg-sky-900/20 border border-sky-100 dark:border-sky-800/30">
+                            <p class="text-xs text-text-secondary dark:text-sky-300 mb-1">Tổng phát hành</p>
+                            <p class="text-2xl font-bold text-primary">@Model.TotalTickets</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                            <p class="text-xs text-text-secondary dark:text-slate-400 mb-1">Đã bán</p>
+                            <p class="text-2xl font-bold text-text-main dark:text-white">--</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 pt-5 border-t border-slate-100 dark:border-slate-700">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-text-main dark:text-slate-300 font-medium">Tiến độ phát hành</span>
+                            <span class="text-sm text-primary font-bold">100%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2.5">
+                            <div class="bg-primary h-2.5 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-5 shadow-sm border border-[#e7eff3] dark:border-slate-700/50 flex flex-col gap-3">
+                    <a asp-controller="Tickets" asp-action="Index" class="w-full py-2.5 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-text-main dark:text-white rounded-lg font-medium hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[20px]">confirmation_number</span>
+                        Xem danh sách vé
+                    </a>
+                </div>
+            </div>
+
+            <div class="lg:col-span-8 flex flex-col gap-6">
+
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-6 md:p-8 shadow-sm border border-[#e7eff3] dark:border-slate-700/50">
+                    <div class="flex justify-between items-start mb-6">
+                        <h2 class="text-xl font-bold text-text-main dark:text-white">Thông tin tổng quan</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
+                        <div class="flex gap-4">
+                            <div class="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                <span class="material-symbols-outlined">calendar_month</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-secondary dark:text-slate-400 mb-1">Ngày tổ chức</p>
+                                <p class="text-base font-semibold text-text-main dark:text-white">
+                                    @Model.EventDate.ToString("dd/MM/yyyy")
+                                </p>
+                                <p class="text-xs text-text-secondary dark:text-slate-500 mt-1">
+                                    @Model.EventDate.ToString("dddd")
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                <span class="material-symbols-outlined">schedule</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-secondary dark:text-slate-400 mb-1">Thời gian</p>
+                                <p class="text-base font-semibold text-text-main dark:text-white">
+                                    @Model.EventDate.ToString("HH:mm")
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                <span class="material-symbols-outlined">location_on</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-secondary dark:text-slate-400 mb-1">Địa điểm</p>
+                                <p class="text-base font-semibold text-text-main dark:text-white">
+                                    @(Model.Location ?? "Chưa cập nhật")
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                <span class="material-symbols-outlined">badge</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-text-secondary dark:text-slate-400 mb-1">Người tổ chức</p>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-base font-semibold text-text-main dark:text-white">Admin Team</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-6 md:p-8 shadow-sm border border-[#e7eff3] dark:border-slate-700/50 flex-1">
+                    <h2 class="text-xl font-bold text-text-main dark:text-white mb-4">Giới thiệu sự kiện</h2>
+                    <div class="prose prose-slate dark:prose-invert max-w-none text-text-secondary dark:text-slate-300 leading-relaxed">
+                        @if (!string.IsNullOrEmpty(Model.Description))
+                        {
+                            @Html.Raw(Model.Description.Replace("\n", "<br>"))
+                        }
+                        else
+                        {
+                            <p class="italic text-slate-400">Chưa có mô tả cho sự kiện này.</p>
+                        }
+                    </div>
+                </div>
+
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-[#e7eff3] dark:border-slate-700/50">
+                    <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                        <h3 class="font-bold text-text-main dark:text-white">Hoạt động gần đây</h3>
+                    </div>
+                    <div class="divide-y divide-slate-100 dark:divide-slate-700">
+                        <div class="flex items-center gap-3 px-6 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                            <div class="size-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+                                <span class="material-symbols-outlined text-[16px]">edit</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-text-main dark:text-white truncate">Sự kiện đã được tạo</p>
+                                <p class="text-xs text-text-secondary dark:text-slate-500">Bởi Admin System</p>
+                            </div>
+                            <span class="text-xs text-text-secondary dark:text-slate-500 whitespace-nowrap">@Model.EventDate.ToString("dd/MM/yyyy")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

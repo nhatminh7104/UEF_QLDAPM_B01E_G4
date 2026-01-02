@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using VillaManagementWeb.Data;
 using Microsoft.AspNetCore.Identity;
 using VillaManagementWeb.Models;
+using VillaManagementWeb.Repositories.Implementations;
+using VillaManagementWeb.Services.Implementations;
+using VillaManagementWeb.Repositories.Interfaces;
+using VillaManagementWeb.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,9 +20,26 @@ builder.Services.Configure<FormOptions>(options =>
     options.MultipartBodyLengthLimit = 104857600;   // 100MB
 });
 
+// Register Repositories
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<INewsRepository, NewsRepository>();
+builder.Services.AddScoped<ITourRepository, TourRepository>();
+builder.Services.AddScoped<ITourBookingRepository, TourBookingRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 // MVC + Runtime Compilation
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
+// Register Services
+builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<INewsService, NewsService>();
+builder.Services.AddScoped<ITourService, TourService>();
+builder.Services.AddScoped<ITourBookingService, TourBookingService>();
+builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 // Identity
 builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<VillaDbContext>().AddDefaultTokenProviders();
 

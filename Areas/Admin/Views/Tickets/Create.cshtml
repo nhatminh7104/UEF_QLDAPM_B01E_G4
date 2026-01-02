@@ -1,73 +1,238 @@
 ﻿@model VillaManagementWeb.Models.Ticket
 
 @{
-    ViewData["Title"] = "Create";
-    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Tạo Mới Vé";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout_Tailwind.cshtml";
 }
+<script>
+    window.tailwind = {
+        config: {
+            corePlugins: {
+                preflight: false, 
+                visibility: false,
+            },
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13a4ec",
+                        "primary-dark": "#0b8bc9",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101c22",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#182830",
+                        "text-main": "#0d171b",
+                        "text-secondary": "#4c809a",
+                        "border-light": "#e7eff3",
+                        "border-dark": "#2a3e4b",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                    },
+                },
+            },
+        }
+    }
+</script>
 
-<h1>Create</h1>
+<div class="flex-1 bg-background-light dark:bg-background-dark p-6 lg:p-8 font-body text-text-main dark:text-white">
+    <div class="mx-auto max-w-7xl">
+        <div class="flex items-center gap-2 mb-6 text-sm">
+            <a href="/Admin" class="text-text-secondary hover:text-primary transition-colors font-medium">Dashboard</a>
+            <span class="text-text-secondary font-medium">/</span>
+            <a asp-action="Index" class="text-text-secondary hover:text-primary transition-colors font-medium">Tickets</a>
+            <span class="text-text-secondary font-medium">/</span>
+            <span class="text-text-main dark:text-white font-semibold">New Ticket</span>
+        </div>
 
-<h4>Ticket</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="EventId" class="control-label"></label>
-                <select asp-for="EventId" class ="form-control" asp-items="ViewBag.EventId"></select>
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl sm:text-4xl font-black tracking-tight mb-2">Tạo Mới Vé</h1>
+                <p class="text-text-secondary dark:text-slate-400 text-base max-w-2xl">
+                    Tạo bản ghi vé mới cho sự kiện sắp tới. Vui lòng đảm bảo thông tin chính xác trước khi phát hành.
+                </p>
             </div>
-            <div class="form-group">
-                <label asp-for="TicketType" class="control-label"></label>
-                <input asp-for="TicketType" class="form-control" />
-                <span asp-validation-for="TicketType" class="text-danger"></span>
+            <div class="flex gap-3">
+                <a asp-action="Index" class="px-4 py-2 text-sm font-medium text-text-secondary dark:text-slate-300 bg-white dark:bg-slate-800 border border-border-light dark:border-border-dark rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center justify-center">
+                    Hủy bỏ
+                </a>
             </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <form asp-action="Create" method="post" id="createTicketForm">
+            <div asp-validation-summary="ModelOnly" class="text-red-500 mb-4 text-sm font-medium"></div>
+
+            @* QRCode sẽ được sinh tự động ở Backend hoặc dùng JS, ở đây đặt placeholder để pass validation nếu cần *@
+            <input type="hidden" asp-for="QRCode" value="AUTO-GENERATED" />
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+                <div class="lg:col-span-2 space-y-6">
+
+                    <section class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
+                        <div class="px-6 py-4 border-b border-border-light dark:border-border-dark flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-[24px]">confirmation_number</span>
+                            <h2 class="text-lg font-bold">Chi tiết Sự kiện & Vé</h2>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-semibold mb-2">Sự kiện <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <select asp-for="EventId" asp-items="ViewBag.EventId" class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-slate-800 px-4 pr-10 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none appearance-none transition-all cursor-pointer">
+                                        <option disabled selected value="">-- Chọn sự kiện --</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-text-secondary">
+                                        <span class="material-symbols-outlined text-[20px]">expand_more</span>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="EventId" class="text-xs text-red-500 mt-1 block"></span>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Loại vé <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <select asp-for="TicketType" class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-slate-800 px-4 pr-10 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none appearance-none transition-all cursor-pointer">
+                                        <option value="Standard">Standard</option>
+                                        <option value="VIP">VIP Access</option>
+                                        <option value="EarlyBird">Early Bird</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-text-secondary">
+                                        <span class="material-symbols-outlined text-[20px]">expand_more</span>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="TicketType" class="text-xs text-red-500 mt-1 block"></span>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Giá vé <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                                        <span class="text-text-secondary font-medium">VND</span>
+                                    </div>
+                                    <input asp-for="Price" type="number" class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-slate-800 pl-14 pr-4 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-medium" placeholder="0" />
+                                </div>
+                                <span asp-validation-for="Price" class="text-xs text-red-500 mt-1 block"></span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
+                        <div class="px-6 py-4 border-b border-border-light dark:border-border-dark flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-[24px]">person</span>
+                            <h2 class="text-lg font-bold">Thông tin Khách hàng</h2>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Email khách hàng <span class="text-red-500">*</span></label>
+                                <div class="relative group">
+                                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-text-secondary group-focus-within:text-primary transition-colors">
+                                        <span class="material-symbols-outlined text-[20px]">mail</span>
+                                    </div>
+                                    <input asp-for="CustomerEmail" type="email" class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-slate-800 pl-11 pr-4 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="customer@example.com" />
+                                </div>
+                                <span asp-validation-for="CustomerEmail" class="text-xs text-red-500 mt-1 block"></span>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Tên khách hàng <span class="text-red-500">*</span></label>
+                                <div class="relative group">
+                                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-text-secondary group-focus-within:text-primary transition-colors">
+                                        <span class="material-symbols-outlined text-[20px]">badge</span>
+                                    </div>
+                                    <input asp-for="CustomerName" type="text" class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-slate-800 pl-11 pr-4 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="Họ và tên" />
+                                </div>
+                                <span asp-validation-for="CustomerName" class="text-xs text-red-500 mt-1 block"></span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="lg:col-span-1 space-y-6">
+                    <section class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden flex flex-col h-full">
+                        <div class="px-6 py-4 border-b border-border-light dark:border-border-dark flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-[24px]">calendar_month</span>
+                            <h2 class="text-lg font-bold">Chi tiết Đặt vé</h2>
+                        </div>
+                        <div class="p-6 space-y-6 flex-1">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Ngày đặt</label>
+                                <div class="relative">
+                                    <input asp-for="BookingDate" type="date" class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-slate-800 px-4 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                </div>
+                                <span asp-validation-for="BookingDate" class="text-xs text-red-500 mt-1 block"></span>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Số lượng</label>
+                                <div class="flex items-center rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-slate-800 overflow-hidden h-12">
+                                    <button type="button" onclick="adjustQuantity(-1)" class="px-4 h-full hover:bg-slate-200 dark:hover:bg-slate-700 text-text-secondary transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]">remove</span>
+                                    </button>
+                                    <input asp-for="Quantity" id="ticketQuantity" type="number" class="w-full h-full bg-transparent text-center border-none focus:ring-0 font-medium appearance-none" value="1" min="1" />
+                                    <button type="button" onclick="adjustQuantity(1)" class="px-4 h-full hover:bg-slate-200 dark:hover:bg-slate-700 text-text-secondary transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]">add</span>
+                                    </button>
+                                </div>
+                                <span asp-validation-for="Quantity" class="text-xs text-red-500 mt-1 block"></span>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Mã QR</label>
+                                <div class="p-4 border border-dashed border-border-light dark:border-slate-600 rounded-lg bg-background-light dark:bg-slate-800/50 flex flex-col items-center justify-center gap-3 text-center">
+                                    <div class="size-24 bg-white p-2 rounded shadow-sm flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-4xl text-slate-300">qr_code_2</span>
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <span class="text-xs text-text-secondary">Tự động tạo sau khi lưu</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="border-border-light dark:border-border-dark" />
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-semibold">Trạng thái: Đã sử dụng</span>
+                                    <span class="text-xs text-text-secondary">Đánh dấu nếu vé đã được dùng</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input asp-for="IsUsed" type="checkbox" class="sr-only peer" />
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 dark:peer-focus:ring-primary/30 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="p-6 bg-slate-50 dark:bg-slate-800/50 border-t border-border-light dark:border-border-dark hidden lg:flex flex-col gap-3">
+                            <button type="submit" class="w-full h-12 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined">add_circle</span>
+                                Tạo Vé Mới
+                            </button>
+                            <a asp-action="Index" class="w-full h-10 flex items-center justify-center text-sm text-text-secondary hover:text-text-main dark:text-slate-400 dark:hover:text-white font-medium transition-colors">
+                                Quay lại danh sách
+                            </a>
+                        </div>
+                    </section>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="CustomerEmail" class="control-label"></label>
-                <input asp-for="CustomerEmail" class="form-control" />
-                <span asp-validation-for="CustomerEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CustomerName" class="control-label"></label>
-                <input asp-for="CustomerName" class="form-control" />
-                <span asp-validation-for="CustomerName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
-                <span asp-validation-for="Quantity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BookingDate" class="control-label"></label>
-                <input asp-for="BookingDate" class="form-control" />
-                <span asp-validation-for="BookingDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="QRCode" class="control-label"></label>
-                <input asp-for="QRCode" class="form-control" />
-                <span asp-validation-for="QRCode" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsUsed" /> @Html.DisplayNameFor(model => model.IsUsed)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <div class="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-surface-dark border-t border-border-light dark:border-border-dark z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+                <button type="submit" class="w-full h-12 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">add_circle</span>
+                    Tạo Vé Mới
+                </button>
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function adjustQuantity(amount) {
+            const input = document.getElementById('ticketQuantity');
+            let currentVal = parseInt(input.value) || 0;
+            let newVal = currentVal + amount;
+            if (newVal < 1) newVal = 1; // Minimum 1
+            input.value = newVal;
+        }
+    </script>
 }

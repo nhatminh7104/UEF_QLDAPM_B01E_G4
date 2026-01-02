@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using VillaManagementWeb.Services.Interfaces;
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
@@ -6,9 +8,17 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class DashboardController : Controller
     {
-        public IActionResult Index()
+        private readonly IDashboardService _dashboardService;
+
+        public DashboardController(IDashboardService dashboardService)
         {
-            return View();
+            _dashboardService = dashboardService;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var viewModel = await _dashboardService.GetDashboardDataAsync();
+            return View(viewModel);
         }
     }
 }
