@@ -1,0 +1,44 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            important: '#tw-scope', // Chỉ tác động trong thẻ main có id="tw-scope"
+            corePlugins: {
+                preflight: false, // Tắt reset CSS để không hỏng Bootstrap của Navbar
+            },
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'serif-display': ['Playfair Display', 'serif'],
+                        'sans-body': ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        'gold': '#A67C52', // Màu vàng đồng
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+}
+
+@RenderBody()

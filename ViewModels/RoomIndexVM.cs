@@ -6,11 +6,15 @@ namespace VillaManagementWeb.ViewModels
         public int Id { get; set; }
         public string RoomNumber { get; set; } = null!;
         public string Type { get; set; } = null!;
+        public string Category { get; set; } = null!;
         public decimal PricePerNight { get; set; }
         public int Capacity { get; set; }
         public int RatingStars { get; set; }
         public bool IsActive { get; set; }
         public string? Description { get; set; }
+        public int Bedrooms { get; set; }          // Số phòng ngủ (VD: 1, 2)
+        public int Beds { get; set; }              // Số giường (VD: 1, 2, 3)
+        public int CapacityChildren { get; set; }  // Số trẻ em tối đa
         public string? ImageUrl { get; set; }
         public double? SquareFootage { get; set; }
         public bool HasWifi { get; set; }

@@ -13,7 +13,7 @@ using VillaManagementWeb.Services.Interfaces;
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class EventsController : Controller
     {
         private readonly IEventService _eventService;

@@ -188,3 +188,38 @@ body {
         transform: translate3d(0, 0, 0);
     }
 }
+/* CSS để menu tự xổ xuống khi hover trên Desktop */
+@media all and (min-width: 992px) {
+    .navbar .nav-item .dropdown-menu {
+        display: none;
+    }
+
+    .navbar .nav-item:hover .dropdown-menu {
+        display: block;
+    }
+
+    .navbar .nav-item .dropdown-menu {
+        margin-top: 0;
+    }
+}
+
+/* Tùy chỉnh giao diện Dropdown cho đẹp hơn */
+.dropdown-menu {
+    background-color: rgba(0, 0, 0, 0.8); /* Nền tối mờ */
+    border: none;
+    border-radius: 0;
+}
+
+.dropdown-item {
+    color: #fff !important; /* Chữ trắng */
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+    .dropdown-item:hover {
+        background-color: #A0734F; /* Màu vàng đồng khi hover */
+        color: #fff;
+        padding-left: 25px; /* Hiệu ứng đẩy chữ sang phải */
+    }
