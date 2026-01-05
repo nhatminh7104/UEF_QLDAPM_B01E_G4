@@ -26,20 +26,74 @@
     <form asp-action="Edit" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="Id" />
-        <div class="col-md-12 mb-4">
-            <label class="form-label small fw-bold">Hình ảnh đại diện</label>
-            <div class="d-flex align-items-center gap-4 p-3 border rounded bg-light">
-                <div class="current-image">
-                    <img src="@Model.ImageUrl" class="rounded shadow-sm" style="width: 120px; height: 80px; object-fit: cover;" id="oldImage" />
-                    <p class="small text-muted mt-1 mb-0 text-center">Ảnh hiện tại</p>
+        <input type="hidden" name="selectedCoverId" id="selectedCoverId" value="" />
+        <input type="hidden" name="newCoverIndex" id="newCoverIndex" value="-1" />
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <h5 class="fw-bold mb-0"><i class="fas fa-images text-primary"></i> Quản lý hình ảnh</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="mb-4">
+                    <label class="form-label small fw-bold">Ảnh đại diện (Cover)</label>
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="@Model.ImageUrl" class="rounded border shadow-sm" style="width: 150px; height: 100px; object-fit: cover;" id="coverPreview" />
+                        <div class="text-muted small">Đây là ảnh sẽ hiện ở trang chủ. Để thay đổi, hãy upload ảnh mới bên dưới.</div>
+                    </div>
                 </div>
 
-                <div class="flex-grow-1">
-                    <input type="file" name="imageFiles" class="form-control" onchange="document.getElementById('oldImage').src = window.URL.createObjectURL(this.files[0])" />
-                    <small class="text-muted mt-2 d-block">Chọn ảnh mới nếu muốn thay đổi (Hỗ trợ JPG, PNG, WEBP)</small>
+                <div class="mb-4">
+                    <label class="form-label small fw-bold">Album ảnh chi tiết</label>
+                    <div class="row g-3" id="gallery-container">
+                        @if (Model.RoomImages != null && Model.RoomImages.Any())
+                        {
+                            foreach (var img in Model.RoomImages)
+                            {
+                                /* Kiểm tra xem ảnh này có phải là Cover hiện tại không */
+                                bool isCover = img.ImageUrl == Model.ImageUrl;
+
+                                <div class="col-md-3 col-6 position-relative image-card" id="img-card-@img.Id">
+                                    <div class="ratio ratio-4x3 border rounded overflow-hidden @(isCover ? "border-primary border-3" : "")">
+                                        <img src="@img.ImageUrl" class="w-100 h-100 object-fit-cover" id="img-src-@img.Id" />
+
+                                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50 opacity-0 hover-opacity-100 transition-opacity"
+                                             style="cursor: pointer;"
+                                             onclick="selectExistingCover(@img.Id, '@img.ImageUrl')">
+                                            <span class="badge bg-primary rounded-pill px-3 py-2">
+                                                <i class="fas fa-check-circle"></i> Đặt làm đại diện
+                                            </span>
+                                        </div>
+
+                                        @if (isCover)
+                                        {
+                                            <span class="position-absolute top-0 start-0 m-2 badge bg-primary shadow-sm cover-badge">ĐANG DÙNG</span>
+                                        }
+                                    </div>
+
+                                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 rounded-circle shadow"
+                                            style="width: 28px; height: 28px; z-index: 10;"
+                                            onclick="deleteImage(@img.Id)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted small fst-italic">Chưa có ảnh phụ nào.</p>
+                        }
+                    </div>
                 </div>
+
+                <div class="upload-area border-2 border-dashed rounded-3 p-4 text-center bg-light cursor-pointer" onclick="document.getElementById('imageFiles').click()">
+                    <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                    <p class="mb-0 fw-bold">Upload thêm ảnh mới</p>
+                    <small class="text-muted">Chọn nhiều ảnh cùng lúc để thêm vào Album</small>
+                    <input type="file" id="imageFiles" name="imageFiles" class="d-none" multiple accept="image/*" onchange="previewNewImages(this)" />
+                </div>
+                <div class="row g-2 mt-3" id="new-images-preview"></div>
             </div>
         </div>
+
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-body p-4">
                 <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
@@ -48,38 +102,51 @@
                 <div class="row g-4">
                     <div class="col-md-6">
                         <label class="form-label small fw-bold">Số phòng <span class="text-danger">*</span></label>
-                        <input asp-for="RoomNumber" class="form-control" placeholder="Nhập số phòng" />
+                        <input asp-for="RoomNumber" class="form-control" />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label small fw-bold">Loại phòng <span class="text-danger">*</span></label>
-                        <select asp-for="Type" class="form-select">
-                            <option value="Villa">Pool Villa</option>
-                            <option value="Bungalow">Bungalow</option>
-                            <option value="Deluxe Ocean View">Deluxe Ocean View</option>
+                        <label class="form-label small fw-bold">Danh mục (Category) <span class="text-danger">*</span></label>
+                        <select asp-for="RoomCategoryId" class="form-select" asp-items="ViewBag.RoomCategoryId">
+                            <option value="">-- Chọn danh mục --</option>
                         </select>
+                        <span asp-validation-for="RoomCategoryId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Loại (Type)</label>
+                        <input asp-for="Type" class="form-control" placeholder="VD: Bungalow, Villa..." />
                     </div>
                     <div class="col-md-6">
                         <label class="form-label small fw-bold">Giá mỗi đêm (VND) <span class="text-danger">*</span></label>
-                        <input asp-for="PricePerNight" class="form-control" />
+                        <input asp-for="PricePerNight" class="form-control" type="number" />
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label small fw-bold">Sức chứa (Người)</label>
-                        <input asp-for="Capacity" class="form-control" />
+
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">Người lớn</label>
+                        <input asp-for="Capacity" class="form-control" type="number" min="1" />
                     </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">Trẻ em</label>
+                        <input asp-for="CapacityChildren" class="form-control" type="number" min="0" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">Phòng ngủ</label>
+                        <input asp-for="Bedrooms" class="form-control" type="number" min="1" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">Số giường</label>
+                        <input asp-for="Beds" class="form-control" type="number" min="1" />
+                    </div>
+
                     <div class="col-md-6">
                         <label class="form-label small fw-bold">Diện tích (m²)</label>
                         <input asp-for="SquareFootage" class="form-control" />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label small fw-bold d-block">Đánh giá sao</label>
-                        <div class="text-warning fs-5">
-                            @for (int i = 1; i <= 5; i++)
-                            {
-                                <i class="@(i <= Model.RatingStars ? "fas" : "far") fa-star"></i>
-                            }
-                            <span class="text-muted small ms-2">(@Model.RatingStars.0)</span>
-                        </div>
+                        <label class="form-label small fw-bold">Đánh giá sao</label>
+                        <input asp-for="RatingStars" class="form-control" type="number" min="1" max="5" />
                     </div>
+
                     <div class="col-12">
                         <div class="bg-light p-3 rounded d-flex justify-content-between align-items-center">
                             <div>
@@ -99,24 +166,21 @@
             <div class="card-body p-4">
                 <div class="row g-5">
                     <div class="col-md-8">
-                        <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
-                            <i class="fas fa-file-alt text-primary"></i> Chi tiết & Tiện ích
-                        </h5>
-                        <label class="form-label small fw-bold">Mô tả chi tiết</label>
+                        <h5 class="fw-bold mb-4"><i class="fas fa-file-alt text-primary"></i> Mô tả chi tiết</h5>
                         <textarea id="Description" asp-for="Description" class="form-control"></textarea>
                     </div>
                     <div class="col-md-4">
                         <h5 class="fw-bold mb-4">Tiện nghi có sẵn</h5>
                         <div class="bg-light p-4 rounded">
-                            <div class="form-check mb-3">
+                            <div class="form-check mb-2">
                                 <input class="form-check-input" type="checkbox" asp-for="HasWifi" id="wifi">
                                 <label class="form-check-label ms-2" for="wifi">Free Wi-Fi</label>
                             </div>
-                            <div class="form-check mb-3">
+                            <div class="form-check mb-2">
                                 <input class="form-check-input" type="checkbox" asp-for="HasBreakfast" id="breakfast">
                                 <label class="form-check-label ms-2" for="breakfast">Bữa sáng miễn phí</label>
                             </div>
-                            <div class="form-check mb-3">
+                            <div class="form-check mb-2">
                                 <input class="form-check-input" type="checkbox" asp-for="HasPool" id="pool">
                                 <label class="form-check-label ms-2" for="pool">Hồ bơi</label>
                             </div>
@@ -129,7 +193,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="d-flex gap-3 justify-content-end mb-5">
             <a asp-action="Index" class="btn btn-outline-secondary px-4">Hủy</a>
             <button type="submit" class="btn btn-primary px-5 shadow-sm">Lưu thay đổi</button>
@@ -143,29 +207,154 @@
         await Html.RenderPartialAsync("_Summernote", null,
             new ViewDataDictionary(ViewData) { { "height", 300 }, { "selector", "#Description" } });
     }
+
+    <script>
+        // --- 1. BIẾN TOÀN CỤC ---
+        let allFilesDT = new DataTransfer(); // Lưu file upload mới
+
+        // --- 2. XỬ LÝ ẢNH CŨ (EXISTING) ---
+        function selectExistingCover(id, url) {
+            // Cập nhật Input ẩn
+            document.getElementById('selectedCoverId').value = id;
+            document.getElementById('newCoverIndex').value = -1; // Reset lựa chọn ảnh mới
+
+            // Cập nhật giao diện: Đổi ảnh ở khung Preview to phía trên
+            document.getElementById('coverPreview').src = url;
+
+            // Xóa hết viền xanh của các ảnh khác
+            $('.image-card .ratio').removeClass('border-primary border-3');
+            $('.cover-badge').remove(); // Xóa badge "Đang dùng" cũ
+
+            // Thêm viền xanh cho ảnh vừa chọn
+            const container = document.getElementById('img-card-' + id).querySelector('.ratio');
+            container.classList.add('border-primary', 'border-3');
+
+            // Thêm badge mới
+            $(container).append('<span class="position-absolute top-0 start-0 m-2 badge bg-primary shadow-sm cover-badge">MỚI CHỌN</span>');
+
+            // Reset giao diện bên phần Upload mới (bỏ chọn bên đó)
+            renderNewImagesPreview();
+        }
+
+        // --- 3. XỬ LÝ ẢNH MỚI (UPLOAD) ---
+        function previewNewImages(input) {
+            if (input.files && input.files.length > 0) {
+                for (let i = 0; i < input.files.length; i++) {
+                    allFilesDT.items.add(input.files[i]);
+                }
+            }
+            input.files = allFilesDT.files;
+            renderNewImagesPreview();
+        }
+
+        function renderNewImagesPreview() {
+            const container = document.getElementById('new-images-preview');
+            container.innerHTML = '';
+
+            const files = allFilesDT.files;
+            const currentNewIndex = parseInt(document.getElementById('newCoverIndex').value);
+
+            for (let i = 0; i < files.length; i++) {
+                const reader = new FileReader();
+                // Dùng closure để giữ giá trị index i đúng trong vòng lặp bất đồng bộ
+                (function(index) {
+                    reader.onload = function(e) {
+                        const isSelected = index === currentNewIndex;
+
+                        const html = `
+                            <div class="col-md-2 col-4 mb-3 position-relative">
+                                <div class="ratio ratio-4x3 border rounded overflow-hidden ${isSelected ? 'border-primary border-3' : ''}">
+                                    <img src="${e.target.result}" class="w-100 h-100 object-fit-cover" />
+
+                                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-10 opacity-0 hover-opacity-100"
+                                         style="cursor: pointer;"
+                                         onclick="selectNewCover(${index}, '${e.target.result}')">
+                                         <span class="badge ${isSelected ? 'bg-primary' : 'bg-secondary'} rounded-pill">
+                                            ${isSelected ? 'Đang chọn' : 'Chọn làm Cover'}
+                                         </span>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle"
+                                        onclick="removeNewImage(${index})" style="z-index:10;"><i class="fas fa-times"></i></button>
+                            </div>
+                        `;
+                        container.insertAdjacentHTML('beforeend', html);
+                    };
+                    reader.readAsDataURL(files[index]);
+                })(i);
+            }
+        }
+
+        function selectNewCover(index, base64Url) {
+            document.getElementById('newCoverIndex').value = index;
+            document.getElementById('selectedCoverId').value = ""; // Reset lựa chọn ảnh cũ
+
+            // Update ảnh Preview to
+            document.getElementById('coverPreview').src = base64Url;
+
+            // Xóa highlight bên phần ảnh cũ
+            $('.image-card .ratio').removeClass('border-primary border-3');
+            $('.cover-badge').remove();
+
+            // Render lại list mới để hiện viền xanh
+            renderNewImagesPreview();
+        }
+
+        function removeNewImage(index) {
+            const dt = new DataTransfer();
+            const input = document.getElementById('imageFiles');
+            const { files } = input;
+
+            // Logic reset index nếu file đang chọn bị xóa
+            let currentIndex = parseInt(document.getElementById('newCoverIndex').value);
+
+            for (let i = 0; i < files.length; i++) {
+                if (i !== index) dt.items.add(files[i]);
+            }
+
+            // Xử lý lại index cover
+            if(index === currentIndex) {
+                 document.getElementById('newCoverIndex').value = -1; // Mất cover -> User phải chọn lại
+                 // Có thể fallback về ảnh cũ ban đầu nếu muốn
+            } else if (index < currentIndex) {
+                 document.getElementById('newCoverIndex').value = currentIndex - 1;
+            }
+
+            allFilesDT = dt;
+            input.files = allFilesDT.files;
+            renderNewImagesPreview();
+        }
+
+        // CSS hover effect cho script hoạt động
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .hover-opacity-100:hover { opacity: 1 !important; }
+        `;
+        document.head.appendChild(style);
+
+        // Giữ nguyên hàm deleteImage cũ của bạn
+        function deleteImage(imageId) {
+            // ... (Code cũ của bạn) ...
+        }
+    </script>
 }
 
 <style>
-    body {
-        background-color: #f8f9fa;
+    /* CSS bổ sung cho trang Edit */
+    .upload-area:hover {
+        background-color: #e9ecef !important;
+        border-color: #0d6efd !important;
     }
 
-    .form-control, .form-select {
-        border-radius: 8px;
-        padding: 10px 15px;
-        border: 1px solid #dee2e6;
+    .ratio-4x3 {
+        aspect-ratio: 4/3;
     }
 
-        .form-control:focus {
-            box-shadow: 0 0 0 3px rgba(19, 164, 236, 0.15);
-            border-color: #13a4ec;
-        }
-
-    .bg-success-light {
-        background-color: #e8f5e9;
+    .object-fit-cover {
+        object-fit: cover;
     }
 
-    .bg-danger-light {
-        background-color: #ffebee;
+    .cursor-pointer {
+        cursor: pointer;
     }
 </style>

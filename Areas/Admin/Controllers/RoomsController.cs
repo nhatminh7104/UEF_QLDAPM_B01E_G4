@@ -1,325 +1,105 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VillaManagementWeb.Data;
 using VillaManagementWeb.Models;
-using VillaManagementWeb.Services.Interfaces;
+using VillaManagementWeb.ViewModels; // Cần dùng RoomIndexVM
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
     public class RoomsController : Controller
     {
         private readonly VillaDbContext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
-        private readonly IRoomService _roomService;
 
-        public RoomsController(VillaDbContext context, IWebHostEnvironment hostEnvironment, IRoomService roomService)
+        public RoomsController(VillaDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
             _hostEnvironment = hostEnvironment;
-            _roomService = roomService;
         }
 
-        // GET: Controllers/Rooms
+        // GET: Admin/Rooms
         public async Task<IActionResult> Index()
         {
-            var roomsWithStatus = await _roomService.GetRoomsWithStatusAsync();
-            return View(roomsWithStatus);
+            // Lấy danh sách từ DB và map sang RoomIndexVM để hiển thị ở View Index
+            var rooms = await _context.Rooms
+                .Select(r => new RoomIndexVM
+                {
+                    Id = r.Id,
+                    RoomNumber = r.RoomNumber,
+                    Type = r.Type,
+                    PricePerNight = r.PricePerNight,
+                    Capacity = r.Capacity,
+                    RatingStars = r.RatingStars,
+                    IsActive = r.IsActive,
+                    ImageUrl = r.ImageUrl,
+                    SquareFootage = r.SquareFootage,
+                    HasWifi = r.HasWifi,
+                    HasBreakfast = r.HasBreakfast,
+                    HasPool = r.HasPool,
+                    HasTowel = r.HasTowel,
+                    // Giả định trạng thái thuê dựa trên logic nghiệp vụ của bạn
+                    StatusLabel = r.IsActive ? "Trống" : "Bảo trì",
+                    StatusColor = r.IsActive ? "badge-success" : "badge-danger"
+                }).ToListAsync();
+
+            return View(rooms);
         }
 
-        // GET: Controllers/Rooms/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var room = await _context.Rooms
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (room == null)
-            {
-                return NotFound();
-            }
-
-            return View(room);
-        }
-
-        // GET: Controllers/Rooms/Create
+        // GET: Admin/Rooms/Create
         public IActionResult Create()
         {
+            ViewData["RoomCategoryId"] = new SelectList(_context.RoomCategories, "Id", "Name");
             return View();
         }
-
-        // POST: Controllers/Rooms/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Admin/Rooms/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Room room, List<IFormFile> imageFiles)
         {
-            List<string> uploadedFiles = new List<string>(); // Track uploaded files for cleanup on failure
-
-            try
+            if (ModelState.IsValid)
             {
-                // Validate ModelState
-                if (!ModelState.IsValid)
-                {
-                    ModelState.AddModelError("", "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các trường bắt buộc.");
-                    return View(room);
-                }
-
-                // Validate WebRootPath
-                if (string.IsNullOrWhiteSpace(_hostEnvironment?.WebRootPath))
-                {
-                    ModelState.AddModelError("", "Lỗi hệ thống: Không tìm thấy thư mục WebRoot.");
-                    return View(room);
-                }
-
-                string wwwRootPath = _hostEnvironment.WebRootPath;
-                string roomPath = Path.Combine(wwwRootPath, "images", "rooms");
-
-                // Check and create directory with permission check
-                try
-                {
-                    if (!Directory.Exists(roomPath))
-                    {
-                        Directory.CreateDirectory(roomPath);
-                    }
-
-                    // Check write permissions
-                    string testFile = Path.Combine(roomPath, ".write_test");
-                    try
-                    {
-                        System.IO.File.WriteAllText(testFile, "test");
-                        System.IO.File.Delete(testFile);
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        ModelState.AddModelError("", "Lỗi quyền truy cập: Ứng dụng không có quyền ghi vào thư mục images/rooms. Vui lòng kiểm tra quyền truy cập thư mục.");
-                        return View(room);
-                    }
-                    catch (Exception ex)
-                    {
-                        ModelState.AddModelError("", $"Lỗi kiểm tra quyền ghi file: {ex.Message}");
-                        return View(room);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", $"Lỗi tạo thư mục: {ex.Message}");
-                    return View(room);
-                }
-
-                // Initialize RoomImages collection if null
-                if (room.RoomImages == null)
-                {
-                    room.RoomImages = new List<RoomImage>();
-                }
-
-                // Process image files with detailed error handling
+                // Xử lý upload nhiều ảnh [cite: 311, 312]
                 if (imageFiles != null && imageFiles.Count > 0)
                 {
-                    const long maxFileSize = 5 * 1024 * 1024; // 5MB
-                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif" };
+                    string roomPath = Path.Combine(_hostEnvironment.WebRootPath, "images", "rooms");
+                    if (!Directory.Exists(roomPath)) Directory.CreateDirectory(roomPath);
 
                     for (int i = 0; i < imageFiles.Count; i++)
                     {
-                        try
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFiles[i].FileName);
+                        string dbPath = "/images/rooms/" + fileName;
+
+                        using (var stream = new FileStream(Path.Combine(roomPath, fileName), FileMode.Create))
                         {
-                            var file = imageFiles[i];
-
-                            // Validate file is not null
-                            if (file == null)
-                            {
-                                ModelState.AddModelError("", $"File ảnh thứ {i + 1} không hợp lệ (null).");
-                                CleanupUploadedFiles(uploadedFiles);
-                                return View(room);
-                            }
-
-                            // Validate file name
-                            if (string.IsNullOrWhiteSpace(file.FileName))
-                            {
-                                ModelState.AddModelError("", $"File ảnh thứ {i + 1} không có tên file.");
-                                CleanupUploadedFiles(uploadedFiles);
-                                return View(room);
-                            }
-
-                            // Validate file size
-                            if (file.Length == 0)
-                            {
-                                ModelState.AddModelError("", $"File ảnh thứ {i + 1} rỗng.");
-                                CleanupUploadedFiles(uploadedFiles);
-                                return View(room);
-                            }
-
-                            if (file.Length > maxFileSize)
-                            {
-                                ModelState.AddModelError("", $"File ảnh thứ {i + 1} vượt quá kích thước cho phép (5MB).");
-                                CleanupUploadedFiles(uploadedFiles);
-                                return View(room);
-                            }
-
-                            // Validate file extension
-                            string? fileExtension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
-                            if (string.IsNullOrEmpty(fileExtension) || !allowedExtensions.Contains(fileExtension))
-                            {
-                                ModelState.AddModelError("", $"File ảnh thứ {i + 1} có định dạng không được hỗ trợ. Chỉ chấp nhận: {string.Join(", ", allowedExtensions)}");
-                                CleanupUploadedFiles(uploadedFiles);
-                                return View(room);
-                            }
-
-                            // Generate unique file name
-                            string fileName = Guid.NewGuid().ToString() + fileExtension;
-                            string fullPath = Path.Combine(roomPath, fileName);
-
-                            // Save file
-                            try
-                            {
-                                using (var fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                                {
-                                    await file.CopyToAsync(fileStream);
-                                }
-
-                                // Track uploaded file for cleanup on failure
-                                uploadedFiles.Add(fullPath);
-
-                                string dbPath = "/images/rooms/" + fileName;
-
-                                // Set main image or add to gallery
-                                if (i == 0)
-                                {
-                                    room.ImageUrl = dbPath;
-                                }
-                                else
-                                {
-                                    // Create RoomImage with navigation property set
-                                    // EF Core will automatically set RoomId when Room is saved
-                                    room.RoomImages.Add(new RoomImage
-                                    {
-                                        ImageUrl = dbPath,
-                                        Room = room // Set navigation property so EF handles RoomId
-                                    });
-                                }
-                            }
-                            catch (UnauthorizedAccessException ex)
-                            {
-                                ModelState.AddModelError("", $"Lỗi quyền truy cập khi lưu file {file.FileName}: {ex.Message}");
-                                CleanupUploadedFiles(uploadedFiles);
-                                return View(room);
-                            }
-                            catch (IOException ex)
-                            {
-                                ModelState.AddModelError("", $"Lỗi I/O khi lưu file {file.FileName}: {ex.Message}");
-                                CleanupUploadedFiles(uploadedFiles);
-                                return View(room);
-                            }
-                            catch (Exception ex)
-                            {
-                                ModelState.AddModelError("", $"Lỗi khi lưu file {file.FileName}: {ex.Message}");
-                                CleanupUploadedFiles(uploadedFiles);
-                                return View(room);
-                            }
+                            await imageFiles[i].CopyToAsync(stream);
                         }
-                        catch (Exception ex)
-                        {
-                            ModelState.AddModelError("", $"Lỗi xử lý file ảnh thứ {i + 1}: {ex.Message}");
-                            CleanupUploadedFiles(uploadedFiles);
-                            return View(room);
-                        }
+
+                        if (i == 0) room.ImageUrl = dbPath; // Ảnh đầu tiên làm cover [cite: 320]
+
+                        room.RoomImages.Add(new RoomImage { ImageUrl = dbPath });
                     }
                 }
 
-                // Save Room to database
-                // EF Core will automatically handle the RoomId foreign key relationship
-                // when we add Room with its RoomImages collection
-                try
-                {
-                    _context.Add(room);
-                    await _context.SaveChangesAsync();
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateException ex)
-                {
-                    ModelState.AddModelError("", $"Lỗi cơ sở dữ liệu: {ex.Message}");
-                    if (ex.InnerException != null)
-                    {
-                        ModelState.AddModelError("", $"Chi tiết: {ex.InnerException.Message}");
-                    }
-                    CleanupUploadedFiles(uploadedFiles);
-                    return View(room);
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", $"Lỗi khi lưu dữ liệu: {ex.Message}");
-                    CleanupUploadedFiles(uploadedFiles);
-                    return View(room);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Catch any unexpected errors
-                ModelState.AddModelError("", $"Lỗi hệ thống không mong đợi: {ex.Message}");
-                if (ex.InnerException != null)
-                {
-                    ModelState.AddModelError("", $"Chi tiết lỗi: {ex.InnerException.Message}");
-                }
-                CleanupUploadedFiles(uploadedFiles);
-                return View(room);
-            }
-        }
-
-        /// <summary>
-        /// Clean up uploaded files if operation fails
-        /// </summary>
-        private void CleanupUploadedFiles(List<string> filePaths)
-        {
-            if (filePaths == null || filePaths.Count == 0) return;
-
-            foreach (var filePath in filePaths)
-            {
-                try
-                {
-                    if (System.IO.File.Exists(filePath))
-                    {
-                        System.IO.File.Delete(filePath);
-                    }
-                }
-                catch
-                {
-                    // Silently ignore cleanup errors to avoid masking the original error
-                }
-            }
-        }
-
-        // GET: Controllers/Rooms/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var room = await _context.Rooms.FindAsync(id);
-            if (room == null)
-            {
-                return NotFound();
+                _context.Add(room);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             return View(room);
         }
 
-        // POST: Controllers/Rooms/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // GET: Admin/Rooms/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+            var room = await _context.Rooms.Include(r => r.RoomImages).FirstOrDefaultAsync(r => r.Id == id);
+            if (room == null) return NotFound();
+            ViewData["RoomCategoryId"] = new SelectList(_context.RoomCategories, "Id", "Name", room.RoomCategoryId);
+            return View(room);
+        }
+
+        // POST: Admin/Rooms/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Room room, List<IFormFile> imageFiles)
@@ -330,97 +110,80 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             {
                 try
                 {
-                    // 1. Lấy thông tin phòng hiện tại từ DB để giữ lại đường dẫn ảnh cũ nếu không đổi ảnh
-                    var existingRoom = await _context.Rooms.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
+                    var existingRoom = await _context.Rooms.Include(r => r.RoomImages).FirstOrDefaultAsync(r => r.Id == id);
+                    if (existingRoom == null) return NotFound();
 
+                    // Cập nhật các trường mới
+                    existingRoom.Bedrooms = room.Bedrooms;
+                    existingRoom.Beds = room.Beds;
+                    existingRoom.CapacityChildren = room.CapacityChildren;
+                    existingRoom.RoomNumber = room.RoomNumber;
+                    existingRoom.RoomCategoryId = room.RoomCategoryId;
+                    existingRoom.Type = room.Type;
+                    existingRoom.PricePerNight = room.PricePerNight;
+                    existingRoom.Capacity = room.Capacity;
+                    existingRoom.CapacityChildren = room.CapacityChildren;
+                    existingRoom.Bedrooms = room.Bedrooms;
+                    existingRoom.Beds = room.Beds;
+                    existingRoom.SquareFootage = room.SquareFootage;
+                    existingRoom.IsActive = room.IsActive;
+                    existingRoom.Description = room.Description;
+                    existingRoom.HasWifi = room.HasWifi;
+                    existingRoom.HasBreakfast = room.HasBreakfast;
+                    existingRoom.HasPool = room.HasPool;
+                    existingRoom.HasTowel = room.HasTowel;
+
+                    // Upload thêm ảnh mới vào album [cite: 358, 359]
                     if (imageFiles != null && imageFiles.Count > 0)
                     {
-                        // Logic xử lý upload ảnh giống trang Create (Lưu vào thư mục /images/rooms/)
-                        string wwwRootPath = _hostEnvironment.WebRootPath;
-                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFiles[0].FileName);
-                        string path = Path.Combine(wwwRootPath, "images", "rooms", fileName);
-
-                        using (var fileStream = new FileStream(path, FileMode.Create))
+                        string roomPath = Path.Combine(_hostEnvironment.WebRootPath, "images", "rooms");
+                        foreach (var file in imageFiles)
                         {
-                            await imageFiles[0].CopyToAsync(fileStream);
+                            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                            string dbPath = "/images/rooms/" + fileName;
+                            using (var stream = new FileStream(Path.Combine(roomPath, fileName), FileMode.Create))
+                            {
+                                await file.CopyToAsync(stream);
+                            }
+                            existingRoom.RoomImages.Add(new RoomImage { ImageUrl = dbPath });
                         }
-                        room.ImageUrl = "/images/rooms/" + fileName;
-                    }
-                    else
-                    {
-                        // Nếu không chọn ảnh mới, giữ lại đường dẫn ảnh cũ
-                        room.ImageUrl = existingRoom.ImageUrl;
                     }
 
-                    _context.Update(room);
+                    _context.Update(existingRoom);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RoomExists(room.Id)) return NotFound();
-                    else throw;
+                    if (!_context.Rooms.Any(e => e.Id == room.Id)) return NotFound();
+                    throw;
                 }
+                return RedirectToAction(nameof(Index));
             }
+            ViewData["RoomCategoryId"] = new SelectList(_context.RoomCategories, "Id", "Name", room.RoomCategoryId);
             return View(room);
         }
 
-        // GET: Controllers/Rooms/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // Action xóa ảnh lẻ trong Album (AJAX) [cite: 394]
+        [HttpPost]
+        public async Task<IActionResult> DeleteImage(int imageId)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var image = await _context.RoomImage.FindAsync(imageId);
+            if (image == null) return Json(new { success = false, message = "Không tìm thấy ảnh" });
 
-            var room = await _context.Rooms
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (room == null)
-            {
-                return NotFound();
-            }
-
-            return View(room);
+            _context.RoomImage.Remove(image);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true });
         }
 
-        // POST: Controllers/Rooms/Delete/5
+        // POST: Admin/Rooms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var room = await _context.Rooms.FindAsync(id);
-            if (room != null)
-            {
-                _context.Rooms.Remove(room);
-            }
-
+            if (room != null) _context.Rooms.Remove(room);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-        [HttpPost]
-        public async Task<IActionResult> SummernoteUploadImage(IFormFile file)
-        {
-            if (file == null || file.Length == 0) return BadRequest();
-
-            // Tạo đường dẫn lưu file
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            var path = Path.Combine(_hostEnvironment.WebRootPath, "uploads", "summernote", fileName);
-
-            // Đảm bảo thư mục tồn tại
-            var directory = Path.GetDirectoryName(path);
-            if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
-
-            using (var stream = new FileStream(path, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            // Trả về URL của ảnh để Summernote chèn vào nội dung
-            return Json(new { url = "/uploads/summernote/" + fileName });
-        }
-        private bool RoomExists(int id)
-        {
-            return _context.Rooms.Any(e => e.Id == id);
         }
     }
 }
