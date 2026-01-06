@@ -14,6 +14,7 @@ namespace VillaManagementWeb.ViewModels
 
     public class RoomItemViewModel
     {
+        public int Id { get; set; }
         public string Name { get; set; } // Forest room, Deluxe room...
         public string Description { get; set; }
         public string ImageUrl { get; set; }

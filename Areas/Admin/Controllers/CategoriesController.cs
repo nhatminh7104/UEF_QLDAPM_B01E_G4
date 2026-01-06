@@ -38,34 +38,42 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int id, RoomCategory category, IFormFile? bannerFile)
         {
             if (id != category.Id) return NotFound();
-
+            ModelState.Remove("Rooms");
             if (ModelState.IsValid)
             {
-                // Xử lý upload Banner mới
-                if (bannerFile != null)
+                try
                 {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(bannerFile.FileName);
-                    string path = Path.Combine(_hostEnvironment.WebRootPath, "images", "categories");
-                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
-                    using (var stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
+                    // Xử lý upload Banner mới
+                    if (bannerFile != null)
                     {
-                        await bannerFile.CopyToAsync(stream);
-                    }
-                    category.BannerUrl = "/images/categories/" + fileName;
-                }
-                else
-                {
-                    // Giữ nguyên ảnh cũ nếu không upload mới (cần logic load lại từ DB để không bị null)
-                    var oldCat = await _context.RoomCategories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-                    if (oldCat != null) category.BannerUrl = oldCat.BannerUrl;
-                }
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(bannerFile.FileName);
+                        string path = Path.Combine(_hostEnvironment.WebRootPath, "images", "categories");
+                        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
-                _context.Update(category);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                        using (var stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
+                        {
+                            await bannerFile.CopyToAsync(stream);
+                        }
+                        category.BannerUrl = "/images/categories/" + fileName;
+                    }
+                    else
+                    {
+                        // Giữ nguyên ảnh cũ nếu không upload mới (cần logic load lại từ DB để không bị null)
+                        var oldCat = await _context.RoomCategories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                        if (oldCat != null) category.BannerUrl = oldCat.BannerUrl;
+                    }
+
+                    _context.Update(category);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.RoomCategories.Any(e => e.Id == id)) return NotFound();
+                    else throw;
+                }
             }
-            return View(category);
+                return View(category);
         }
 
         // Bạn có thể thêm Create/Delete tương tự

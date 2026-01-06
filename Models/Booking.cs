@@ -27,8 +27,14 @@ namespace VillaManagementWeb.Models
         [Range(0, double.MaxValue, ErrorMessage = "Tổng tiền không được âm")]
         public decimal TotalAmount { get; set; }
         public string Status { get; set; } = null!; // Pending, Confirmed, Cancelled
+        [Required(ErrorMessage = "Vui lòng chọn phương thức thanh toán")] 
         public string PaymentMethod { get; set; } = null!; // cash, credit card, online
         public string? Notes { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        [Display(Name = "Số CCCD/Passport")]
+        public string? IdentityCard { get; set; } 
+
+        [Display(Name = "Quốc tịch")]
+        public string? Nationality { get; set; }
     }
 }
