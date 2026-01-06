@@ -12,6 +12,7 @@
     </div>
 
     <form asp-action="Create" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
         <div class="row">
             <div class="col-md-8">
                 <div class="card border-0 shadow-sm mb-4">
@@ -26,11 +27,13 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">Mô tả ngắn</label>
                             <textarea asp-for="ShortDescription" class="form-control" rows="3" placeholder="Đoạn giới thiệu nhỏ..."></textarea>
+                            <span asp-validation-for="ShortDescription" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-bold">Bài viết giới thiệu chi tiết</label>
                             <textarea id="Description" asp-for="Description" class="form-control"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
                         </div>
                     </div>
                 </div>
@@ -44,6 +47,7 @@
                             <img id="previewImg" src="/images/no-image.png" class="img-fluid rounded border mb-2" style="max-height: 200px;" />
                         </div>
                         <input type="file" name="bannerFile" class="form-control" accept="image/*" onchange="document.getElementById('previewImg').src = window.URL.createObjectURL(this.files[0])" />
+                        <span asp-validation-for="BannerUrl" class="text-danger small"></span>
                     </div>
                 </div>
 
@@ -54,6 +58,7 @@
                         <small class="text-muted d-block mt-2">
                             <i class="fas fa-info-circle"></i> Nhập mỗi tiện ích trên <b>một dòng</b>. Hệ thống sẽ tự động tách ra để hiển thị đẹp mắt.
                         </small>
+                        <span asp-validation-for="Amenities" class="text-danger small"></span>
                     </div>
                 </div>
             </div>

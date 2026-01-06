@@ -38,7 +38,10 @@
     <div id="intro" class="container py-5 my-5">
         <div class="text-center max-w-3xl mx-auto mb-5">
             <h2 class="text-4xl md:text-5xl text-gold mb-4">Giới thiệu</h2>
-            <p class="text-lg leading-relaxed">@Model.Description</p>
+
+            <div class="text-lg leading-relaxed room-description">
+                @Html.Raw(Model.Description)
+            </div>
         </div>
         <div class="row g-4">
             @if (Model.GalleryImages != null)
@@ -69,11 +72,40 @@
                         </div>
                     </div>
                     <div class="w-full md:w-1/2 flex flex-col justify-center items-start pl-md-4">
-                        <div class="grid grid-cols-1 gap-3 text-sm text-[#666] w-full mb-4">
-                            <div class="flex items-center gap-3 py-2 border-b border-gray-100"><span><strong>@room.CapacityAdults</strong> người lớn...</span></div>
+                        <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-[#666] w-full mb-6">
+
+                            <div class="flex items-center gap-2 py-2 border-b border-gray-100 col-span-2">
+                                <i class="fas fa-user-friends text-[#A67C52]"></i> <span>
+                                    <strong>@room.CapacityAdults</strong> người lớn
+                                    @if (room.CapacityChildren > 0)
+                                    {
+                                        <span>& <strong>@room.CapacityChildren</strong> trẻ em</span>
+                                    }
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-2 py-2 border-b border-gray-100">
+                                <i class="fas fa-ruler-combined text-[#A67C52]"></i>
+                                <span><strong>@room.Area</strong> m²</span>
+                            </div>
+
+                            <div class="flex items-center gap-2 py-2 border-b border-gray-100">
+                                <i class="fas fa-door-open text-[#A67C52]"></i>
+                                <span><strong>@room.Bedrooms</strong> PN</span>
+                            </div>
+
+                            <div class="flex items-center gap-2 py-2 border-b border-gray-100 col-span-2">
+                                <i class="fas fa-bed text-[#A67C52]"></i>
+                                <span><strong>@room.Beds</strong> giường</span>
+                            </div>
                         </div>
                         <div class="flex gap-4 mt-2">
-                            <a href="@room.DetailUrl" class="px-8 py-3 bg-[#A67C52] text-white text-xs font-bold uppercase tracking-widest no-underline">Đặt phòng &rarr;</a>
+                            <a asp-controller="Booking"
+                               asp-action="Index"
+                               asp-route-roomId="@room.Id"
+                               class="px-8 py-3 bg-[#A67C52] text-white text-xs font-bold uppercase tracking-widest no-underline hover:opacity-90 transition-opacity">
+                                Đặt phòng &rarr;
+                            </a>
                         </div>
                     </div>
                 </div>

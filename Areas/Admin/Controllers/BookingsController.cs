@@ -64,6 +64,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 try
                 {
                     await _bookingService.CreateBookingAsync(booking);
+                    TempData["SuccessMessage"] = "Tạo đơn đặt phòng thành công!";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException ex)
@@ -115,6 +116,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 try
                 {
                     await _bookingService.UpdateBookingAsync(booking);
+                    TempData["SuccessMessage"] = "Cập nhật trạng thái đơn hàng thành công!";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException ex)

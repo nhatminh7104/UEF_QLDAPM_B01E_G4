@@ -7,13 +7,16 @@ namespace VillaManagementWeb.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
+        [Display(Name = "Tên danh mục")]
+        [Required(ErrorMessage = "Vui lòng nhập tên danh mục.")]
+        [StringLength(100, ErrorMessage = "Tên danh mục không được vượt quá 100 ký tự.")]
         public string Name { get; set; } = null!; // VD: "Wooden House", "Khu Villa" (Phải khớp với chuỗi trong bảng Room)
 
         [Display(Name = "Ảnh Banner")]
         public string? BannerUrl { get; set; }
 
         [Display(Name = "Mô tả ngắn")]
+        [StringLength(500, ErrorMessage = "Mô tả ngắn không được vượt quá 500 ký tự.")]
         public string? ShortDescription { get; set; } // Đoạn text nhỏ dưới tiêu đề
 
         [Display(Name = "Bài viết giới thiệu")]
