@@ -1,0 +1,227 @@
+﻿@{
+    ViewData["Title"] = "Liên hệ";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+<style>
+    body {
+        font-family: 'Montserrat', sans-serif;
+        color: #555;
+        background-color: #fffaf7;
+    }
+
+    /* HERO SECTION */
+    .contact-hero {
+        position: relative;
+        height: 50vh;
+        width: 100%;
+        background: url('/images/contacts/image1.png') center center / cover no-repeat;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 50px;
+    }
+
+        .contact-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+        }
+
+    .hero-title {
+        position: relative;
+        color: #fff;
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem;
+        z-index: 2;
+    }
+
+    /* CONTENT */
+    .contact-section {
+        padding: 80px 0;
+    }
+
+    /* LEFT COLUMN */
+    .info-box {
+        margin-bottom: 20px;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        font-size: 0.95rem;
+        color: #777;
+    }
+
+        .info-item i {
+            color: #a67c52;
+            width: 25px;
+            margin-right: 10px;
+        }
+
+    /* SOCIAL ICONS */
+    .social-links {
+        margin-top: 20px;
+    }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background-color: #a67c52;
+            color: #fff;
+            border-radius: 50%;
+            margin-right: 10px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+            .social-links a:hover {
+                background-color: #8e7050;
+            }
+
+    /* RIGHT COLUMN: FORM */
+    .form-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: #a67c52;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-size: 0.85rem;
+        color: #999;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .form-control-custom {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 2px;
+        outline: none;
+        font-family: 'Montserrat', sans-serif;
+        transition: 0.3s;
+    }
+
+        .form-control-custom:focus {
+            border-color: #a67c52;
+        }
+
+    /* SUBMIT BTN */
+    .btn-submit {
+        background-color: #a67c52;
+        color: #fff;
+        border: none;
+        padding: 12px 30px;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-top: 10px;
+    }
+
+        .btn-submit:hover {
+            background-color: #8e7050;
+        }
+
+    /* FLAG ICON */
+    .phone-input-group {
+        position: relative;
+    }
+
+    .flag-icon {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+    }
+
+    .phone-input-group input {
+        padding-left: 40px;
+    }
+</style>
+
+<div class="contact-hero">
+    <h1 class="hero-title">Liên hệ</h1>
+</div>
+
+<div class="container contact-section">
+    <div class="row">
+
+        <div class="col-lg-5 col-md-6 mb-5">
+            <div class="info-box">
+                <div class="info-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>Thôn Mít Mái, Ba Vì, Hà Nội</span>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>092 981 6699</span>
+                </div>
+                <div class="info-item">
+                    <i class="fa-regular fa-envelope"></i>
+                    <span>booking@thewanderingrosebavi.com</span>
+                </div>
+            </div>
+
+            <div style="margin: 30px 0; width: 100%; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                <img src="/images/contacts/map.png" style="width: 100%; display: block; height: auto;" alt="Map Location">
+            </div>
+
+            <div class="social-links">
+                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#"><i class="fa-brands fa-pinterest-p"></i></a>
+                <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6 offset-lg-1">
+            <h2 class="form-title">Form liên hệ nhanh</h2>
+
+            <form>
+                <div class="form-group">
+                    <label class="form-label">Họ và tên *</label>
+                    <input type="text" class="form-control-custom" placeholder="Nhập họ và tên">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email *</label>
+                    <input type="email" class="form-control-custom" placeholder="Nhập địa chỉ email">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Số điện thoại *</label>
+                    <div class="phone-input-group">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg" class="flag-icon" alt="VN">
+                        <input type="text" class="form-control-custom" placeholder="Nhập số điện thoại">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tin nhắn *</label>
+                    <textarea class="form-control-custom" rows="4" placeholder="Nhập tin nhắn"></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">GỬI TIN NHẮN ĐẶT LỊCH</button>
+            </form>
+        </div>
+
+    </div>
+</div>

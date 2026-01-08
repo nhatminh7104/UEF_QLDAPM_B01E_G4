@@ -1,0 +1,96 @@
+﻿@{
+    ViewData["Title"] = "Thành công";
+    Layout = null; /* Để layout null nếu muốn trang trắng tinh như ảnh, hoặc bỏ dòng này nếu muốn giữ Header/Footer */
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gửi thành công</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #fff9f3; /* Màu nền kem */
+            font-family: 'Montserrat', sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .success-title {
+            font-family: 'Playfair Display', serif;
+            color: #a67c52; /* Màu nâu chủ đạo */
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-sub {
+            color: #888;
+            font-weight: 300;
+            margin-bottom: 2.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-success-back {
+            background-color: #a67c52;
+            color: white;
+            border: 1px solid #a67c52;
+            padding: 10px 30px;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 10px;
+            transition: 0.3s;
+        }
+
+            .btn-success-back:hover {
+                background-color: #8c6642;
+                color: white;
+            }
+
+        .btn-success-home {
+            background-color: transparent;
+            color: #a67c52;
+            border: 1px solid #a67c52;
+            padding: 10px 30px;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.3s;
+        }
+
+            .btn-success-home:hover {
+                background-color: #a67c52;
+                color: white;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="success-title">Gửi thông tin thành công</h1>
+        <p class="success-sub">Chúng tôi sẽ chủ động liên hệ lại trong thời gian ngắn nhất !</p>
+
+        <div>
+            <a href="javascript:history.back()" class="btn-success-back">
+                TRỞ LẠI TRANG TRƯỚC
+            </a>
+
+            <a href="/" class="btn-success-home">
+                VỀ TRANG CHỦ &rarr;
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

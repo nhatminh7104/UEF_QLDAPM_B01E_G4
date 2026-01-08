@@ -1,0 +1,203 @@
+﻿@{
+    ViewData["Title"] = "Về chúng tôi";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+<style>
+    /* --- CSS CHUNG --- */
+    body {
+        font-family: 'Montserrat', sans-serif;
+        color: #555;
+        background-color: #fffaf7; /* Màu kem nền */
+    }
+
+    /* 1. HERO SECTION */
+    .intro-hero {
+        position: relative;
+        height: 50vh;
+        width: 100%;
+        /* Thay ảnh bìa ở đây */
+        background: url('/images/introduce/hero.png') center center / cover no-repeat;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 50px;
+    }
+
+        .intro-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.3); /* Phủ đen mờ */
+        }
+
+    .hero-title {
+        position: relative;
+        color: #fff;
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem;
+        z-index: 2;
+        letter-spacing: 1px;
+    }
+
+    /* 2. MAIN CONTENT (STORY) */
+    .intro-section {
+        padding: 80px 0;
+    }
+
+    .about-img-wrapper {
+        position: relative;
+        padding: 20px;
+        border: 1px solid #dcdcdc; /* Khung viền mỏng trang trí */
+    }
+
+    .about-img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+    }
+
+    .about-content {
+        padding-left: 30px;
+    }
+
+    .sub-title {
+        color: #a67c52;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .main-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: #333;
+        margin-bottom: 25px;
+        line-height: 1.3;
+    }
+
+    .desc {
+        line-height: 1.8;
+        font-size: 1rem;
+        color: #666;
+        margin-bottom: 20px;
+        text-align: justify;
+    }
+
+    .signature {
+        font-family: 'Great Vibes', cursive; /* Font chữ ký */
+        font-size: 2.5rem;
+        color: #a67c52;
+        margin-top: 30px;
+    }
+
+    /* 3. CORE VALUES (ICONS) */
+    .values-section {
+        background-color: #f8f4f0; /* Nền đậm hơn xíu */
+        padding: 60px 0;
+        margin-top: 50px;
+    }
+
+    .value-box {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .value-icon {
+        font-size: 2.5rem;
+        color: #a67c52;
+        margin-bottom: 15px;
+    }
+
+    .value-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .value-desc {
+        font-size: 0.9rem;
+        color: #777;
+    }
+
+    /* RESPONSIVE */
+    @@media (max-width: 768px) {
+        .about-content {
+            padding-left: 0;
+            margin-top: 30px;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+
+<div class="intro-hero">
+    <h1 class="hero-title">Về Chúng Tôi</h1>
+</div>
+
+<div class="container intro-section">
+    <div class="row align-items-center">
+
+        <div class="col-lg-6">
+            <div class="about-img-wrapper">
+                <img src="/images/introduce/about.png" class="about-img" alt="The Wandering Rose Villa">
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="about-content">
+                <span class="sub-title">CÂU CHUYỆN CỦA CHÚNG TÔI</span>
+                <h2 class="main-title">Nơi Tìm Về Sự An Yên Giữa Thiên Nhiên</h2>
+
+                <p class="desc">
+                    Chào mừng bạn đến với <strong>The Wandering Rose</strong>, một chốn nghỉ dưỡng biệt lập nằm ẩn mình giữa núi rừng Ba Vì hùng vĩ.
+                    Được xây dựng với tâm huyết mang lại sự cân bằng trọn vẹn giữa tiện nghi hiện đại và vẻ đẹp hoang sơ của thiên nhiên.
+                </p>
+                <p class="desc">
+                    Từng góc nhỏ tại đây đều được chăm chút tỉ mỉ, từ khu vườn ngập tràn hoa hồng cho đến những căn phòng ấm cúng ngập tràn ánh sáng.
+                    Chúng tôi tin rằng, một kỳ nghỉ không chỉ là giấc ngủ ngon, mà là hành trình chữa lành tâm hồn.
+                </p>
+
+                <div class="signature">The Wandering Rose</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="values-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="value-box">
+                    <i class="fa-solid fa-tree value-icon"></i>
+                    <h4 class="value-title">Hòa Mình Thiên Nhiên</h4>
+                    <p class="value-desc">Không gian xanh mát, không khí trong lành tách biệt khỏi khói bụi thành phố.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="value-box">
+                    <i class="fa-solid fa-mug-hot value-icon"></i>
+                    <h4 class="value-title">Dịch Vụ Tận Tâm</h4>
+                    <p class="value-desc">Đội ngũ nhân viên chuyên nghiệp, chăm sóc từng bữa ăn giấc ngủ của bạn.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="value-box">
+                    <i class="fa-solid fa-star value-icon"></i>
+                    <h4 class="value-title">Tiện Nghi Đẳng Cấp</h4>
+                    <p class="value-desc">Trang thiết bị hiện đại, bể bơi riêng và không gian BBQ ngoài trời.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

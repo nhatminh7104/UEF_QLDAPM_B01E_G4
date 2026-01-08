@@ -1,0 +1,152 @@
+﻿@{
+    ViewData["Title"] = "Hình ảnh";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+    /* --- CSS CHUNG --- */
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: #fffaf7; /* Màu nền kem nhẹ */
+    }
+
+    /* HERO SECTION */
+    .gallery-hero {
+        position: relative;
+        height: 60vh;
+        width: 100%;
+        /* Bạn thay ảnh bìa gallery to ở đây */
+        background: url('/images/images&videos/image.png') center center / cover no-repeat;
+        display: flex;
+        align-items: flex-end; /* Chữ nằm dưới */
+        justify-content: center;
+        padding-bottom: 60px;
+    }
+
+        .gallery-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); /* Đen mờ dần lên trên */
+        }
+
+    .gallery-title {
+        position: relative;
+        color: #fff;
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        z-index: 2;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* HEADER TEXT & TABS */
+    .section-header {
+        text-align: center;
+        margin-top: 50px;
+        margin-bottom: 30px;
+    }
+
+    .section-title-sub {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: #a67c52; /* Màu nâu vàng */
+        margin-bottom: 20px;
+    }
+
+    .tab-btn {
+        display: inline-block;
+        padding: 8px 25px;
+        background-color: #ba9a76; /* Màu nút */
+        color: #fff;
+        text-decoration: none;
+        font-size: 0.9rem;
+        border-radius: 2px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: 0.3s;
+    }
+
+        .tab-btn:hover {
+            background-color: #8e7050;
+            color: #fff;
+        }
+        /* Nút mờ cho tab không active */
+        .tab-btn.inactive {
+            background-color: transparent;
+            color: #ba9a76;
+            border: 1px solid #ba9a76;
+        }
+
+    /* GRID ẢNH */
+    .gallery-grid {
+        padding-bottom: 80px;
+    }
+
+    .img-item {
+        margin-bottom: 30px;
+        overflow: hidden;
+        border-radius: 4px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .gallery-img {
+        width: 100%;
+        height: 300px; /* Chiều cao cố định để ảnh đều nhau */
+        object-fit: cover;
+        transition: transform 0.6s ease;
+        display: block;
+    }
+
+    .img-item:hover .gallery-img {
+        transform: scale(1.05); /* Zoom nhẹ khi di chuột */
+    }
+</style>
+
+<div class="gallery-hero">
+    <h1 class="gallery-title">Gallery hình ảnh & video</h1>
+</div>
+
+<div class="container">
+    <div class="section-header">
+        <h2 class="section-title-sub">Hình ảnh</h2>
+
+        <div class="d-flex justify-content-center gap-3">
+            <a href="#" class="tab-btn">HÌNH ẢNH</a>
+            <a href="/Pictures/Video" class="tab-btn inactive">VIDEO</a>
+        </div>
+    </div>
+
+    <div class="row gallery-grid">
+        <div class="col-md-4 col-sm-6">
+            <div class="img-item">
+                <img src="/images/images&videos/image.png" class="gallery-img" alt="Rose Villa">
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="img-item">
+                <img src="/images/images&videos/image1.png" class="gallery-img" alt="Garden View">
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="img-item">
+                <img src="/images/images&videos/image2.png" class="gallery-img" alt="Interior">
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="img-item">
+                <img src="/images/images&videos/image3.png" class="gallery-img" alt="Detail">
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="img-item">
+                <img src="/images/images&videos/image1.png" class="gallery-img" alt="Demo">
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="img-item">
+                <img src="/images/images&videos/image.png" class="gallery-img" alt="Demo">
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,333 @@
+﻿@{
+    ViewData["Title"] = "Dịch vụ & Sự kiện";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+<style>
+    /* --- GENERAL STYLES --- */
+    :root {
+        --primary-brown: #a67c52; /* Màu nâu chủ đạo của chữ */
+        --btn-brown: #b58d68; /* Màu nút bấm */
+        --light-bg: #fffbf8; /* Màu nền kem nhạt toàn trang */
+        --text-gray: #777;
+    }
+
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Montserrat', sans-serif;
+        color: #333;
+        overflow-x: hidden; /* Tránh thanh cuộn ngang */
+    }
+
+    h1, h2, h3, .serif-font {
+        font-family: 'Playfair Display', serif;
+        color: var(--primary-brown);
+    }
+
+    /* --- 1. HERO SECTION (ẢNH BÌA) --- */
+    .hero-section {
+        position: relative;
+        width: 100%;
+        height: 100vh; /* Chiếm full chiều cao màn hình */
+        min-height: 700px;
+        /* Dùng ảnh service.png, căn dưới đáy để thấy người ngồi */
+        background: url('/images/events/service.png') center bottom / cover no-repeat;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin-top: -100px; /* Kéo lên để lấp header nếu header trong suốt */
+        padding-top: 100px;
+    }
+
+    .hero-text-box {
+        margin-top: 250px; /* Đẩy chữ xuống thấp để không đè lên mặt người trong ảnh */
+        color: #fff;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 400;
+        letter-spacing: 2px;
+        margin-bottom: 15px;
+    }
+
+    .hero-nav {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+        .hero-nav span {
+            margin: 0 10px;
+        }
+
+
+    /* --- 2. CONTENT SECTIONS (ZIGZAG) --- */
+    .content-section {
+        padding: 5rem 0;
+    }
+
+    .event-block {
+        margin-bottom: 6rem; /* Khoảng cách giữa các sự kiện */
+    }
+
+    .event-title {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        color: #dcbfa6; /* Màu nâu nhạt giống ảnh mẫu */
+        color: #cda683;
+    }
+
+    .event-desc {
+        font-size: 0.9rem;
+        font-weight: 300;
+        line-height: 1.8;
+        color: #888;
+        margin-bottom: 2rem;
+        text-align: justify;
+    }
+
+    .event-img {
+        width: 100%;
+        height: auto;
+        border-radius: 2px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    /* BUTTONS STYLE */
+    .btn-brown-fill {
+        background-color: #a67c52;
+        color: #fff;
+        padding: 8px 25px;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        border: 1px solid #a67c52;
+        letter-spacing: 1px;
+        text-decoration: none;
+        transition: 0.3s;
+        display: inline-block;
+    }
+
+        .btn-brown-fill:hover {
+            background-color: #8c6642;
+            color: #fff;
+        }
+
+    .btn-brown-outline {
+        background-color: transparent;
+        color: #999;
+        border: 1px solid #ddd;
+        padding: 8px 25px;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-decoration: none;
+        transition: 0.3s;
+        display: inline-block;
+        margin-left: 10px;
+    }
+
+        .btn-brown-outline:hover {
+            border-color: #a67c52;
+            color: #a67c52;
+        }
+
+
+    /* --- 3. BOOKING FORM SECTION --- */
+    .booking-section {
+        margin-bottom: 5rem;
+    }
+
+    .booking-list {
+        margin-top: 20px;
+        list-style: none;
+        padding-left: 0;
+        font-size: 0.85rem;
+        color: #bfa38a;
+        line-height: 2;
+    }
+
+    .form-custom {
+        border: 1px solid #eee;
+        border-radius: 2px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        font-weight: 300;
+        background-color: #fff;
+        color: #555;
+    }
+
+        .form-custom:focus {
+            border-color: #a67c52;
+            box-shadow: none;
+        }
+
+    .form-label-custom {
+        font-size: 0.75rem;
+        color: #999;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    /* Input cờ VN */
+    .flag-group .input-group-text {
+        background: #fff;
+        border: 1px solid #eee;
+        border-right: none;
+    }
+
+    .flag-group input {
+        border-left: none;
+    }
+</style>
+
+<div class="hero-section">
+    <div class="hero-text-box serif-font">
+        <h1 class="hero-title">Dịch vụ và sự kiện</h1>
+        <div class="hero-nav">
+            <span>Tổ chức sinh nhật</span>
+            <span>Teambuilding</span>
+            <span>Tiệc cưới nhỏ</span>
+            <span>Lễ kỷ niệm</span>
+            <span>Đặt lịch</span>
+        </div>
+    </div>
+</div>
+
+<div class="container content-section">
+
+    <div class="row align-items-center event-block">
+        <div class="col-md-5 offset-md-1 pe-md-5 text-md-end text-center mb-4 mb-md-0">
+            <h2 class="event-title serif-font">Tổ chức sinh nhật</h2>
+            <p class="event-desc">
+                Chúng tôi cung cấp không gian tổ chức sinh nhật ấm cúng, trang trí theo yêu cầu với phong cách hiện đại hoặc cổ điển.
+                Dịch vụ trọn gói bao gồm tiệc trà, bánh ngọt và âm nhạc du dương giúp bạn lưu giữ những khoảnh khắc đẹp nhất.
+            </p>
+            <div>
+                <a href="#" class="btn-brown-fill">XEM CHI TIẾT</a>
+                <a href="#booking" class="btn-brown-outline">ĐẶT LỊCH →</a>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <img src="~/images/events/birthday.png" class="event-img" alt="Sinh nhật">
+        </div>
+    </div>
+
+    <div class="row align-items-center event-block">
+        <div class="col-md-5 offset-md-1 mb-4 mb-md-0">
+            <img src="~/images/events/teambuilding.png" class="event-img" alt="Teambuilding">
+        </div>
+        <div class="col-md-5 ps-md-5 text-md-start text-center">
+            <h2 class="event-title serif-font">Teambuilding</h2>
+            <p class="event-desc">
+                Không gian sân vườn rộng rãi thích hợp cho các hoạt động ngoài trời, gắn kết tinh thần đồng đội.
+                Hỗ trợ setup các trò chơi vận động, âm thanh, ánh sáng và tiệc nướng BBQ sau chương trình.
+            </p>
+            <div>
+                <a href="#" class="btn-brown-fill">XEM CHI TIẾT</a>
+                <a href="#booking" class="btn-brown-outline">ĐẶT LỊCH →</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row align-items-center event-block">
+        <div class="col-md-5 offset-md-1 pe-md-5 text-md-end text-center mb-4 mb-md-0">
+            <h2 class="event-title serif-font">Tiệc cưới nhỏ</h2>
+            <p class="event-desc">
+                Một lễ cưới thân mật, lãng mạn bên những người thân yêu nhất.
+                Không gian được trang hoàng lộng lẫy với hoa tươi, nến và phong cách phục vụ chuẩn 5 sao.
+            </p>
+            <div>
+                <a href="#" class="btn-brown-fill">XEM CHI TIẾT</a>
+                <a href="#booking" class="btn-brown-outline">ĐẶT LỊCH →</a>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <img src="~/images/events/weeding.png" class="event-img" alt="Tiệc cưới">
+        </div>
+    </div>
+
+    <div class="row align-items-center event-block">
+        <div class="col-md-5 offset-md-1 mb-4 mb-md-0">
+            <img src="~/images/events/celebrate.png" class="event-img" alt="Kỷ niệm">
+        </div>
+        <div class="col-md-5 ps-md-5 text-md-start text-center">
+            <h2 class="event-title serif-font">Lễ kỷ niệm</h2>
+            <p class="event-desc">
+                Kỷ niệm ngày cưới, gặp mặt bạn cũ hay những cột mốc quan trọng.
+                Chúng tôi mang đến không gian riêng tư, thực đơn phong phú và sự phục vụ tận tâm.
+            </p>
+            <div>
+                <a href="#" class="btn-brown-fill">XEM CHI TIẾT</a>
+                <a href="#booking" class="btn-brown-outline">ĐẶT LỊCH →</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="booking" class="container booking-section">
+    <div class="row">
+        <div class="col-md-5 offset-md-1 mb-4 mb-md-0">
+            <img src="~/images/events/service.png" class="w-100 shadow-sm" style="height: 400px; object-fit: cover;" alt="Service">
+            <ul class="booking-list">
+                <li>• Lorem ipsum dolor sit amet, consectetur.</li>
+                <li>• Donec lacinia sem eget justo bibendum.</li>
+                <li>• Etiam imperdiet odio eget nisl laoreet.</li>
+                <li>• Nunc pulvinar ante at lobortis gravida.</li>
+                <li>• Quisque hendrerit velit nec diam lacinia.</li>
+            </ul>
+        </div>
+
+        <div class="col-md-5 ps-md-5">
+            <h2 class="serif-font mb-4" style="font-size: 2.5rem; color: #cda683;">Đặt lịch sự kiện</h2>
+
+            <form asp-action="Booking" method="post">
+                <div class="mb-3">
+                    <label class="form-label-custom">Họ và tên *</label>
+                    <input type="text" name="fullName" class="form-control form-custom" placeholder="Nhập họ và tên" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label-custom">Email *</label>
+                    <input type="email" name="email" class="form-control form-custom" placeholder="Nhập địa chỉ email" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label-custom">Số điện thoại *</label>
+                    <div class="input-group flag-group">
+                        <span class="input-group-text">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg" width="20">
+                        </span>
+                        <input type="tel" name="phone" class="form-control form-custom" placeholder="Nhập số điện thoại" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label-custom">Chọn dịch vụ *</label>
+                    <select name="serviceType" class="form-control form-custom">
+                        <option value="">Chọn</option>
+                        <option value="Birthday">Tổ chức sinh nhật</option>
+                        <option value="Teambuilding">Teambuilding</option>
+                        <option value="Wedding">Tiệc cưới nhỏ</option>
+                        <option value="Anniversary">Lễ kỷ niệm</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label-custom">Tin nhắn (nếu có)</label>
+                    <textarea name="message" class="form-control form-custom" rows="3" placeholder="Nhập tin nhắn"></textarea>
+                </div>
+
+                <button type="submit" class="btn-brown-fill w-100 py-3" style="font-size: 0.8rem; letter-spacing: 2px;">
+                    GỬI TIN NHẮN ĐẶT LỊCH
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

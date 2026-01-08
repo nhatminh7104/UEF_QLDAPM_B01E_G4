@@ -1,0 +1,141 @@
+﻿@{
+    ViewData["Title"] = "Video";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+<style>
+    /* CSS CHUNG */
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: #fffaf7;
+    }
+
+    /* HERO SECTION */
+    .gallery-hero {
+        position: relative;
+        height: 60vh;
+        width: 100%;
+        /* Ảnh bìa */
+        background: url('/images/images&videos/image.png') center center / cover no-repeat;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 60px;
+    }
+
+        .gallery-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+        }
+
+    .gallery-title {
+        position: relative;
+        color: #fff;
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        z-index: 2;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* HEADER & TABS */
+    .section-header {
+        text-align: center;
+        margin-top: 50px;
+        margin-bottom: 30px;
+    }
+
+    .section-title-sub {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: #a67c52;
+        margin-bottom: 20px;
+    }
+
+    .tab-btn {
+        display: inline-block;
+        padding: 8px 25px;
+        background-color: #ba9a76;
+        color: #fff;
+        text-decoration: none;
+        font-size: 0.9rem;
+        border-radius: 2px;
+        text-transform: uppercase;
+        transition: 0.3s;
+    }
+
+        .tab-btn:hover {
+            background-color: #8e7050;
+            color: #fff;
+        }
+
+        .tab-btn.inactive {
+            background-color: transparent;
+            color: #ba9a76;
+            border: 1px solid #ba9a76;
+        }
+
+    /* EMPTY STATE (Trạng thái trống) */
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: #888;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: #dcdcdc;
+        margin-bottom: 20px;
+    }
+
+    .empty-text {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+
+    .btn-back-img {
+        display: inline-block;
+        border: 1px solid #a67c52;
+        color: #a67c52;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: 0.3s;
+    }
+
+        .btn-back-img:hover {
+            background-color: #a67c52;
+            color: #fff;
+        }
+</style>
+
+<div class="gallery-hero">
+    <h1 class="gallery-title">Gallery hình ảnh & video</h1>
+</div>
+
+<div class="container">
+
+    <div class="section-header">
+        <h2 class="section-title-sub">Video</h2>
+
+        <div class="d-flex justify-content-center gap-3">
+            <a href="/Pictures/Image" class="tab-btn inactive">HÌNH ẢNH</a>
+            <a href="#" class="tab-btn">VIDEO</a>
+        </div>
+    </div>
+
+    <div class="empty-state">
+        <i class="fa-solid fa-film empty-icon"></i>
+
+        <h4 style="font-family: 'Playfair Display', serif; color: #555;">Thư viện Video đang cập nhật</h4>
+        <p class="empty-text">Hiện tại chúng tôi chưa đăng tải video nào. Vui lòng quay lại sau!</p>
+
+        <a href="/Pictures/Image" class="btn-back-img">
+            <i class="fa-regular fa-image me-2"></i> Xem hình ảnh
+        </a>
+    </div>
+
+</div>
