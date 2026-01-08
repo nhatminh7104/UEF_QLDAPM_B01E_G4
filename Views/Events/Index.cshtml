@@ -8,9 +8,9 @@
 <style>
     /* --- GENERAL STYLES --- */
     :root {
-        --primary-brown: #a67c52; /* Màu nâu chủ đạo của chữ */
-        --btn-brown: #b58d68; /* Màu nút bấm */
-        --light-bg: #fffbf8; /* Màu nền kem nhạt toàn trang */
+        --primary-brown: #a67c52;
+        --btn-brown: #b58d68;
+        --light-bg: #fffbf8;
         --text-gray: #777;
     }
 
@@ -18,7 +18,7 @@
         background-color: var(--light-bg);
         font-family: 'Montserrat', sans-serif;
         color: #333;
-        overflow-x: hidden; /* Tránh thanh cuộn ngang */
+        overflow-x: hidden;
     }
 
     h1, h2, h3, .serif-font {
@@ -26,25 +26,24 @@
         color: var(--primary-brown);
     }
 
-    /* --- 1. HERO SECTION (ẢNH BÌA) --- */
+    /* HERO SECTION */
     .hero-section {
         position: relative;
         width: 100%;
-        height: 100vh; /* Chiếm full chiều cao màn hình */
+        height: 100vh;
         min-height: 700px;
-        /* Dùng ảnh service.png, căn dưới đáy để thấy người ngồi */
         background: url('/images/events/service.png') center bottom / cover no-repeat;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         text-align: center;
-        margin-top: -100px; /* Kéo lên để lấp header nếu header trong suốt */
+        margin-top: -100px;
         padding-top: 100px;
     }
 
     .hero-text-box {
-        margin-top: 250px; /* Đẩy chữ xuống thấp để không đè lên mặt người trong ảnh */
+        margin-top: 250px;
         color: #fff;
         text-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
@@ -66,20 +65,18 @@
             margin: 0 10px;
         }
 
-
-    /* --- 2. CONTENT SECTIONS (ZIGZAG) --- */
+    /* CONTENT SECTIONS */
     .content-section {
         padding: 5rem 0;
     }
 
     .event-block {
-        margin-bottom: 6rem; /* Khoảng cách giữa các sự kiện */
+        margin-bottom: 6rem;
     }
 
     .event-title {
         font-size: 3rem;
         margin-bottom: 1.5rem;
-        color: #dcbfa6; /* Màu nâu nhạt giống ảnh mẫu */
         color: #cda683;
     }
 
@@ -99,7 +96,7 @@
         box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
 
-    /* BUTTONS STYLE */
+    /* BUTTONS */
     .btn-brown-fill {
         background-color: #a67c52;
         color: #fff;
@@ -137,8 +134,7 @@
             color: #a67c52;
         }
 
-
-    /* --- 3. BOOKING FORM SECTION --- */
+    /* BOOKING FORM */
     .booking-section {
         margin-bottom: 5rem;
     }
@@ -174,7 +170,6 @@
         display: block;
     }
 
-    /* Input cờ VN */
     .flag-group .input-group-text {
         background: #fff;
         border: 1px solid #eee;
@@ -200,7 +195,6 @@
 </div>
 
 <div class="container content-section">
-
     <div class="row align-items-center event-block">
         <div class="col-md-5 offset-md-1 pe-md-5 text-md-end text-center mb-4 mb-md-0">
             <h2 class="event-title serif-font">Tổ chức sinh nhật</h2>
@@ -268,7 +262,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <div id="booking" class="container booking-section">
@@ -276,18 +269,18 @@
         <div class="col-md-5 offset-md-1 mb-4 mb-md-0">
             <img src="~/images/events/service.png" class="w-100 shadow-sm" style="height: 400px; object-fit: cover;" alt="Service">
             <ul class="booking-list">
-                <li>• Lorem ipsum dolor sit amet, consectetur.</li>
-                <li>• Donec lacinia sem eget justo bibendum.</li>
-                <li>• Etiam imperdiet odio eget nisl laoreet.</li>
-                <li>• Nunc pulvinar ante at lobortis gravida.</li>
-                <li>• Quisque hendrerit velit nec diam lacinia.</li>
+                <li>• Không gian sang trọng, riêng tư.</li>
+                <li>• Thực đơn phong phú Á - Âu.</li>
+                <li>• Đội ngũ phục vụ chuyên nghiệp.</li>
+                <li>• Hỗ trợ trang trí theo chủ đề.</li>
+                <li>• Hệ thống âm thanh, ánh sáng hiện đại.</li>
             </ul>
         </div>
 
         <div class="col-md-5 ps-md-5">
             <h2 class="serif-font mb-4" style="font-size: 2.5rem; color: #cda683;">Đặt lịch sự kiện</h2>
 
-            <form asp-action="Booking" method="post">
+            <form asp-controller="Events" asp-action="Booking" method="post">
                 <div class="mb-3">
                     <label class="form-label-custom">Họ và tên *</label>
                     <input type="text" name="fullName" class="form-control form-custom" placeholder="Nhập họ và tên" required>
@@ -310,8 +303,8 @@
 
                 <div class="mb-3">
                     <label class="form-label-custom">Chọn dịch vụ *</label>
-                    <select name="serviceType" class="form-control form-custom">
-                        <option value="">Chọn</option>
+                    <select name="service" class="form-control form-custom">
+                        <option value="Standard">Chọn</option>
                         <option value="Birthday">Tổ chức sinh nhật</option>
                         <option value="Teambuilding">Teambuilding</option>
                         <option value="Wedding">Tiệc cưới nhỏ</option>
