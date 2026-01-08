@@ -99,6 +99,11 @@
                             <div class="collapse @(currentController == "Rooms" ? "show" : "")" id="roomsMenu">
                                 <ul class="nav nav-collapse">
                                     <li>
+                                        <a asp-area="Admin" asp-controller="Categories" asp-action="Index">
+                                            <span class="sub-item">Danh mục phòng</span>
+                                        </a>
+                                    </li>
+                                    <li>
                                         <a asp-area="Admin" asp-controller="Rooms" asp-action="Index">
                                             <span class="sub-item">Danh sách phòng</span>
                                         </a>
@@ -106,6 +111,11 @@
                                     <li>
                                         <a asp-area="Admin" asp-controller="Rooms" asp-action="Create">
                                             <span class="sub-item">Thêm mới phòng</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-area="Admin" asp-controller="Roomimages" asp-action="index">
+                                            <span class="sub-item">Ảnh phòng</span>
                                         </a>
                                     </li>
                                 </ul>

@@ -30,39 +30,51 @@
     <section id="booking" class="booking-wrapper">
         <div class="container">
             <div class="booking-inner shadow-lg">
-                <form class="row g-0 align-items-center" action="/LienHe" method="GET">
+                <form class="row g-0 align-items-center" asp-controller="Booking" asp-action="Index" method="GET">
+
                     <div class="col-md-3 border-end">
                         <div class="p-3">
-                            <label class="small text-uppercase fw-bold">Ngày đến </label>
-                            <input type="date" class="form-control border-0 p-0" name="check_in" placeholder="Ngày đến">
+                            <label class="small text-uppercase fw-bold text-muted">Ngày đến</label>
+                            <input type="date" class="form-control border-0 p-0 fw-bold" name="checkIn"
+                                   value="@DateTime.Now.ToString("yyyy-MM-dd")" required>
                         </div>
                     </div>
+
                     <div class="col-md-3 border-end">
                         <div class="p-3">
-                            <label class="small text-uppercase fw-bold">Ngày đi </label>
-                            <input type="date" class="form-control border-0 p-0" name="check_out" placeholder="Ngày đi">
+                            <label class="small text-uppercase fw-bold text-muted">Ngày đi</label>
+                            <input type="date" class="form-control border-0 p-0 fw-bold" name="checkOut"
+                                   value="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" required>
                         </div>
                     </div>
+
                     <div class="col-md-2 border-end">
                         <div class="p-3">
-                            <label class="small text-uppercase fw-bold">Người lớn</label>
-                            <select class="form-select border-0 p-0" name="adult_count">
-                                <option value="1">1 Người lớn </option>
-                                <option value="2">2 Người lớn </option>
+                            <label class="small text-uppercase fw-bold text-muted">Người lớn</label>
+                            <select class="form-select border-0 p-0 fw-bold cursor-pointer" name="adults">
+                                <option value="1">1 Người lớn</option>
+                                <option value="2" selected>2 Người lớn</option>
+                                <option value="3">3 Người lớn</option>
+                                <option value="4">4 Người lớn</option>
                             </select>
                         </div>
                     </div>
+
                     <div class="col-md-2 border-end">
                         <div class="p-3">
-                            <label class="small text-uppercase fw-bold">Trẻ em </label>
-                            <select class="form-select border-0 p-0" name="children_count">
-                                <option value="0">0 Trẻ em</option>
+                            <label class="small text-uppercase fw-bold text-muted">Trẻ em</label>
+                            <select class="form-select border-0 p-0 fw-bold cursor-pointer" name="children">
+                                <option value="0" selected>0 Trẻ em</option>
                                 <option value="1">1 Trẻ em</option>
+                                <option value="2">2 Trẻ em</option>
                             </select>
                         </div>
                     </div>
+
                     <div class="col-md-2 p-0">
-                        <button type="submit" class="btn btn-dark w-100 h-100 rounded-0 py-4 fw-bold">ĐẶT PHÒNG</button>
+                        <button type="submit" class="btn btn-dark w-100 h-100 rounded-0 py-4 fw-bold text-gold-hover" style="background-color: #212529;">
+                            ĐẶT PHÒNG
+                        </button>
                     </div>
                 </form>
             </div>
@@ -78,9 +90,9 @@
             @foreach (var room in Model)
             {
                 <div class="col-md-4 mb-4" data-aos="fade-up">
-                    <a asp-controller="Bookings" asp-action="Details" asp-route-id="@room.Id" class="text-decoration-none text-white">
+                    <a asp-controller="Booking" asp-action="Index" asp-route-roomId="@room.Id" class="text-decoration-none text-white">
                         <div class="room-item position-relative overflow-hidden shadow-sm">
-                            <img src="~/images/room-sample.jpg" class="img-fluid transition-img" alt="@room.RoomNumber">
+                            <img src="@room.ImageUrl" class="img-fluid transition-img" alt="@room.RoomNumber">
 
                             <div class="room-overlay"></div>
 

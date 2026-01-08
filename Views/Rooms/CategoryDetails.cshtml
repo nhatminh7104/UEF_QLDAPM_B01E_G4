@@ -1,0 +1,131 @@
+﻿@model VillaManagementWeb.ViewModels.RoomCategoryViewModel
+
+@{
+    ViewData["Title"] = Model.CategoryName;
+    Layout = "~/Views/Shared/_Layout_Tailwind.cshtml";
+}
+<link href="d:\web-core\qldapm\wwwroot\css\room-details.css" rel="stylesheet" />
+
+<div class="custom-room-page room-category-page bg-off-white w-100 full-width-breakout top-0">
+
+    <div class="relative w-full h-[60vh] md:h-[80vh] bg-gray-900">
+
+        <img src="@Model.BannerImage" alt="@Model.CategoryName" class="w-full h-full object-cover brightness-75">
+
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+            <h1 class="text-white text-5xl md:text-7xl tracking-wide mb-4 drop-shadow-lg">@Model.CategoryName</h1>
+
+            <div class="flex flex-wrap justify-center gap-4 md:gap-6 text-white/90 text-xs md:text-sm uppercase tracking-widest mt-4 font-bold">
+                <a href="#intro"
+                   class="text-gold no-underline hover:text-gold transition-colors">
+                    Giới thiệu
+                </a>
+
+                <span class="hidden md:inline">•</span>
+                @foreach (var r in Model.Rooms.Take(3))
+                {
+                    <a href="#room-@r.Name.Replace(" ", "")"
+                       class="text-gold no-underline hover:text-gold transition-colors">
+                        @r.Name
+                    </a>
+
+                    <span class="hidden md:inline last:hidden">•</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div id="intro" class="container py-5 my-5">
+        <div class="text-center max-w-3xl mx-auto mb-5">
+            <h2 class="text-4xl md:text-5xl text-gold mb-4">Giới thiệu</h2>
+
+            <div class="text-lg leading-relaxed room-description">
+                @Html.Raw(Model.Description)
+            </div>
+        </div>
+        <div class="row g-4">
+            @if (Model.GalleryImages != null)
+            {
+                foreach (var img in Model.GalleryImages)
+                {
+                    <div class="col-md-4">
+                        <div class="aspect-[3/4] overflow-hidden rounded shadow-sm">
+                            <img src="@img" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700 ease-in-out">
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="space-y-24 pb-20">
+        @for (int i = 0; i < Model.Rooms.Count; i++)
+        {
+            var room = Model.Rooms[i];
+            var directionClass = (i % 2 == 0) ? "flex-col md:flex-row" : "flex-col md:flex-row-reverse";
+            <div id="room-@room.Name.Replace(" ", "")" class="container">
+                <div class="text-center mb-5"><h3 class="text-4xl md:text-5xl text-gold mb-2">@room.Name</h3>...</div>
+                <div class="flex @directionClass gap-8 md:gap-16 items-center">
+                    <div class="w-full md:w-1/2">
+                        <div class="aspect-[4/3] overflow-hidden shadow-md rounded">
+                            <img src="@room.ImageUrl" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2 flex flex-col justify-center items-start pl-md-4">
+                        <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-[#666] w-full mb-6">
+
+                            <div class="flex items-center gap-2 py-2 border-b border-gray-100 col-span-2">
+                                <i class="fas fa-user-friends text-[#A67C52]"></i> <span>
+                                    <strong>@room.CapacityAdults</strong> người lớn
+                                    @if (room.CapacityChildren > 0)
+                                    {
+                                        <span>& <strong>@room.CapacityChildren</strong> trẻ em</span>
+                                    }
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-2 py-2 border-b border-gray-100">
+                                <i class="fas fa-ruler-combined text-[#A67C52]"></i>
+                                <span><strong>@room.Area</strong> m²</span>
+                            </div>
+
+                            <div class="flex items-center gap-2 py-2 border-b border-gray-100">
+                                <i class="fas fa-door-open text-[#A67C52]"></i>
+                                <span><strong>@room.Bedrooms</strong> PN</span>
+                            </div>
+
+                            <div class="flex items-center gap-2 py-2 border-b border-gray-100 col-span-2">
+                                <i class="fas fa-bed text-[#A67C52]"></i>
+                                <span><strong>@room.Beds</strong> giường</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 mt-2">
+                            <a asp-controller="Booking"
+                               asp-action="Index"
+                               asp-route-roomId="@room.Id"
+                               class="px-8 py-3 bg-[#A67C52] text-white text-xs font-bold uppercase tracking-widest no-underline hover:opacity-90 transition-opacity">
+                                Đặt phòng &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="container py-5 border-top border-[#E5E0D8]">
+        <h2 class="text-4xl md:text-5xl text-gold text-center mb-12">Tiện nghi đã bao gồm</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                @foreach (var amenity in Model.Amenities)
+                {
+                    var parts = amenity.Split('\n');
+                    <div class="text-center py-4 border-b border-[#E5E0D8] last:border-0">
+                        <h4 class="text-xl md:text-2xl text-gold mb-1">@parts[0]</h4>
+                        <p class="text-sm text-[#888] font-light mb-0">@(parts.Length > 1 ? parts[1] : "")</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

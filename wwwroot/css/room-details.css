@@ -1,0 +1,63 @@
+﻿/* wwwroot/css/room-details.css */
+
+/* 1. Ép thanh Menu trong suốt và nằm đè lên ảnh */
+body:has(.room-category-page) nav.navbar {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-bottom: none !important;
+    z-index: 9999;
+}
+
+/* 2. MÀU CHỮ CƠ BẢN: TRẮNG */
+body:has(.room-category-page) .navbar-nav .nav-link,
+body:has(.room-category-page) .navbar-brand {
+    color: #fff !important;
+}
+
+    /* 3. MÀU CHỮ KHI ACTIVE HOẶC HOVER: VÀNG */
+    body:has(.room-category-page) .navbar-nav .nav-link.active,
+    body:has(.room-category-page) .navbar-nav .nav-link:hover,
+    body:has(.room-category-page) .navbar-nav .nav-link:focus {
+        color: #A67C52 !important; /* Màu vàng đồng */
+    }
+
+/* 4. Dropdown Menu (Nền đen mờ) */
+body:has(.room-category-page) .dropdown-menu {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+body:has(.room-category-page) .dropdown-item {
+    color: #fff !important;
+}
+
+    body:has(.room-category-page) .dropdown-item:hover {
+        background-color: #A67C52;
+        color: #fff !important;
+    }
+
+/* Các class giao diện nội dung */
+.custom-room-page h1, .custom-room-page h2 {
+    font-family: 'Playfair Display', serif;
+}
+
+.custom-room-page {
+    font-family: 'Manrope', sans-serif;
+    color: #5C5C5C;
+}
+
+.bg-off-white {
+    background-color: #FDFBF7;
+}
+
+.full-width-breakout {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+}

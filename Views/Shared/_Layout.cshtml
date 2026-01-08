@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@inject VillaManagementWeb.Services.Implementations.LayoutService _layoutService
+@{
+    // 2. Lấy dữ liệu danh sách phòng
+    var roomCategories = await _layoutService.GetRoomCategories();
+}
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -10,9 +15,60 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        @@media all and (min-width: 992px) {
+            .dropdown-menu
+        {
+            background-color: rgba(0, 0, 0, 0.85); /* Nền đen mờ */
+            border: none;
+            border-radius: 0;
+            margin-top: 0; /* Sát vào thanh menu chính */
+        }
+
+        /* Chữ trong menu con */
+        .dropdown-item {
+            color: #fff !important; /* Chữ trắng */
+            padding: 12px 20px;
+            transition: all 0.3s;
+        }
+
+            /* Khi di chuột vào mục con -> đổi màu nền */
+            .dropdown-item:hover {
+                background-color: #A0734F; /* Màu vàng đồng chủ đạo */
+                color: #fff !important;
+                padding-left: 25px; /* Hiệu ứng đẩy chữ sang phải */
+            }
+            /* Ẩn mặc định */
+            .navbar .nav-item .dropdown-menu
+
+        {
+            display: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+            display: block; /* Cần block để transition hoạt động, nhưng dùng visibility để ẩn */
+        }
+
+        /* Hiện khi Hover */
+        .navbar .nav-item:hover .dropdown-menu {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+            margin-top: 0;
+        }
+
+        }
+
+        /* Fix lỗi mũi tên dropdown bị lệch */
+        .dropdown-toggle::after {
+            vertical-align: middle;
+        }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 
 
@@ -37,9 +93,38 @@
                     <li class="nav-item">
                         <a class="nav-link @(currentController == "About" ? "active" : "")" href="/About">Giới Thiệu</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link @(currentController == "Rooms" ? "active" : "")" href="/Rooms">Giới Thiệu
-                            Phòng</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle @(currentController == "Rooms" ? "active" : "")"
+                           href="#"
+                           id="navbarDropdown"
+                           role="button"
+                           
+                           aria-expanded="false">
+                            Giới thiệu phòng
+                        </a>
+
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            @if (roomCategories != null && roomCategories.Any())
+                            {
+                                foreach (var cat in roomCategories)
+                                {
+                                    <li>
+                                        <a class="dropdown-item"
+                                           asp-controller="Rooms"
+                                           asp-action="CategoryDetails"
+                                           asp-route-categoryName="@cat">
+                                            @cat
+                                        </a>
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                <li><span class="dropdown-item text-muted">Đang cập nhật...</span></li>
+                            }
+
+                            <li><hr class="dropdown-divider"></li>                           
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link @(currentController == "Events" ? "active" : "")" href="/events">Dịch vụ &
@@ -62,7 +147,7 @@
         </div>
     </nav>
 
-    <main role="main">
+    <main id="tw-scope">
         @RenderBody()
     </main>
 
@@ -128,12 +213,11 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 
 </html>
-<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     AOS.init({ duration: 1000, once: true });
+</script>

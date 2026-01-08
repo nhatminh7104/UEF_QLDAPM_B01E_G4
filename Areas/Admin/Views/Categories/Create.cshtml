@@ -1,0 +1,78 @@
+﻿@model VillaManagementWeb.Models.RoomCategory
+
+@{
+    ViewData["Title"] = "Thêm danh mục mới";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-inner py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">Thêm Danh Mục Mới</h2>
+        <a asp-action="Index" class="btn btn-outline-secondary">Quay lại</a>
+    </div>
+
+    <form asp-action="Create" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tên danh mục <span class="text-danger">*</span></label>
+                            <input asp-for="Name" class="form-control" placeholder="VD: Wooden House" required />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                            <small class="text-muted fst-italic">Tên này sẽ hiển thị trên Menu và URL.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mô tả ngắn</label>
+                            <textarea asp-for="ShortDescription" class="form-control" rows="3" placeholder="Đoạn giới thiệu nhỏ..."></textarea>
+                            <span asp-validation-for="ShortDescription" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Bài viết giới thiệu chi tiết</label>
+                            <textarea id="Description" asp-for="Description" class="form-control"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-light"><h6 class="mb-0 fw-bold">Ảnh Banner (Đầu trang)</h6></div>
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <img id="previewImg" src="/images/no-image.png" class="img-fluid rounded border mb-2" style="max-height: 200px;" />
+                        </div>
+                        <input type="file" name="bannerFile" class="form-control" accept="image/*" onchange="document.getElementById('previewImg').src = window.URL.createObjectURL(this.files[0])" />
+                        <span asp-validation-for="BannerUrl" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light"><h6 class="mb-0 fw-bold">Danh sách tiện ích chung</h6></div>
+                    <div class="card-body">
+                        <textarea asp-for="Amenities" class="form-control" rows="8" placeholder="Wifi miễn phí&#10;Bể bơi vô cực&#10;View núi rừng..."></textarea>
+                        <small class="text-muted d-block mt-2">
+                            <i class="fas fa-info-circle"></i> Nhập mỗi tiện ích trên <b>một dòng</b>. Hệ thống sẽ tự động tách ra để hiển thị đẹp mắt.
+                        </small>
+                        <span asp-validation-for="Amenities" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end mt-3 mb-5">
+            <button type="submit" class="btn btn-primary px-5 btn-lg">Lưu danh mục</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    @{
+        await Html.RenderPartialAsync("_Summernote", null, new ViewDataDictionary(ViewData) { { "height", 400 }, { "selector", "#Description" } });
+    }
+}

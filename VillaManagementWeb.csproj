@@ -6,23 +6,22 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-<ItemGroup>
-  <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.*" />
-  <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.22" />
-  <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.*" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.22" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.*" />
 
-  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.*" />
-  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.*" />
-  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.22">
-    <PrivateAssets>all</PrivateAssets>
-  </PackageReference>
-  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.*">
-    <PrivateAssets>all</PrivateAssets>
-  </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.22">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.*">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
 
-  <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.22" />
-</ItemGroup>
-
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.22" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\images\hero-bg.jpg" />
@@ -31,10 +30,13 @@
   <ItemGroup>
     <Folder Include="Repositories\Implementations\" />
     <Folder Include="Repositories\Interfaces\" />
+    
     <Folder Include="wwwroot\images\images&amp;videos\" />
     <Folder Include="wwwroot\images\contacts\" />
     <Folder Include="wwwroot\images\introduces\" />
+
+    <Folder Include="wwwroot\images\events\" />
+    <Folder Include="wwwroot\images\categories\" />
   </ItemGroup>
 
 </Project>
-

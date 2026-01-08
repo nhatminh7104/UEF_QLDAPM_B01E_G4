@@ -4,6 +4,7 @@ using System.Security.Cryptography.Pkcs;
 using VillaManagementWeb.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
+
 namespace VillaManagementWeb.Data
 {
     public class VillaDbContext : IdentityDbContext<User>
@@ -17,6 +18,7 @@ namespace VillaManagementWeb.Data
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Tour> Tours { get; set; }
         public DbSet<TourBooking> TourBookings { get; set; }
+        public DbSet<RoomCategory> RoomCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +32,11 @@ namespace VillaManagementWeb.Data
             modelBuilder.Entity<Room>().HasIndex(r => r.RoomNumber).IsUnique();
 
             // 1. Seed Data cho Room (Bổ sung RatingStars) 
+            modelBuilder.Entity<RoomCategory>().HasData(
+                new RoomCategory { Id = 1, Name = "Wooden House", BannerUrl = "..." },
+                new RoomCategory { Id = 2, Name = "Khu Villa", BannerUrl = "..." },
+                new RoomCategory { Id = 3, Name = "Rose House", BannerUrl = "..." }
+            );
             modelBuilder.Entity<Room>().HasData(
                 new Room
                 {
@@ -45,7 +52,8 @@ namespace VillaManagementWeb.Data
                     HasWifi = true,
                     HasBreakfast = true,
                     HasPool = true,
-                    HasTowel = true
+                    HasTowel = true,
+                    RoomCategoryId = 2
                 },
                 new Room
                 {
@@ -60,7 +68,8 @@ namespace VillaManagementWeb.Data
                     HasWifi = true,
                     HasBreakfast = true,
                     HasPool = true,
-                    HasTowel = true
+                    HasTowel = true,
+                    RoomCategoryId = 1
                 }
             );
 

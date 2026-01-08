@@ -15,6 +15,7 @@
         </nav>
 
         <form asp-action="Create" enctype="multipart/form-data">
+            <input type="hidden" name="coverIndex" id="coverIndex" value="0" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
@@ -54,6 +55,13 @@
                             <span asp-validation-for="Type" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">
+                            <label class="form-label fw-bold">Danh mục (Category) <span class="text-danger">*</span></label>
+                            <select asp-for="RoomCategoryId" class="form-select" asp-items="ViewBag.RoomCategoryId">
+                                <option value="">-- Chọn danh mục --</option>
+                            </select>
+                            <span asp-validation-for="RoomCategoryId" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
                             <label class="form-label fw-bold">Giá mỗi đêm <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input asp-for="PricePerNight" class="form-control py-2 shadow-none" placeholder="0" />
@@ -85,6 +93,31 @@
                                 <i class="fas fa-star cursor-pointer star-item" data-value="4"></i>
                                 <i class="far fa-star cursor-pointer star-item" data-value="5"></i>
                                 <span class="ms-2 text-muted small" id="ratingText">(4.0)</span>
+                            </div>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Số phòng ngủ</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-door-open"></i></span>
+                                    <input asp-for="Bedrooms" class="form-control" type="number" min="1" placeholder="VD: 1" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Số giường</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-bed"></i></span>
+                                    <input asp-for="Beds" class="form-control" type="number" min="1" placeholder="VD: 2" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Trẻ em tối đa</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-child"></i></span>
+                                    <input asp-for="CapacityChildren" class="form-control" type="number" min="0" placeholder="VD: 1" />
+                                </div>
                             </div>
                         </div>
                         <div class="col-12 mt-4">
@@ -126,27 +159,6 @@
                     <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
                         <i class="fas fa-file-alt text-primary"></i> Mô tả chi tiết
                     </h5>
-                    <div class="form-group">
-                        <label class="form-label d-block">Tiện ích đi kèm</label>
-                        <div class="d-flex gap-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" asp-for="HasWifi" id="wifi">
-                                <label class="form-check-label" for="wifi">Wifi miễn phí</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" asp-for="HasBreakfast" id="breakfast">
-                                <label class="form-check-label" for="breakfast">Bữa sáng</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" asp-for="HasPool" id="pool">
-                                <label class="form-check-label" for="pool">Hồ bơi</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" asp-for="HasTowel" id="towel">
-                                <label class="form-check-label" for="towel">Khăn tắm/Đồ dùng</label>
-                            </div>
-                        </div>
-                    </div>
                     <div class="form-group mb-5 p-0">
                         <textarea id="Description" asp-for="Description" class="form-control"></textarea>
                     </div>
@@ -229,22 +241,29 @@
             renderPreview();
         }
 
+                // Thay thế đoạn script cũ trong Create.cshtml bằng đoạn này
         function renderPreview() {
             const container = document.getElementById('imagePreviewContainer');
-            container.innerHTML = ''; // Xóa trắng để vẽ lại chính xác thứ tự
-
+            container.innerHTML = '';
             const files = allFilesDT.files;
+            const currentCoverIndex = parseInt(document.getElementById('coverIndex').value);
 
             for (let i = 0; i < files.length; i++) {
                 const reader = new FileReader();
-                const fileIndex = i; // Giữ chỉ số cố định cho mỗi lần lặp
+                const fileIndex = i;
 
                 reader.onload = function (e) {
+                    const isCover = fileIndex === currentCoverIndex;
                     const html = `
                         <div class="col-md-3 col-6 mb-3 image-item">
-                            <div class="position-relative rounded overflow-hidden shadow-sm border" style="aspect-ratio: 4/3;">
+                            <div class="position-relative rounded overflow-hidden shadow-sm border ${isCover ? 'border-primary border-3' : ''}" style="aspect-ratio: 4/3;">
                                 <img src="${e.target.result}" class="w-100 h-100 object-fit-cover" />
-                                ${fileIndex === 0 ? '<span class="position-absolute top-0 start-0 m-2 badge bg-primary shadow-sm">COVER</span>' : ''}
+
+                                <span class="position-absolute top-0 start-0 m-2 badge ${isCover ? 'bg-primary' : 'bg-secondary cursor-pointer'}"
+                                      onclick="setAsCover(${fileIndex})">
+                                    ${isCover ? 'COVER' : 'LÀM ĐẠI DIỆN'}
+                                </span>
+
                                 <div class="position-absolute top-0 end-0 m-2">
                                     <button type="button" class="btn btn-sm btn-danger p-1 rounded-circle shadow"
                                             onclick="removeImage(${fileIndex})">
@@ -259,23 +278,34 @@
             }
         }
 
+        // Hàm mới để thay đổi ảnh đại diện
+        function setAsCover(index) {
+            document.getElementById('coverIndex').value = index;
+            renderPreview();
+        }
+
+        // Cập nhật lại hàm xóa để reset coverIndex nếu cần
         function removeImage(fileIndex) {
             const input = document.getElementById('imageInput');
             const newDT = new DataTransfer();
             const files = allFilesDT.files;
+            let currentCover = parseInt(document.getElementById('coverIndex').value);
 
-            // Lọc bỏ file tại vị trí fileIndex
             for (let i = 0; i < files.length; i++) {
                 if (i !== fileIndex) {
                     newDT.items.add(files[i]);
                 }
             }
 
-            // Cập nhật lại bộ nhớ tạm và thẻ input
+            // Điều chỉnh lại coverIndex sau khi xóa
+            if (fileIndex === currentCover) {
+                document.getElementById('coverIndex').value = 0; // Reset về ảnh đầu tiên
+            } else if (fileIndex < currentCover) {
+                document.getElementById('coverIndex').value = currentCover - 1;
+            }
+
             allFilesDT = newDT;
             input.files = allFilesDT.files;
-
-            // Vẽ lại giao diện
             renderPreview();
         }
 
