@@ -367,5 +367,9 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 # Ignore appsettings
-**/appsettings.json
-**/appsettings.*.json
+**/appsettings.Development.json
+**/appsettings.Local.json
+
+# Thư viện phía Client
+wwwroot/lib/
+node_modules/
