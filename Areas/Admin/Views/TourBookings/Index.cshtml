@@ -1,72 +1,89 @@
 ﻿@model IEnumerable<VillaManagementWeb.Models.TourBooking>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản lý đặt Tour";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <h4 class="card-title">Danh sách đặt Tour</h4>
+                <a asp-action="Create" class="btn btn-primary btn-round ms-auto">
+                    <i class="fa fa-plus"></i> Thêm đặt Tour
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="tour-bookings-table" class="display table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Tour</th>
+                            <th>Khách hàng</th>
+                            <th>Ngày khởi hành</th>
+                            <th>Số khách</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th style="width: 10%">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold text-primary">@item.Tour?.TourName</td>
+                                <td>
+                                    @item.CustomerName <br />
+                                    <small class="text-muted">@item.ContactInfo</small>
+                                </td>
+                                <td>@item.TourDate.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <span class="badge badge-count">@item.NumberOfPeople Người</span>
+                                </td>
+                                <td class="fw-bold text-success">@item.TotalPrice.ToString("N0") đ</td>
+                                <td>
+                                    @if (item.Status == "Confirmed")
+                                    {
+                                        <span class="badge badge-success">Đã xác nhận</span>
+                                    }
+                                    else if (item.Status == "Cancelled")
+                                    {
+                                        <span class="badge badge-danger">Đã hủy</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-warning">Đang chờ</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="form-button-action">
+                                        <a asp-action="Edit" asp-route-id="@item.Id"
+                                            class="btn btn-link btn-primary btn-lg">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-link btn-danger">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Tour)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TourDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumberOfPeople)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ContactInfo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tour.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TourDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberOfPeople)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ContactInfo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CustomerName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#tour-bookings-table").DataTable({
+                pageLength: 10,
+                language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json' }
+            });
+        });
+    </script>
 }
-    </tbody>
-</table>

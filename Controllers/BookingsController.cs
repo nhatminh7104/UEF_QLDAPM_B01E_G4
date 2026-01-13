@@ -9,17 +9,17 @@ using VillaManagementWeb.Data;
 
 namespace VillaManagementWeb.Controllers
 {
-    public class BookingsController : Controller
+    public class RoomBookingsController : Controller
     {
         private readonly VillaDbContext _context;
 
-        public BookingsController(VillaDbContext context)
+        public RoomBookingsController(VillaDbContext context)
         {
             _context = context;
         }
 
 
-        // GET: Bookings/Details/5
+        // GET: RoomBookings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -29,7 +29,7 @@ namespace VillaManagementWeb.Controllers
 
             // tìm thông tin PHÒNG
             var room = await _context.Rooms
-                .Include(r => r.RoomImages) 
+                .Include(r => r.RoomImages)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (room == null)
@@ -42,9 +42,9 @@ namespace VillaManagementWeb.Controllers
         }
 
 
-        private bool BookingExists(int id)
+        private bool RoomBookingExists(int id)
         {
-            return _context.Bookings.Any(e => e.Id == id);
+            return _context.RoomBookings.Any(e => e.Id == id);
         }
     }
 }

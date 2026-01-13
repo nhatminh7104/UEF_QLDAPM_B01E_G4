@@ -1,66 +1,94 @@
 ﻿@model IEnumerable<VillaManagementWeb.Models.Event>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản lý sự kiện";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <h4 class="card-title">Danh sách sự kiện</h4>
+                <a asp-area="Admin" asp-controller="Events" asp-action="Create"
+                    class="btn btn-primary btn-round ms-auto">
+                    <i class="fa fa-plus"></i> Thêm sự kiện mới
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="events-table" class="display table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Hình ảnh</th>
+                            <th>Tên sự kiện</th>
+                            <th>Ngày tổ chức</th>
+                            <th>Địa điểm</th>
+                            <th>Số vé</th>
+                            <th style="width: 10%">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/no-image.png" : item.ImageUrl)"
+                                        alt="Event" class="rounded" style="width: 60px; height: 45px; object-fit: cover;" />
+                                </td>
+                                <td>
+                                    <span class="fw-bold">@item.Title</span>
+                                    <br />
+                                    <small class="text-muted text-truncate"
+                                        style="max-width: 150px; display: inline-block;">
+                                        @item.Description
+                                    </small>
+                                </td>
+                                <td>@item.EventDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    <span class="badge badge-info">@item.Location</span>
+                                </td>
+                                <td>
+                                    <span class="fw-bold">@item.TotalTickets</span> Vé
+                                </td>
+                                <td>
+                                    <div class="form-button-action">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-link btn-primary btn-lg"
+                                            data-bs-toggle="tooltip" title="Chỉnh sửa">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-link btn-info btn-lg"
+                                            data-bs-toggle="tooltip" title="Chi tiết">
+                                            <i class="fa fa-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-link btn-danger"
+                                            data-bs-toggle="tooltip" title="Xóa">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EventDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalTickets)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EventDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalTickets)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#events-table").DataTable({
+                pageLength: 10,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json'
+                },
+                columnDefs: [
+                    { orderable: false, targets: [0, 5] } // Tắt sắp xếp cho cột Hình ảnh và Thao tác
+                ]
+            });
+        });
+    </script>
 }
-    </tbody>
-</table>

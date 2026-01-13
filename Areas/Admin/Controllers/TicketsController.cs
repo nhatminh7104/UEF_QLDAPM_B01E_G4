@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using VillaManagementWeb.Data;
 using VillaManagementWeb.Models;
+using VillaManagementWeb.Admin.Services.Interfaces;
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
@@ -15,153 +10,86 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class TicketsController : Controller
     {
-        private readonly VillaDbContext _context;
+        private readonly ITicketsService _ticketsService;
+        private readonly IEventsService _eventsService;
 
-        public TicketsController(VillaDbContext context)
+        public TicketsController(ITicketsService ticketsService, IEventsService eventsService)
         {
-            _context = context;
+            _ticketsService = ticketsService;
+            _eventsService = eventsService;
         }
 
-        // GET: Admin/Tickets
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index() => View(await _ticketsService.GetAllTicketsAsync());
+
+        public async Task<IActionResult> Details(int id)
         {
-            var villaDbContext = _context.Tickets.Include(t => t.Event);
-            return View(await villaDbContext.ToListAsync());
+            var ticket = await _ticketsService.GetTicketByIdAsync(id);
+            return ticket == null ? NotFound() : View(ticket);
         }
 
-        // GET: Admin/Tickets/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Create()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ticket = await _context.Tickets
-                .Include(t => t.Event)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
-
-            return View(ticket);
-        }
-
-        // GET: Admin/Tickets/Create
-        public IActionResult Create()
-        {
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Id");
+            ViewData["EventId"] = new SelectList(await _eventsService.GetAllEventsAsync(), "Id", "Title");
             return View();
         }
 
-        // POST: Admin/Tickets/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,EventId,TicketType,Price,CustomerEmail,CustomerName,Quantity,BookingDate,QRCode,IsUsed")] Ticket ticket)
+        public async Task<IActionResult> Create(Ticket ticket)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(ticket);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _ticketsService.CreateTicketAsync(ticket);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
             }
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Id", ticket.EventId);
+            ViewData["EventId"] = new SelectList(await _eventsService.GetAllEventsAsync(), "Id", "Title", ticket.EventId);
             return View(ticket);
         }
 
-        // GET: Admin/Tickets/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var ticket = await _ticketsService.GetTicketByIdAsync(id);
+            if (ticket == null) return NotFound();
 
-            var ticket = await _context.Tickets.FindAsync(id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Id", ticket.EventId);
+            ViewData["EventId"] = new SelectList(await _eventsService.GetAllEventsAsync(), "Id", "Title", ticket.EventId);
             return View(ticket);
         }
 
-        // POST: Admin/Tickets/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,EventId,TicketType,Price,CustomerEmail,CustomerName,Quantity,BookingDate,QRCode,IsUsed")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, Ticket ticket)
         {
-            if (id != ticket.Id)
-            {
-                return NotFound();
-            }
+            if (id != ticket.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(ticket);
-                    await _context.SaveChangesAsync();
+                    await _ticketsService.UpdateTicketAsync(ticket);
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
-                    if (!TicketExists(ticket.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError("", ex.Message);
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Id", ticket.EventId);
+            ViewData["EventId"] = new SelectList(await _eventsService.GetAllEventsAsync(), "Id", "Title", ticket.EventId);
             return View(ticket);
         }
 
-        // GET: Admin/Tickets/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ticket = await _context.Tickets
-                .Include(t => t.Event)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
-
-            return View(ticket);
-        }
-
-        // POST: Admin/Tickets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ticket = await _context.Tickets.FindAsync(id);
-            if (ticket != null)
-            {
-                _context.Tickets.Remove(ticket);
-            }
-
-            await _context.SaveChangesAsync();
+            await _ticketsService.DeleteTicketAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TicketExists(int id)
-        {
-            return _context.Tickets.Any(e => e.Id == id);
         }
     }
 }

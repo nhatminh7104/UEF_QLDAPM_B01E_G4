@@ -10,20 +10,20 @@
         public int RatingStars { get; set; }
         public bool IsActive { get; set; } = true;
         public string? Description { get; set; }
-        public string? ImageUrl { get; set; }    
+        public string? ImageUrl { get; set; }
         public double? SquareFootage { get; set; }
         public bool HasWifi { get; set; } = true;
         public bool HasBreakfast { get; set; } = true;
         public bool HasPool { get; set; } = true;
         public bool HasTowel { get; set; } = true;
 
-        // Quan hệ 1-N với Booking, RoomImages
-        public ICollection<Booking> Bookings { get; set; } = null!;
+        // Quan hệ 1-N với RoomBooking, RoomImages
+        public ICollection<RoomBooking> RoomBookings { get; set; } = null!;
         public ICollection<RoomImage> RoomImages { get; set; } = new List<RoomImage>();
         public Room()
         {
-            RoomImages = new List<RoomImage>(); 
-            Bookings = new List<Booking>();
+            RoomImages = new List<RoomImage>();
+            RoomBookings = new List<RoomBooking>();
         }
     }
 }

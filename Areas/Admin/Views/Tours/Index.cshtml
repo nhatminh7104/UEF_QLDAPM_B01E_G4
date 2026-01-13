@@ -1,60 +1,77 @@
 ﻿@model IEnumerable<VillaManagementWeb.Models.Tour>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản lý Tour du lịch";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <h4 class="card-title">Danh sách các Tour</h4>
+                <a asp-action="Create" class="btn btn-primary btn-round ms-auto">
+                    <i class="fa fa-plus"></i> Thêm Tour mới
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="tours-table" class="display table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Ảnh</th>
+                            <th>Tên Tour</th>
+                            <th>Giá / Khách</th>
+                            <th>Thời lượng</th>
+                            <th>Mô tả</th>
+                            <th style="width: 10%">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/no-image.png" : item.ImageUrl)"
+                                        class="rounded" style="width: 70px; height: 50px; object-fit: cover;" />
+                                </td>
+                                <td class="fw-bold">@item.TourName</td>
+                                <td class="text-primary fw-bold">@item.PricePerPerson.ToString("N0") đ</td>
+                                <td>
+                                    <span class="badge badge-count">@item.DurationHours giờ</span>
+                                </td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 200px;">@item.Description</div>
+                                </td>
+                                <td>
+                                    <div class="form-button-action">
+                                        <a asp-action="Edit" asp-route-id="@item.Id"
+                                            class="btn btn-link btn-primary btn-lg">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-link btn-danger">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TourName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PricePerPerson)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DurationHours)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TourName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PricePerPerson)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DurationHours)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#tours-table").DataTable({
+                pageLength: 10,
+                language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json' },
+                columnDefs: [{ orderable: false, targets: [0, 5] }]
+            });
+        });
+    </script>
 }
-    </tbody>
-</table>

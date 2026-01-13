@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using VillaManagementWeb.Data;
 using VillaManagementWeb.Models;
+using VillaManagementWeb.Admin.Services.Interfaces;
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
@@ -15,146 +9,68 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class ToursController : Controller
     {
-        private readonly VillaDbContext _context;
+        private readonly IToursService _toursService;
 
-        public ToursController(VillaDbContext context)
+        public ToursController(IToursService toursService)
         {
-            _context = context;
+            _toursService = toursService;
         }
 
-        // GET: Admin/Tours
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index() => View(await _toursService.GetAllToursAsync());
+
+        public async Task<IActionResult> Details(int id)
         {
-            return View(await _context.Tours.ToListAsync());
+            var tour = await _toursService.GetTourByIdAsync(id);
+            return tour == null ? NotFound() : View(tour);
         }
 
-        // GET: Admin/Tours/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        public IActionResult Create() => View();
 
-            var tour = await _context.Tours
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (tour == null)
-            {
-                return NotFound();
-            }
-
-            return View(tour);
-        }
-
-        // GET: Admin/Tours/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Admin/Tours/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TourName,Description,PricePerPerson,DurationHours,ImageUrl")] Tour tour)
+        public async Task<IActionResult> Create(Tour tour, IFormFile? imageFile)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(tour);
-                await _context.SaveChangesAsync();
+                await _toursService.CreateTourAsync(tour, imageFile);
                 return RedirectToAction(nameof(Index));
             }
             return View(tour);
         }
 
-        // GET: Admin/Tours/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tour = await _context.Tours.FindAsync(id);
-            if (tour == null)
-            {
-                return NotFound();
-            }
-            return View(tour);
+            var tour = await _toursService.GetTourByIdAsync(id);
+            return tour == null ? NotFound() : View(tour);
         }
 
-        // POST: Admin/Tours/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TourName,Description,PricePerPerson,DurationHours,ImageUrl")] Tour tour)
+        public async Task<IActionResult> Edit(int id, Tour tour, IFormFile? imageFile)
         {
-            if (id != tour.Id)
-            {
-                return NotFound();
-            }
+            if (id != tour.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(tour);
-                    await _context.SaveChangesAsync();
+                    await _toursService.UpdateTourAsync(tour, imageFile);
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
-                    if (!TourExists(tour.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError("", ex.Message);
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(tour);
         }
 
-        // GET: Admin/Tours/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tour = await _context.Tours
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (tour == null)
-            {
-                return NotFound();
-            }
-
-            return View(tour);
-        }
-
-        // POST: Admin/Tours/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tour = await _context.Tours.FindAsync(id);
-            if (tour != null)
-            {
-                _context.Tours.Remove(tour);
-            }
-
-            await _context.SaveChangesAsync();
+            await _toursService.DeleteTourAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TourExists(int id)
-        {
-            return _context.Tours.Any(e => e.Id == id);
         }
     }
 }

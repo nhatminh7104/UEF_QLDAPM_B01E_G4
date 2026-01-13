@@ -1,6 +1,153 @@
-﻿@{
-    ViewData["Title"] = "Dashboard";
-    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
-}
+﻿@model IEnumerable<VillaManagementWeb.Models.RoomBooking>
 @{
+    ViewData["Title"] = "Bảng điều khiển";
+    Layout = "_AdminLayout";
 }
+
+<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+    <div>
+        <h3 class="fw-bold mb-3">Bảng điều khiển quản trị</h3>
+        <h6 class="op-7 mb-2">Hệ thống quản lý Villa - The Wandering Rose</h6>
+    </div>
+    @* Phần nút bấm đã được loại bỏ để không gian thoáng hơn *@
+</div>
+
+<div class="row">
+    <div class="col-sm-6 col-md-3">
+        <div class="card card-stats card-round">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-icon">
+                        <div class="icon-big text-center icon-success bubble-shadow-small">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                    </div>
+                    <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                            <p class="card-category">Doanh thu</p>
+                            <h4 class="card-title">@((ViewBag.TotalRevenue ?? 0).ToString("N0")) đ</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card card-stats card-round">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-icon">
+                        <div class="icon-big text-center icon-info bubble-shadow-small">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                    </div>
+                    <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                            <p class="card-category">Tổng đơn</p>
+                            <h4 class="card-title">@(ViewBag.TotalBookings ?? 0)</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card card-stats card-round">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-icon">
+                        <div class="icon-big text-center icon-warning bubble-shadow-small">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                            <p class="card-category">Chờ xác nhận</p>
+                            <h4 class="card-title">@(ViewBag.PendingBookings ?? 0)</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card card-stats card-round">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-icon">
+                        <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                            <i class="fas fa-bed"></i>
+                        </div>
+                    </div>
+                    <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                            <p class="card-category">Phòng hoạt động</p>
+                            <h4 class="card-title">@(ViewBag.TotalRooms ?? 0)</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-round">
+            <div class="card-header">
+                <div class="card-head-row">
+                    <div class="card-title">Đặt phòng mới nhất</div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-items-center mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Khách hàng</th>
+                                <th>Phòng</th>
+                                <th>Ngày nhận</th>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.CustomerName</td>
+                                        <td>@item.Room?.RoomNumber</td>
+                                        <td>@item.CheckIn.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.TotalAmount.ToString("N0") đ</td>
+                                        <td>
+                                            @if (item.Status == "Confirmed")
+                                            {
+                                                <span class="badge badge-success">Thành công</span>
+                                            }
+                                            else if (item.Status == "Pending")
+                                            {
+                                                <span class="badge badge-warning">Chờ duyệt</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-danger">Đã hủy</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center p-5">Chưa có dữ liệu đơn đặt phòng.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

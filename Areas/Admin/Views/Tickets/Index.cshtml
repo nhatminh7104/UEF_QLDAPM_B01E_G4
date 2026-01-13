@@ -1,84 +1,87 @@
 ﻿@model IEnumerable<VillaManagementWeb.Models.Ticket>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản lý vé sự kiện";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <h4 class="card-title">Danh sách vé đã bán</h4>
+                <a asp-action="Create" class="btn btn-primary btn-round ms-auto">
+                    <i class="fa fa-plus"></i> Xuất vé mới
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="tickets-table" class="display table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Sự kiện</th>
+                            <th>Khách hàng</th>
+                            <th>Loại vé / SL</th>
+                            <th>Thành tiền</th>
+                            <th>Ngày đặt</th>
+                            <th>Trạng thái</th>
+                            <th style="width: 10%">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold">@item.Event?.Title</td>
+                                <td>
+                                    @item.CustomerName <br />
+                                    <small class="text-muted">@item.CustomerEmail</small>
+                                </td>
+                                <td>
+                                    <span class="badge badge-info">@item.TicketType</span>
+                                    <span class="ms-1">x@item.Quantity</span>
+                                </td>
+                                <td class="fw-bold text-success">@item.Price.ToString("N0") đ</td>
+                                <td>@item.BookingDate.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    @if (item.IsUsed)
+                                    {
+                                        <span class="badge badge-secondary">Đã sử dụng</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-success">Chưa dùng</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="form-button-action">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-link btn-primary"
+                                            title="Sửa">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-link btn-danger"
+                                            title="Xóa">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Event)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TicketType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerEmail)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BookingDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.QRCode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsUsed)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Event.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TicketType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CustomerEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CustomerName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BookingDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.QRCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsUsed)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#tickets-table").DataTable({
+                pageLength: 10,
+                language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json' }
+            });
+        });
+    </script>
 }
-    </tbody>
-</table>
