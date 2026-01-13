@@ -1,4 +1,6 @@
-﻿namespace VillaManagementWeb.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace VillaManagementWeb.Models
 {
     public class Ticket
     {
@@ -8,6 +10,10 @@
 
         public string TicketType { get; set; } = null!; // VIP, Standard
         public decimal Price { get; set; }
+        public int? CustomerId { get; set; }
+
+        [ForeignKey("CustomerId")]
+        public Customer? Customer { get; set; }
         public string CustomerEmail { get; set; } = null!;
         public string CustomerName { get; set; } = null!;
         public int Quantity { get; set; }

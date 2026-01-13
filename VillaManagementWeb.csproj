@@ -28,14 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Repositories\Implementations\" />
-    <Folder Include="Repositories\Interfaces\" />
-    
-    <Folder Include="wwwroot\images\images&amp;videos\" />
     <Folder Include="wwwroot\images\contacts\" />
     <Folder Include="wwwroot\images\introduces\" />
-
-    <Folder Include="wwwroot\images\events\" />
     <Folder Include="wwwroot\images\categories\" />
   </ItemGroup>
 

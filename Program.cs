@@ -28,6 +28,7 @@ builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<ITourRepository, TourRepository>();
 builder.Services.AddScoped<ITourBookingRepository, TourBookingRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 // MVC + Runtime Compilation
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
@@ -40,6 +41,7 @@ builder.Services.AddScoped<ITourBookingService, TourBookingService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<LayoutService>();
 // Identity
 builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<VillaDbContext>().AddDefaultTokenProviders();
