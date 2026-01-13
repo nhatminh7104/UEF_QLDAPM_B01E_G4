@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VillaManagementWeb.Models
 {
@@ -9,8 +10,13 @@ namespace VillaManagementWeb.Models
         public int RoomId { get; set; }
         
         public Room? Room { get; set; }
+        public int? CustomerId { get; set; }
+
+        [ForeignKey("CustomerId")]
+        public Customer? Customer { get; set; }
         [Required(ErrorMessage = "Tên khách hàng không được để trống")]
         [StringLength(100, ErrorMessage = "Tên không được vượt quá 100 ký tự")]
+        
         public string CustomerName { get; set; } = null!;
         [Required(ErrorMessage = "Số điện thoại là bắt buộc")]
         [Phone(ErrorMessage = "Số điện thoại không đúng định dạng")]

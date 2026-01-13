@@ -1,0 +1,512 @@
+﻿@model VillaManagementWeb.Models.Event
+
+@{
+    ViewData["Title"] = Model.Title;
+
+    // --- LOGIC XỬ LÝ ẢNH ---
+    var heroImage = string.IsNullOrEmpty(Model.ImageUrl) ? "/images/events/service.png" : Model.ImageUrl;
+    var subImage1 = "/images/events/service.png";
+    var subImage2 = "/images/events/service.png";
+
+    // Logic giả lập ảnh demo
+    if (!string.IsNullOrEmpty(Model.Title))
+    {
+        if (Model.Title.Contains("Sinh nhật"))
+        {
+            subImage1 = "https://images.unsplash.com/photo-1530103862676-de3c9da59af7?q=80&w=2000&auto=format&fit=crop";
+            subImage2 = "https://images.unsplash.com/photo-1464349153735-7db50ed83c84?q=80&w=2000&auto=format&fit=crop";
+        }
+        else if (Model.Title.Contains("Cưới") || Model.Title.Contains("Wedding"))
+        {
+            subImage1 = "https://images.unsplash.com/photo-1519225468359-69ea46e310d6?q=80&w=2000&auto=format&fit=crop";
+            subImage2 = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000&auto=format&fit=crop";
+        }
+        else if (Model.Title.Contains("Team"))
+        {
+            subImage1 = "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2000&auto=format&fit=crop";
+            subImage2 = "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2000&auto=format&fit=crop";
+        }
+        else
+        {
+            subImage1 = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop";
+            subImage2 = "https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=2000&auto=format&fit=crop";
+        }
+    }
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<style>
+    body {
+        font-family: 'Montserrat', sans-serif;
+        color: #555;
+        background-color: #fffaf7;
+        overflow-x: hidden;
+    }
+
+    /* HERO SECTION */
+    .event-hero {
+        position: relative;
+        height: 70vh;
+        width: 100%;
+        background-image: url('@heroImage');
+        background-position: center;
+        background-size: cover;
+        background-attachment: fixed;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .event-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+        }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: #fff;
+        padding: 0 15px;
+    }
+
+    .hero-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 4rem;
+        font-weight: 500;
+        margin-bottom: 25px;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .btn-hero-book {
+        display: inline-block;
+        border: 2px solid #fff;
+        color: #fff;
+        padding: 12px 35px;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-decoration: none;
+        transition: all 0.4s ease;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(2px);
+    }
+
+        .btn-hero-book:hover {
+            background: #fff;
+            color: #a67c52;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+    /* INFO BAR */
+    .info-bar-wrapper {
+        margin-top: -50px;
+        position: relative;
+        z-index: 3;
+    }
+
+    .info-bar {
+        background: #fff;
+        padding: 35px 0;
+        box-shadow: 0 15px 35px rgba(166, 124, 82, 0.15);
+        border-radius: 8px;
+        border-bottom: 3px solid #a67c52;
+    }
+
+    .info-item {
+        text-align: center;
+        padding: 0 20px;
+        border-right: 1px dashed #e1e1e1;
+    }
+
+        .info-item:last-child {
+            border-right: none;
+        }
+
+        .info-item i {
+            color: #a67c52;
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+        }
+
+        .info-item h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+    /* INTRO SECTION */
+    .intro-section {
+        padding: 80px 0;
+        text-align: center;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: #a67c52;
+        margin-bottom: 20px;
+        position: relative;
+        display: inline-block;
+    }
+
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 2px;
+            background: #a67c52;
+            margin: 15px auto 0;
+        }
+
+    .intro-text p {
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    .highlight-text {
+        font-style: italic;
+        color: #888;
+        font-size: 0.95rem;
+    }
+
+    .gallery-img-wrapper {
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        margin-top: 30px;
+    }
+
+    .gallery-img {
+        width: 100%;
+        height: 320px;
+        object-fit: cover;
+        transition: transform 0.8s ease;
+    }
+
+    .gallery-img-wrapper:hover .gallery-img {
+        transform: scale(1.1);
+    }
+
+    /* BOOKING FORM */
+    .booking-section {
+        padding: 60px 0 100px;
+    }
+
+    .booking-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .booking-header {
+        background-color: #a67c52;
+        padding: 30px;
+        text-align: center;
+        color: #fff;
+    }
+
+        .booking-header h2 {
+            font-family: 'Playfair Display', serif;
+            margin: 0;
+            font-size: 1.8rem;
+            color: #fff;
+        }
+
+        .booking-header p {
+            margin: 8px 0 0;
+            opacity: 0.9;
+            font-weight: 300;
+            font-size: 0.9rem;
+        }
+
+    .booking-body {
+        padding: 40px;
+    }
+
+    .form-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        color: #999;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control-custom {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        color: #333;
+        background: #fdfdfd;
+        transition: all 0.3s;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+        .form-control-custom:focus {
+            border-color: #a67c52;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(166, 124, 82, 0.1);
+            outline: none;
+        }
+
+    .phone-group {
+        display: flex;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+        .phone-group:focus-within {
+            border-color: #a67c52;
+            box-shadow: 0 0 0 4px rgba(166, 124, 82, 0.1);
+        }
+
+        .phone-group input {
+            border: none;
+            flex: 1;
+            outline: none;
+        }
+
+    .flag-box {
+        background: #f9f9f9;
+        padding: 0 15px;
+        display: flex;
+        align-items: center;
+        border-right: 1px solid #eee;
+    }
+
+    .btn-submit {
+        background: linear-gradient(45deg, #a67c52, #cda683);
+        color: #fff;
+        border: none;
+        padding: 15px;
+        width: 100%;
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 15px;
+        box-shadow: 0 5px 15px rgba(166, 124, 82, 0.3);
+    }
+
+        .btn-submit:hover {
+            background: linear-gradient(45deg, #8c6642, #b58d68);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(166, 124, 82, 0.4);
+        }
+
+    /* Errors */
+    .text-danger {
+        color: #e74c3c;
+        font-size: 0.75rem;
+        margin-top: 5px;
+        display: none;
+    }
+
+    .invalid .form-control-custom,
+    .invalid .phone-group {
+        border-color: #e74c3c !important;
+        background-color: #fff5f5;
+    }
+
+    .invalid .text-danger {
+        display: block;
+    }
+</style>
+
+<div class="event-hero">
+    <div class="hero-content" data-aos="zoom-in" data-aos-duration="1200">
+        <h1 class="hero-title">@Model.Title</h1>
+        <a href="#booking-form" class="btn-hero-book">ĐẶT LỊCH NGAY</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="row justify-content-center info-bar-wrapper" data-aos="fade-up" data-aos-delay="100">
+        <div class="col-md-10">
+            <div class="info-bar d-flex justify-content-around align-items-center flex-wrap">
+                <div class="info-item">
+                    <i class="far fa-calendar-alt"></i>
+                    <h4>Thời gian</h4>
+                    <p>@Model.EventDate.ToString("dd/MM/yyyy")</p>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h4>Địa điểm</h4>
+                    <p>@Model.Location</p>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-users"></i>
+                    <h4>Sức chứa</h4>
+                    <p>@Model.TotalTickets Khách</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="intro-section">
+        <h2 class="section-title" data-aos="fade-up">Giới thiệu dịch vụ</h2>
+
+        <div class="intro-text" data-aos="fade-up" data-aos-delay="100">
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <p>@Model.Description</p>
+            }
+            else
+            {
+                <p>Thông tin chi tiết về sự kiện này đang được cập nhật. Vui lòng liên hệ để biết thêm chi tiết.</p>
+            }
+
+            <p class="highlight-text">
+                Đến với dịch vụ <strong>@Model.Title</strong> tại Villa của chúng tôi...
+            </p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4" data-aos="fade-right" data-aos-duration="1000">
+                <div class="gallery-img-wrapper">
+                    <img src="@subImage1" class="gallery-img" alt="Ảnh chi tiết 1" onerror="this.src='https://via.placeholder.com/600x400'" />
+                </div>
+            </div>
+            <div class="col-md-6 mb-4" data-aos="fade-left" data-aos-duration="1000">
+                <div class="gallery-img-wrapper">
+                    <img src="@subImage2" class="gallery-img" alt="Ảnh chi tiết 2" onerror="this.src='https://via.placeholder.com/600x400'" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="booking-section" id="booking-form">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+
+                <div class="booking-card" data-aos="fade-up" data-aos-duration="1000">
+
+                    <div class="booking-header">
+                        <h2>Liên hệ đặt lịch</h2>
+                        <p>Để lại thông tin, chúng tôi sẽ liên hệ tư vấn trong 30 phút.</p>
+                    </div>
+
+                    <div class="booking-body">
+                        <form asp-action="Booking" asp-controller="Events" method="post" id="eventBookingForm">
+                            <input type="hidden" name="eventId" value="@Model.Id" />
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-4" id="grp-name">
+                                        <label class="form-label">Họ và tên *</label>
+                                        <input type="text" name="fullName" class="form-control-custom" placeholder="Nhập họ tên...">
+                                        <div class="text-danger">Vui lòng nhập họ tên.</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-4" id="grp-email">
+                                        <label class="form-label">Email *</label>
+                                        <input type="email" name="email" class="form-control-custom" placeholder="example@gmail.com">
+                                        <div class="text-danger">Email không hợp lệ.</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-4" id="grp-phone">
+                                <label class="form-label">Số điện thoại *</label>
+                                <div class="phone-group">
+                                    <div class="flag-box">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg" width="24" alt="VN">
+                                    </div>
+                                    <input type="text" name="phone" class="form-control-custom" placeholder="Nhập số điện thoại...">
+                                </div>
+                                <div class="text-danger">Vui lòng nhập số điện thoại.</div>
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <label class="form-label">Dịch vụ đang chọn</label>
+                                <input type="text" class="form-control-custom" value="@Model.Title" readonly style="background-color: #f2f2f2; color: #a67c52; font-weight: 600;">
+                                <input type="hidden" name="service" value="@Model.Title" />
+                            </div>
+
+                            <div class="form-group mb-4" id="grp-msg">
+                                <label class="form-label">Tin nhắn / Yêu cầu</label>
+                                <textarea name="message" class="form-control-custom" rows="4" placeholder="Ví dụ: Số lượng khách dự kiến, thời gian mong muốn..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-submit">
+                                GỬI YÊU CẦU TƯ VẤN <i class="fas fa-paper-plane ms-2"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ once: true, offset: 100 });
+
+    document.getElementById('eventBookingForm').addEventListener('submit', function(e) {
+        let isValid = true;
+
+        // Check Name
+        const nameInput = this.querySelector('input[name="fullName"]');
+        if (!nameInput || !nameInput.value.trim()) {
+            document.getElementById('grp-name')?.classList.add('invalid');
+            isValid = false;
+        } else {
+            document.getElementById('grp-name')?.classList.remove('invalid');
+        }
+
+        // Check Email (LƯU Ý: Vẫn giữ @@ để tránh lỗi)
+        const emailInput = this.querySelector('input[name="email"]');
+        if (!emailInput || !emailInput.value.trim() || !emailInput.value.includes('@@')) {
+             document.getElementById('grp-email')?.classList.add('invalid');
+             isValid = false;
+        } else {
+            document.getElementById('grp-email')?.classList.remove('invalid');
+        }
+
+        // Check Phone
+        const phoneInput = this.querySelector('input[name="phone"]');
+        if (!phoneInput || !phoneInput.value.trim()) {
+            document.getElementById('grp-phone')?.classList.add('invalid');
+            isValid = false;
+        } else {
+            document.getElementById('grp-phone')?.classList.remove('invalid');
+        }
+
+        if (!isValid) e.preventDefault();
+    });
+
+    const inputs = document.querySelectorAll('.form-control-custom');
+    inputs.forEach(item => {
+        item.addEventListener('input', event => {
+            const grp = item.closest('.form-group') || item.closest('#grp-phone');
+            if(grp) grp.classList.remove('invalid');
+        })
+    });
+</script>

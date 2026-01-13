@@ -1,0 +1,90 @@
+﻿@{
+        ViewData["Title"] = "Thành công";
+    // Layout = "_Layout"; // Mặc định nó sẽ tự nhận _Layout, bạn không cần dòng này hoặc để nguyên cũng được (nhưng tuyệt đối không để null)
+}
+
+<style>
+    /* Đặt class bao quanh để không ảnh hưởng đến Header/Footer */
+    .success-wrapper {
+        background-color: #fff9f3; /* Màu nền kem */
+        min-height: 70vh; /* Chiều cao tối thiểu đe nội dung nằm giữa thoáng đãng */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 50px 0;
+        border-radius: 4px; /* Bo góc nhẹ nếu thích */
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .success-title {
+        font-family: 'Playfair Display', serif;
+        color: #a67c52;
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .success-sub {
+        color: #888;
+        font-weight: 300;
+        margin-bottom: 2.5rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-success-back {
+        background-color: #a67c52;
+        color: white;
+        border: 1px solid #a67c52;
+        padding: 10px 30px;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        text-decoration: none;
+        display: inline-block;
+        margin-right: 10px;
+        transition: 0.3s;
+    }
+
+        .btn-success-back:hover {
+            background-color: #8c6642;
+            color: white;
+        }
+
+    .btn-success-home {
+        background-color: transparent;
+        color: #a67c52;
+        border: 1px solid #a67c52;
+        padding: 10px 30px;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.3s;
+    }
+
+        .btn-success-home:hover {
+            background-color: #a67c52;
+            color: white;
+        }
+</style>
+
+<div class="container">
+    <div class="success-wrapper">
+        <div class="content-box">
+            <h1 class="success-title">Gửi thông tin thành công</h1>
+            <p class="success-sub">Chúng tôi sẽ chủ động liên hệ lại trong thời gian ngắn nhất!</p>
+
+            <div>
+                <a href="/Events" class="btn-success-back">
+                    QUAY LẠI
+                </a>
+
+                <a href="/" class="btn-success-home">
+                    VỀ TRANG CHỦ &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

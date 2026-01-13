@@ -12,6 +12,7 @@ namespace VillaManagementWeb.Data
         public VillaDbContext(DbContextOptions<VillaDbContext> options) : base(options) { }
 
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<Customer> Customers { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<News> News { get; set; }
@@ -79,6 +80,7 @@ namespace VillaManagementWeb.Data
                 {
                     Id = 1,
                     RoomId = 1,
+                    CustomerId = null,
                     CustomerName = "Nguyễn Văn A",
                     CustomerPhone = "0901234567", // Bổ sung [cite: 14]
                     CustomerEmail = "a@gmail.com",
@@ -94,15 +96,46 @@ namespace VillaManagementWeb.Data
             modelBuilder.Entity<Event>().HasData(
                 new Event
                 {
-                    Id = 1, // Đảm bảo ID này tồn tại 
-                    Title = "Đêm Nhạc Dưới Trăng",
-                    Description = "Show ca nhạc acoustic cực chill tại Rose Villa",
-                    EventDate = DateTime.Now.AddDays(15),
-                    Location = "Sân khấu ngoài trời",
+                    Id = 1,
+                    Title = "Tổ chức sinh nhật",
+                    Description = "Chúng tôi cung cấp không gian tổ chức sinh nhật ấm cúng, trang trí theo yêu cầu với phong cách hiện đại hoặc cổ điển. Dịch vụ trọn gói bao gồm tiệc trà, bánh ngọt.",
+                    EventDate = DateTime.Now.AddDays(7), // Diễn ra sau 7 ngày
+                    Location = "Sân vườn Villa",
+                    TotalTickets = 50,
+                    ImageUrl = "/images/events/birthday.png"
+                },
+                new Event
+                {
+                    Id = 2,
+                    Title = "Teambuilding",
+                    Description = "Không gian sân vườn rộng rãi thích hợp cho các hoạt động ngoài trời, gắn kết tinh thần đồng đội. Hỗ trợ setup các trò chơi vận động, âm thanh, ánh sáng.",
+                    EventDate = DateTime.Now.AddDays(14),
+                    Location = "Bãi cỏ trung tâm",
+                    TotalTickets = 200,
+                    ImageUrl = "/images/events/teambuilding.png"
+                },
+                new Event
+                {
+                    Id = 3,
+                    Title = "Tiệc cưới nhỏ",
+                    Description = "Một lễ cưới thân mật, lãng mạn bên những người thân yêu nhất. Không gian được trang hoàng lộng lẫy với hoa tươi, nến và phong cách phục vụ chuẩn 5 sao.",
+                    EventDate = DateTime.Now.AddDays(30),
+                    Location = "Sảnh tiệc chính",
                     TotalTickets = 100,
-                    ImageUrl = "/images/events/event1.jpg"
+                    ImageUrl = "/images/events/wedding.png"
+                },
+                new Event
+                {
+                    Id = 4,
+                    Title = "Lễ kỷ niệm",
+                    Description = "Kỷ niệm ngày cưới, gặp mặt bạn cũ hay những cột mốc quan trọng. Chúng tôi mang đến không gian riêng tư, thực đơn phong phú và sự phục vụ tận tâm.",
+                    EventDate = DateTime.Now.AddDays(10),
+                    Location = "Nhà hàng ven hồ",
+                    TotalTickets = 30,
+                    ImageUrl = "/images/events/celebrate.png"
                 }
             );
+            // -----------------------------------------------------------
             // 3. Seed Data cho Ticket (Bổ sung TicketType, QRCode) [cite: 19, 21]
             modelBuilder.Entity<Ticket>().HasData(
                 new Ticket

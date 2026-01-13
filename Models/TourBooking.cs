@@ -1,4 +1,6 @@
-﻿namespace VillaManagementWeb.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace VillaManagementWeb.Models
 {
     public class TourBooking
     {
@@ -9,6 +11,10 @@
         public DateTime TourDate { get; set; }
         public int NumberOfPeople { get; set; }
         public decimal TotalPrice { get; set; }
+        public int? CustomerId { get; set; }
+
+        [ForeignKey("CustomerId")]
+        public Customer? Customer { get; set; }
         public string ContactInfo { get; set; } = null!;
         public string CustomerName { get; set; } = null!;
         public string Status { get; set; } = null!;
