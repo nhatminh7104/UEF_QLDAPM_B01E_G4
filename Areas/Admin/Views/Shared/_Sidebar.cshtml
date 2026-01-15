@@ -1,0 +1,103 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+}
+
+<div class="sidebar" data-background-color="dark">
+    <div class="sidebar-logo">
+        <div class="logo-header" data-background-color="dark">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="logo">
+                <img src="/Admin-template/assets/img/kaiadmin/logo_light.svg" alt="navbar brand" class="navbar-brand"
+                    height="20" />
+            </a>
+            <div class="nav-toggle">
+                <button class="btn btn-toggle toggle-sidebar"><i class="gg-menu-right"></i></button>
+                <button class="btn btn-toggle sidenav-toggler"><i class="gg-menu-left"></i></button>
+            </div>
+            <button class="topbar-toggler more"><i class="gg-more-vertical-alt"></i></button>
+        </div>
+    </div>
+    <div class="sidebar-wrapper scrollbar scrollbar-inner">
+        <div class="sidebar-content">
+            <ul class="nav nav-secondary">
+                <li class="nav-item @(currentController == "Dashboard" ? "active" : "")">
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                        <i class="fas fa-home"></i>
+                        <p>Bảng điều khiển</p>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon"><i class="fa fa-ellipsis-h"></i></span>
+                    <h4 class="text-section">Dịch vụ Lưu trú</h4>
+                </li>
+
+                <li class="nav-item @(currentController == "Rooms" ? "active" : "")">
+                    <a asp-area="Admin" asp-controller="Rooms" asp-action="Index">
+                        <i class="fas fa-bed"></i>
+                        <p>Quản lý Phòng</p>
+                    </a>
+                </li>
+
+                <li class="nav-item @(currentController == "Bookings" ? "active" : "")">
+                    <a asp-area="Admin" asp-controller="RoomBookings" asp-action="Index">
+                        <i class="fas fa-calendar-check"></i>
+                        <p>Đơn đặt phòng</p>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon"><i class="fa fa-ellipsis-h"></i></span>
+                    <h4 class="text-section">Giải trí & Tiện ích</h4>
+                </li>
+
+                <li class="nav-item @(currentController == "Events" ? "active" : "")">
+                    <a asp-area="Admin" asp-controller="Events" asp-action="Index">
+                        <i class="fas fa-bullhorn"></i>
+                        <p>Quản lý Sự kiện</p>
+                    </a>
+                </li>
+
+                <li class="nav-item @(currentController == "Tickets" ? "active" : "")">
+                    <a asp-area="Admin" asp-controller="Tickets" asp-action="Index">
+                        <i class="fas fa-ticket-alt"></i>
+                        <p>Quản lý Vé bán</p>
+                    </a>
+                </li>
+
+                <li class="nav-item @(currentController == "Tours" ? "active" : "")">
+                    <a asp-area="Admin" asp-controller="Tours" asp-action="Index">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <p>Quản lý Tour</p>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon"><i class="fa fa-ellipsis-h"></i></span>
+                    <h4 class="text-section">Hệ thống & Nội dung</h4>
+                </li>
+
+                <li class="nav-item @(currentController == "News" ? "active" : "")">
+                    <a asp-area="Admin" asp-controller="News" asp-action="Index">
+                        <i class="fas fa-newspaper"></i>
+                        <p>Tin tức & Ưu đãi</p>
+                    </a>
+                </li>
+
+                <li class="nav-item @(currentController == "Users" ? "active" : "")">
+                    <a asp-area="Admin" asp-controller="Users" asp-action="Index">
+                        <i class="fas fa-users-cog"></i>
+                        <p>Quản lý Người dùng</p>
+                    </a>
+                </li>
+
+                <li class="nav-item @(currentController == "Settings" ? "active" : "")">
+                    <a asp-area="Admin" asp-controller="Settings" asp-action="Index">
+                        <i class="fas fa-cogs"></i>
+                        <p>Cấu hình hệ thống</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

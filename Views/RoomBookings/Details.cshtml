@@ -1,0 +1,116 @@
+﻿@model VillaManagementWeb.Models.Room
+
+@{
+    ViewData["Title"] = Model.Type + " " + Model.RoomNumber;
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Layout chính của khách hàng
+}
+
+<section class="room-details-hero"
+    style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('@Model.ImageUrl'); background-size: cover; background-position: center; height: 400px; display: flex; align-items: center; color: white;">
+    <div class="container text-center">
+        <h1 class="display-3 fw-bold">@Model.Type</h1>
+        <p class="lead"><i class="fas fa-star text-warning"></i> @Model.RatingStars Sao - The Wandering Rose Ba Vi</p>
+    </div>
+</section>
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="room-main-content">
+                <h2 class="mb-4">Tổng quan phòng @Model.RoomNumber</h2>
+
+                <div class="row text-center mb-5 bg-light py-4 rounded shadow-sm">
+                    <div class="col-3">
+                        <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                        <p class="small mb-0">@Model.Capacity Người</p>
+                    </div>
+                    <div class="col-3">
+                        <i class="fas fa-expand-arrows-alt fa-2x text-primary mb-2"></i>
+                        <p class="small mb-0">@Model.SquareFootage sqft</p>
+                    </div>
+                    <div class="col-3">
+                        <i class="fas fa-wifi fa-2x text-primary mb-2"></i>
+                        <p class="small mb-0">Wifi miễn phí</p>
+                    </div>
+                    <div class="col-3">
+                        <i class="fas fa-coffee fa-2x text-primary mb-2"></i>
+                        <p class="small mb-0">Bữa sáng</p>
+                    </div>
+                </div>
+
+                <div class="description-text mb-5" style="font-size: 1.1rem; line-height: 1.8; color: #444;">
+                    @Html.Raw(Model.Description)
+                </div>
+
+                <div class="policy-section mt-5 border-top pt-4">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <h5 class="fw-bold"><i class="far fa-clock text-success me-2"></i> Nhận phòng</h5>
+                            <ul class="list-unstyled ms-4">
+                                <li>• Nhận phòng từ 9:00 sáng - bất kỳ lúc nào</li>
+                                <li>• Nhận phòng sớm tùy vào tình trạng phòng</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <h5 class="fw-bold"><i class="fas fa-sign-out-alt text-danger me-2"></i> Trả phòng</h5>
+                            <ul class="list-unstyled ms-4">
+                                <li>• Trả phòng trước giờ trưa</li>
+                                <li>• Hỗ trợ trả phòng nhanh</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 100px; z-index: 10;">
+                <div class="card shadow border-0 overflow-hidden">
+                    <div class="card-header bg-dark text-white text-center py-3">
+                        <h4 class="mb-0">Đặt ngay</h4>
+                    </div>
+                    <div class="card-body p-4 text-center">
+                        <p class="text-muted mb-1">Giá chỉ từ</p>
+                        <h2 class="text-primary fw-bold mb-4">@string.Format("{0:N0}", Model.PricePerNight) <small
+                                style="font-size: 1rem; color: #666;">VNĐ / Đêm</small></h2>
+
+                        <a href="#" class="btn btn-primary btn-lg w-100 rounded-pill mb-3">
+                            NHẬN PHÒNG NGAY
+                        </a>
+                        <p class="small text-muted"><i class="fas fa-shield-alt"></i> Cam kết giá tốt nhất tại Ba Vì</p>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-warning bg-opacity-10 border border-warning rounded">
+                    <h6>Bạn cần hỗ trợ?</h6>
+                    <p class="small mb-0"><i class="fas fa-phone"></i> Hotline: 0123.456.789</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Làm đẹp nội dung từ Summernote khi hiển thị cho khách */
+    .description-text h2,
+    .description-text h3 {
+        color: #2c3e50;
+        margin-top: 30px;
+        font-weight: 600;
+    }
+
+    .description-text ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .description-text ul li::before {
+        content: "☑";
+        color: #28a745;
+        margin-right: 10px;
+    }
+
+    .room-details-hero {
+        position: relative;
+    }
+</style>

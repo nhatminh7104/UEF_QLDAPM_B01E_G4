@@ -1,0 +1,216 @@
+﻿@model VillaManagementWeb.Models.RoomBooking
+
+@{
+    ViewData["Title"] = "Chỉnh sửa đặt phòng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+<script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: { primary: "#13a4ec", "background-light": "#f6f7f8", "background-dark": "#101c22" },
+                fontFamily: { display: ["Inter", "sans-serif"] },
+            },
+        },
+    }
+</script>
+
+<div class="flex-1 bg-background-light p-6 lg:p-10 font-display">
+    <div class="mx-auto max-w-7xl flex flex-col gap-6">
+
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-red-500 mb-4"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CreatedAt" />
+
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 pb-5">
+                <div>
+                    <nav class="flex items-center text-xs font-medium text-slate-500 mb-2">
+                        <a href="/Admin/Dashboard" class="hover:text-primary transition-colors">Dashboard</a>
+                        <span class="mx-2 text-slate-300">/</span>
+                        <a asp-action="Index" class="hover:text-primary transition-colors">Room Bookings</a>
+                        <span class="mx-2 text-slate-300">/</span>
+                        <span class="text-slate-900 font-semibold">Edit #@Model.Id</span>
+                    </nav>
+                    <h1 class="text-2xl font-bold tracking-tight text-slate-900 leading-tight">Cập Nhật Đơn #@Model.Id
+                    </h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a asp-action="Index"
+                        class="px-4 py-2 text-sm font-semibold text-slate-600 hover:text-slate-800 transition-colors">Hủy</a>
+                    <button type="submit"
+                        class="px-5 py-2 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-blue-500 shadow-lg transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">save</span>
+                        Lưu thay đổi
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mt-6">
+                <div class="lg:col-span-2 flex flex-col gap-6">
+                    <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 bg-slate-50/50">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-[20px]">hotel</span>
+                                <h3 class="font-bold text-sm text-slate-900 uppercase tracking-wide">Thông tin lưu trú
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold text-slate-500 mb-1.5 ml-1">PHÒNG</label>
+                                <select asp-for="RoomId" asp-items="ViewBag.RoomId"
+                                    class="w-full rounded-lg border-slate-200 bg-white text-slate-900 py-2.5 px-4 font-medium focus:border-primary focus:ring-primary shadow-sm cursor-pointer"></select>
+                            </div>
+
+                            <div class="md:col-span-2 grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+                                <div
+                                    class="lg:col-span-2 bg-slate-50 rounded-lg border border-slate-200 p-1 flex items-center relative">
+                                    <div class="flex-1 px-3 py-1">
+                                        <label
+                                            class="block text-[10px] uppercase font-bold text-slate-400 mb-0.5">Check-in</label>
+                                        <input asp-for="CheckIn" type="datetime-local"
+                                            class="w-full bg-transparent border-0 p-0 text-sm font-semibold text-slate-900 focus:ring-0 cursor-pointer min-w-0"
+                                            id="CheckIn" />
+                                    </div>
+
+                                    <div class="w-px h-8 bg-slate-200 mx-1 shrink-0"></div>
+
+                                    <div class="flex-1 px-3 py-1">
+                                        <label
+                                            class="block text-[10px] uppercase font-bold text-slate-400 mb-0.5">Check-out</label>
+                                        <input asp-for="CheckOut" type="datetime-local"
+                                            class="w-full bg-transparent border-0 p-0 text-sm font-semibold text-slate-900 focus:ring-0 cursor-pointer min-w-0"
+                                            id="CheckOut" />
+                                    </div>
+
+                                    <div id="nightBadge"
+                                        class="absolute -top-2.5 right-4 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm hidden">
+                                        0 Đêm
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-3">
+                                    <div
+                                        class="flex-1 bg-white rounded-lg border border-slate-200 px-3 py-1.5 flex flex-col justify-center min-w-[100px]">
+                                        <label class="text-[10px] uppercase font-bold text-slate-400 mb-0.5">Người
+                                            lớn</label>
+                                        <div class="flex items-center justify-between">
+                                            <button type="button" onclick="adjustCount('AdultsCount', -1)"
+                                                class="text-slate-400 hover:text-primary transition-colors"><span
+                                                    class="material-symbols-outlined text-sm">remove</span></button>
+                                            <input asp-for="AdultsCount" id="AdultsCount"
+                                                class="w-8 text-center border-0 p-0 text-sm font-semibold text-slate-900 focus:ring-0"
+                                                readonly />
+                                            <button type="button" onclick="adjustCount('AdultsCount', 1)"
+                                                class="text-slate-400 hover:text-primary transition-colors"><span
+                                                    class="material-symbols-outlined text-sm">add</span></button>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="flex-1 bg-white rounded-lg border border-slate-200 px-3 py-1.5 flex flex-col justify-center min-w-[100px]">
+                                        <label class="text-[10px] uppercase font-bold text-slate-400 mb-0.5">Trẻ
+                                            em</label>
+                                        <div class="flex items-center justify-between">
+                                            <button type="button" onclick="adjustCount('ChildrenCount', -1)"
+                                                class="text-slate-400 hover:text-primary transition-colors"><span
+                                                    class="material-symbols-outlined text-sm">remove</span></button>
+                                            <input asp-for="ChildrenCount" id="ChildrenCount"
+                                                class="w-8 text-center border-0 p-0 text-sm font-semibold text-slate-900 focus:ring-0"
+                                                readonly />
+                                            <button type="button" onclick="adjustCount('ChildrenCount', 1)"
+                                                class="text-slate-400 hover:text-primary transition-colors"><span
+                                                    class="material-symbols-outlined text-sm">add</span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 bg-slate-50/50">
+                            <h3 class="font-bold text-sm text-slate-900 uppercase tracking-wide">Khách hàng</h3>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">TÊN</label>
+                                <input asp-for="CustomerName"
+                                    class="w-full rounded-lg border-slate-200 py-2 px-3 focus:border-primary focus:ring-primary shadow-sm" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">SĐT</label>
+                                <input asp-for="CustomerPhone"
+                                    class="w-full rounded-lg border-slate-200 py-2 px-3 focus:border-primary focus:ring-primary shadow-sm" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">EMAIL</label>
+                                <input asp-for="CustomerEmail"
+                                    class="w-full rounded-lg border-slate-200 py-2 px-3 focus:border-primary focus:ring-primary shadow-sm" />
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-4 border-b border-slate-100 bg-slate-50/50">
+                            <h3 class="font-bold text-sm text-slate-900 uppercase tracking-wide">Ghi chú</h3>
+                        </div>
+                        <div class="p-4">
+                            <textarea asp-for="Notes"
+                                class="w-full rounded-lg border-slate-200 bg-slate-50 py-2 px-3 focus:border-primary focus:ring-primary resize-none text-sm"
+                                rows="3"></textarea>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <div class="sticky top-24 bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                        <div class="p-5 bg-slate-900 text-white">
+                            <h3 class="font-bold text-lg">Thanh toán</h3>
+                        </div>
+                        <div class="p-5 flex flex-col gap-5">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-2 uppercase">Trạng
+                                    thái</label>
+                                <select asp-for="Status"
+                                    class="w-full rounded-lg border-slate-200 py-2 px-3 text-sm focus:border-primary focus:ring-primary">
+                                    <option value="Pending">Chờ xử lý</option>
+                                    <option value="Confirmed">Đã xác nhận</option>
+                                    <option value="Cancelled">Đã hủy</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-2 uppercase">Phương
+                                    thức</label>
+                                <select asp-for="PaymentMethod"
+                                    class="w-full rounded-lg border-slate-200 py-2 px-3 text-sm focus:border-primary focus:ring-primary">
+                                    <option value="Credit Card">Thẻ tín dụng</option>
+                                    <option value="Cash">Tiền mặt</option>
+                                    <option value="Transfer">Chuyển khoản</option>
+                                </select>
+                            </div>
+                            <div
+                                class="rounded-lg bg-slate-50 p-4 border border-slate-100 flex justify-between items-center">
+                                <span class="font-bold text-slate-900">Tổng tiền</span>
+                                <input asp-for="TotalAmount"
+                                    class="text-right font-bold text-xl text-primary bg-transparent border-0 focus:ring-0 p-0 w-32" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

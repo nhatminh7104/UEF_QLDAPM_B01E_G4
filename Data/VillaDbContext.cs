@@ -1,19 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Net.Sockets;
-using System.Security.Cryptography.Pkcs;
 using VillaManagementWeb.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 
 namespace VillaManagementWeb.Data
 {
+    // Quan trọng: Phải kế thừa IdentityDbContext với class User của bạn
     public class VillaDbContext : IdentityDbContext<User>
     {
         public VillaDbContext(DbContextOptions<VillaDbContext> options) : base(options) { }
 
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<RoomBooking> Bookings { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<News> News { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
@@ -25,11 +24,13 @@ namespace VillaManagementWeb.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Cấu hình Fluent API
+            // Cấu hình độ chính xác cho tiền tệ (Tránh lỗi Decimal trong SQL)
             modelBuilder.Entity<Room>().Property(r => r.PricePerNight).HasPrecision(18, 2);
-            modelBuilder.Entity<Booking>().Property(b => b.TotalAmount).HasPrecision(18, 2);
+            modelBuilder.Entity<RoomBooking>().Property(b => b.TotalAmount).HasPrecision(18, 2);
             modelBuilder.Entity<Ticket>().Property(t => t.Price).HasPrecision(18, 2);
             modelBuilder.Entity<Tour>().Property(t => t.PricePerPerson).HasPrecision(18, 2);
+            modelBuilder.Entity<TourBooking>().Property(t => t.TotalPrice).HasPrecision(18, 2);
+
             modelBuilder.Entity<Room>().HasIndex(r => r.RoomNumber).IsUnique();
 
             // 1. Seed Data cho Room (Bổ sung RatingStars) 
@@ -75,8 +76,8 @@ namespace VillaManagementWeb.Data
             );
 
             // 2. Seed Data cho Booking (Fix lỗi CustomerPhone, PaymentMethod, v.v.) [cite: 14, 21]
-            modelBuilder.Entity<Booking>().HasData(
-                new Booking
+            modelBuilder.Entity<RoomBooking>().HasData(
+                new RoomBooking
                 {
                     Id = 1,
                     RoomId = 1,
@@ -93,6 +94,7 @@ namespace VillaManagementWeb.Data
                     PaymentMethod = "Credit Card"  // Bổ sung [cite: 14]
                 }
             );
+
             modelBuilder.Entity<Event>().HasData(
                 new Event
                 {
@@ -152,47 +154,15 @@ namespace VillaManagementWeb.Data
                     IsUsed = false
                 }
             );
+
             modelBuilder.Entity<Tour>().HasData(
-                new Tour
-                {
-                    Id = 1,
-                    TourName = "Trekking Rừng Quốc Gia Ba Vì",
-                    Description = "Khám phá vẻ đẹp hoang sơ của núi rừng Ba Vì cùng hướng dẫn viên bản địa.",
-                    PricePerPerson = 500000,
-                    DurationHours = 6,
-                    ImageUrl = "/images/tours/trekking-bavi.jpg"
-                }
-            );
-            // 4. Seed Data cho TourBooking (Bổ sung ContactInfo) [cite: 20, 21]
-            modelBuilder.Entity<TourBooking>().HasData(
-                new TourBooking
-                {
-                    Id = 1,
-                    TourId = 1,
-                    CustomerName = "Lê Văn C",
-                    ContactInfo = "0988777666",    // Bổ sung 
-                    TourDate = DateTime.Now.AddDays(10),
-                    NumberOfPeople = 4,
-                    TotalPrice = 2000000,
-                    Status = "Pending"
-                }
+                new Tour { Id = 1, TourName = "Trekking Ba Vì", Description = "Khám phá vẻ đẹp núi rừng.", PricePerPerson = 500000, DurationHours = 6, ImageUrl = "/images/tours/trekking-bavi.jpg" }
             );
 
-            // 5. Cấu hình RoomImage 
-            modelBuilder.Entity<RoomImage>()
-                .HasOne(ri => ri.Room)
-                .WithMany(r => r.RoomImages)
-                .HasForeignKey(ri => ri.RoomId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<RoomImage>().HasData(
-                new RoomImage { Id = 1, RoomId = 1, ImageUrl = "/images/rooms/villa1-1.jpg" }
-            );
             modelBuilder.Entity<News>().HasData(
                 new News { Id = 1, Title = "Music Concert Night", Category = "Sự kiện âm nhạc", ImageUrl = "/images/news/news1.png" },
                 new News { Id = 2, Title = "New Villa Opening", Category = "Tin tức", ImageUrl = "/images/news/news2.jpg" }
             );
         }
-        public DbSet<VillaManagementWeb.Models.RoomImage> RoomImage { get; set; } = default!;
     }
 }

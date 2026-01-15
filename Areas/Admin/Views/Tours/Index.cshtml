@@ -32,7 +32,8 @@
                             <td class="text-center align-middle">
                                 @if (!string.IsNullOrEmpty(item.ImageUrl))
                                 {
-                                    <img src="@item.ImageUrl" alt="@item.TourName" style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;" />
+                                    <img src="@item.ImageUrl" alt="@item.TourName"
+                                        style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;" />
                                 }
                                 else
                                 {
@@ -45,7 +46,8 @@
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm" title="Sửa">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm" title="Chi tiết">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm"
+                                    title="Chi tiết">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
                                 <button onclick="deleteItem(@item.Id)" class="btn btn-danger btn-sm" title="Xóa">

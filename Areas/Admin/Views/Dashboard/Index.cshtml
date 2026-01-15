@@ -1,4 +1,4 @@
-﻿@model VillaManagementWeb.ViewModels.DashboardViewModel
+@model VillaManagementWeb.ViewModels.DashboardViewModel
 @{
     ViewData["Title"] = "Tổng quan";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
@@ -12,6 +12,7 @@
         </div>
     </div>
 
+    <!-- KPI -->
     <div class="row">
         <div class="col-sm-6 col-md-3">
             <div class="card card-stats card-round">
@@ -94,6 +95,7 @@
         </div>
     </div>
 
+    <!-- Chart + Recent bookings -->
     <div class="row">
         <div class="col-md-8">
             <div class="card">
@@ -120,21 +122,21 @@
                         <table class="table align-items-center mb-0">
                             <thead class="thead-light">
                                 <tr>
-                                    <th scope="col">Khách hàng</th>
-                                    <th scope="col" class="text-end">Phòng</th>
-                                    <th scope="col" class="text-end">Giá</th>
+                                    <th>Khách hàng</th>
+                                    <th class="text-end">Phòng</th>
+                                    <th class="text-end">Giá</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var item in Model.RecentBookings)
                                 {
                                     <tr>
-                                        <th scope="row">
-                                            @item.CustomerName <br/>
+                                        <td>
+                                            @item.CustomerName <br />
                                             <small class="text-muted">@item.CreatedAt.ToString("dd/MM HH:mm")</small>
-                                        </th>
+                                        </td>
                                         <td class="text-end">@(item.Room?.RoomNumber ?? "N/A")</td>
-                                        <td class="text-end">@item.TotalAmount.ToString("#,##0")</td>
+                                        <td class="text-end">@item.TotalAmount.ToString("N0") ₫</td>
                                     </tr>
                                 }
                             </tbody>
@@ -151,56 +153,26 @@
 
     <script>
         var ctx = document.getElementById('revenueChart').getContext('2d');
-        var revenueChart = new Chart(ctx, {
+        new Chart(ctx, {
             type: 'line',
             data: {
                 labels: @Html.Raw(Json.Serialize(Model.ChartLabels)),
                 datasets: [{
                     label: "Doanh thu (VNĐ)",
                     borderColor: "#1d7af3",
-                    pointBorderColor: "#FFF",
-                    pointBackgroundColor: "#1d7af3",
-                    pointBorderWidth: 2,
-                    pointHoverRadius: 4,
-                    pointHoverBorderWidth: 1,
-                    pointRadius: 4,
-                    backgroundColor: 'transparent',
-                    fill: true,
-                    borderWidth: 2,
-                    data: @Html.Raw(Json.Serialize(Model.ChartData))
+                    data: @Html.Raw(Json.Serialize(Model.ChartData)),
+                    fill: false,
+                    tension: 0.4
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
-                legend: {
-                    position: 'bottom',
-                    labels : {
-                        padding: 10,
-                        fontColor: '#1d7af3',
-                    }
-                },
-                tooltips: {
-                    bodySpacing: 4,
-                    mode:"nearest",
-                    intersect: 0,
-                    position:"nearest",
-                    xPadding:10,
-                    yPadding:10,
-                    caretPadding:10
-                },
-                layout:{
-                    padding:{left:15,right:15,top:15,bottom:15}
-                },
                 scales: {
-                    yAxes: [{
+                    y: {
                         ticks: {
-                            beginAtZero: true,
-                            callback: function(value, index, values) {
-                                return value.toLocaleString() + ' ₫';
-                            }
+                            callback: value => value.toLocaleString() + ' ₫'
                         }
-                    }]
+                    }
                 }
             }
         });

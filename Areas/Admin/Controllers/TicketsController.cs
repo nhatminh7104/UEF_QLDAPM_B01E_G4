@@ -1,68 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using VillaManagementWeb.Data;
 using VillaManagementWeb.Models;
+using VillaManagementWeb.Admin.Services.Interfaces;
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public class TicketsController : Controller
     {
-        private readonly VillaDbContext _context;
+        private readonly ITicketsService _ticketsService;
+        private readonly IEventsService _eventsService;
 
-        public TicketsController(VillaDbContext context)
+        public TicketsController(
+            ITicketsService ticketsService,
+            IEventsService eventsService)
         {
-            _context = context;
+            _ticketsService = ticketsService;
+            _eventsService = eventsService;
         }
 
         // GET: Admin/Tickets
         public async Task<IActionResult> Index()
         {
-            // Include Event để hiển thị tên sự kiện trong bảng
-            var tickets = _context.Tickets.Include(t => t.Event);
-            return View(await tickets.ToListAsync());
+            return View(await _ticketsService.GetAllTicketsAsync());
         }
 
         // GET: Admin/Tickets/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null) return NotFound();
-
-            var ticket = await _context.Tickets
-                .Include(t => t.Event)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            var ticket = await _ticketsService.GetTicketByIdAsync(id);
             if (ticket == null) return NotFound();
 
             return View(ticket);
         }
 
         // GET: Admin/Tickets/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            // SỬA: Hiển thị "Title" thay vì "Id" để người dùng dễ chọn
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title");
+            ViewData["EventId"] = new SelectList(
+                await _eventsService.GetAllEventsAsync(),
+                "Id",
+                "Title");
+
             return View();
         }
 
         // POST: Admin/Tickets/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,EventId,TicketType,Price,Quantity,BookingDate,CustomerName,CustomerPhone,CustomerEmail,Status")] Ticket ticket)
+        public async Task<IActionResult> Create(Ticket ticket)
         {
-            // 1. Tự động sinh mã QR (Thay thế giá trị placeholder từ View)
-            // Format ví dụ: TKT-20231025-A1B2
-            string uniqueCode = Guid.NewGuid().ToString().Substring(0, 4).ToUpper();
+            // Sinh QR Code
+            string uniqueCode = Guid.NewGuid().ToString("N")[..6].ToUpper();
             ticket.QRCode = $"TKT-{DateTime.Now:yyyyMMdd}-{uniqueCode}";
 
-            // 2. Kiểm tra nếu BookingDate chưa chọn thì gán ngày hiện tại
+            // Gán ngày hiện tại nếu chưa có
             if (ticket.BookingDate == default)
             {
                 ticket.BookingDate = DateTime.Now;
@@ -70,33 +64,45 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(ticket);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _ticketsService.CreateTicketAsync(ticket);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
             }
 
-            // Nếu lỗi, load lại dropdown với Title
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", ticket.EventId);
+            ViewData["EventId"] = new SelectList(
+                await _eventsService.GetAllEventsAsync(),
+                "Id",
+                "Title",
+                ticket.EventId);
+
             return View(ticket);
         }
 
         // GET: Admin/Tickets/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
-
-            var ticket = await _context.Tickets.FindAsync(id);
+            var ticket = await _ticketsService.GetTicketByIdAsync(id);
             if (ticket == null) return NotFound();
 
-            // SỬA: Hiển thị Title
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", ticket.EventId);
+            ViewData["EventId"] = new SelectList(
+                await _eventsService.GetAllEventsAsync(),
+                "Id",
+                "Title",
+                ticket.EventId);
+
             return View(ticket);
         }
 
         // POST: Admin/Tickets/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,EventId,TicketType,Price,Quantity,BookingDate,CustomerName,CustomerPhone,CustomerEmail,Status")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, Ticket ticket)
         {
             if (id != ticket.Id) return NotFound();
 
@@ -104,30 +110,28 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(ticket);
-                    await _context.SaveChangesAsync();
+                    await _ticketsService.UpdateTicketAsync(ticket);
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
-                    if (!TicketExists(ticket.Id)) return NotFound();
-                    else throw;
+                    ModelState.AddModelError("", ex.Message);
                 }
-                return RedirectToAction(nameof(Index));
             }
 
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", ticket.EventId);
+            ViewData["EventId"] = new SelectList(
+                await _eventsService.GetAllEventsAsync(),
+                "Id",
+                "Title",
+                ticket.EventId);
+
             return View(ticket);
         }
 
         // GET: Admin/Tickets/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null) return NotFound();
-
-            var ticket = await _context.Tickets
-                .Include(t => t.Event)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            var ticket = await _ticketsService.GetTicketByIdAsync(id);
             if (ticket == null) return NotFound();
 
             return View(ticket);
@@ -138,18 +142,8 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ticket = await _context.Tickets.FindAsync(id);
-            if (ticket != null)
-            {
-                _context.Tickets.Remove(ticket);
-            }
-            await _context.SaveChangesAsync();
+            await _ticketsService.DeleteTicketAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TicketExists(int id)
-        {
-            return _context.Tickets.Any(e => e.Id == id);
         }
     }
 }

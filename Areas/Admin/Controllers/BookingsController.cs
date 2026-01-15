@@ -3,8 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using VillaManagementWeb.Admin.Services.Implementations;
+using VillaManagementWeb.Admin.Services.Interfaces;
 using VillaManagementWeb.Models;
-using VillaManagementWeb.Services.Interfaces;
+using IRoomsService = VillaManagementWeb.Admin.Services.Interfaces.IRoomsService;
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
@@ -12,10 +14,10 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
     //[Authorize(Roles = "Admin")]
     public class BookingsController : Controller
     {
-        private readonly IBookingService _bookingService;
-        private readonly IRoomService _roomService;
+        private readonly IRoomBookingsService _bookingService;
+        private readonly IRoomsService _roomService;
 
-        public BookingsController(IBookingService bookingService, IRoomService roomService)
+        public BookingsController(IRoomBookingsService bookingService, RoomsService roomService)
         {
             _bookingService = bookingService;
             _roomService = roomService;
@@ -24,7 +26,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         // GET: Controllers/Bookings
         public async Task<IActionResult> Index()
         {
-            return View(await _bookingService.GetBookingsWithRoomsAsync());
+            return View(await _bookingService.GetRoomBookingsWithRoomsAsync());
         }
 
         // GET: Controllers/Bookings/Details/5
@@ -35,7 +37,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var booking = await _bookingService.GetBookingByIdAsync(id.Value);
+            var booking = await _bookingService.GetRoomBookingByIdAsync(id.Value);
             if (booking == null)
             {
                 return NotFound();
@@ -53,18 +55,16 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         }
 
         // POST: Controllers/Bookings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,RoomId,CustomerName,CustomerPhone,AdultsCount,ChildrenCount,CustomerEmail,CheckIn,CheckOut,TotalAmount,Status,PaymentMethod,Notes,CreatedAt")] Booking booking)
+        public async Task<IActionResult> Create([Bind("Id,RoomId,CustomerName,CustomerPhone,AdultsCount,ChildrenCount,CustomerEmail,CheckIn,CheckOut,TotalAmount,Status,PaymentMethod,Notes,CreatedAt")] RoomBooking booking)
         {
-            
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _bookingService.CreateBookingAsync(booking);
+                    await _bookingService.CreateRoomBookingAsync(booking);
                     TempData["SuccessMessage"] = "Tạo đơn đặt phòng thành công!";
                     return RedirectToAction(nameof(Index));
                 }
@@ -90,7 +90,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var booking = await _bookingService.GetBookingByIdAsync(id.Value);
+            var booking = await _bookingService.GetRoomBookingByIdAsync(id.Value);
             if (booking == null)
             {
                 return NotFound();
@@ -101,11 +101,9 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         }
 
         // POST: Controllers/Bookings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,RoomId,CustomerName,CustomerPhone,AdultsCount,ChildrenCount,CustomerEmail,CheckIn,CheckOut,TotalAmount,Status,PaymentMethod,Notes,CreatedAt")] Booking booking)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,RoomId,CustomerName,CustomerPhone,AdultsCount,ChildrenCount,CustomerEmail,CheckIn,CheckOut,TotalAmount,Status,PaymentMethod,Notes,CreatedAt")] RoomBooking booking)
         {
             if (id != booking.Id)
             {
@@ -116,7 +114,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             {
                 try
                 {
-                    await _bookingService.UpdateBookingAsync(booking);
+                    await _bookingService.UpdateRoomBookingAsync(booking);
                     TempData["SuccessMessage"] = "Cập nhật trạng thái đơn hàng thành công!";
                     return RedirectToAction(nameof(Index));
                 }
@@ -142,7 +140,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var booking = await _bookingService.GetBookingByIdAsync(id.Value);
+            var booking = await _bookingService.GetRoomBookingByIdAsync(id.Value);
             if (booking == null)
             {
                 return NotFound();
@@ -156,7 +154,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _bookingService.DeleteBookingAsync(id);
+            await _bookingService.DeleteRoomBookingAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

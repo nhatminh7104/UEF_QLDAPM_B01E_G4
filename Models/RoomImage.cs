@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VillaManagementWeb.Models
 {
+    [Table("RoomImages")]
     public class RoomImage
     {
         public int Id { get; set; }
