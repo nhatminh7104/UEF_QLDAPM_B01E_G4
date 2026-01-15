@@ -1,0 +1,409 @@
+﻿@model IEnumerable<VillaManagementWeb.Models.Event>
+
+@{
+    ViewData["Title"] = "Dịch vụ & Sự kiện";
+
+    // --- LOGIC AN TOÀN HƠN ---
+    var listEvents = Model ?? new List<VillaManagementWeb.Models.Event>();
+
+    // Tìm theo từ khóa
+    var birthdayEvent = listEvents.FirstOrDefault(e => e.Title != null && e.Title.ToLower().Contains("sinh nhật")) ?? listEvents.FirstOrDefault();
+    var teamEvent = listEvents.FirstOrDefault(e => e.Title != null && e.Title.ToLower().Contains("team")) ?? listEvents.Skip(1).FirstOrDefault();
+    var weddingEvent = listEvents.FirstOrDefault(e => e.Title != null && e.Title.ToLower().Contains("cưới")) ?? listEvents.Skip(2).FirstOrDefault();
+    var celebrateEvent = listEvents.FirstOrDefault(e => e.Title != null && (e.Title.ToLower().Contains("kỷ niệm") || e.Title.ToLower().Contains("anniversary"))) ?? listEvents.Skip(3).FirstOrDefault();
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<style>
+    /* --- GENERAL STYLES --- */
+    :root {
+        --primary-brown: #a67c52;
+        --btn-brown: #b58d68;
+        --light-bg: #fffbf8;
+        --text-gray: #777;
+    }
+
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Montserrat', sans-serif;
+        color: #333;
+        overflow-x: hidden; /* Quan trọng để tránh thanh cuộn ngang khi animation chạy */
+    }
+
+    h1, h2, h3, .serif-font {
+        font-family: 'Playfair Display', serif;
+        color: var(--primary-brown);
+    }
+
+    /* HERO SECTION */
+    .hero-section {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        min-height: 700px;
+        background: url('/images/events/service.png') center bottom / cover no-repeat;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin-top: -100px;
+        padding-top: 100px;
+    }
+
+        /* Lớp phủ màu tối nhẹ để chữ nổi bật hơn trên nền ảnh */
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.2);
+        }
+
+    .hero-text-box {
+        margin-top: 150px;
+        color: #fff;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-size: 4.5rem; /* Tăng kích thước chút cho sang */
+        font-weight: 500;
+        letter-spacing: 2px;
+        margin-bottom: 25px;
+        color: #fff;
+    }
+
+    .hero-nav {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-weight: 500;
+        background: rgba(255,255,255,0.1); /* Nền mờ nhẹ */
+        padding: 15px 30px;
+        border-radius: 50px;
+        backdrop-filter: blur(5px);
+        display: inline-block;
+    }
+
+        .hero-nav span {
+            margin: 0 12px;
+            opacity: 0.9;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .hero-nav span:hover {
+                opacity: 1;
+                color: #f0decb;
+            }
+
+    /* CONTENT SECTIONS */
+    .content-section {
+        padding: 6rem 0;
+    }
+
+    .event-block {
+        margin-bottom: 7rem; /* Tăng khoảng cách giữa các khối */
+    }
+
+    .event-title {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        color: #cda683;
+    }
+
+    .event-desc {
+        font-size: 0.95rem;
+        font-weight: 300;
+        line-height: 1.9;
+        color: #666;
+        margin-bottom: 2.5rem;
+        text-align: justify;
+    }
+
+    .event-img {
+        width: 100%;
+        height: 400px; /* Cố định chiều cao cho đều */
+        object-fit: cover;
+        border-radius: 4px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1); /* Bóng đổ mềm mại hơn */
+        transition: transform 0.6s ease;
+    }
+
+        .event-img:hover {
+            transform: scale(1.02); /* Phóng to nhẹ khi di chuột */
+        }
+
+    /* BUTTONS */
+    .btn-brown-fill {
+        background-color: #a67c52;
+        color: #fff;
+        padding: 10px 30px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        border: 1px solid #a67c52;
+        letter-spacing: 1.5px;
+        text-decoration: none;
+        transition: 0.4s;
+        display: inline-block;
+        font-weight: 500;
+    }
+
+        .btn-brown-fill:hover {
+            background-color: #8c6642;
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(166, 124, 82, 0.3);
+        }
+
+    .btn-brown-outline {
+        background-color: transparent;
+        color: #888;
+        border: 1px solid #ccc;
+        padding: 10px 30px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        text-decoration: none;
+        transition: 0.4s;
+        display: inline-block;
+        margin-left: 15px;
+        font-weight: 500;
+    }
+
+        .btn-brown-outline:hover {
+            border-color: #a67c52;
+            color: #a67c52;
+            transform: translateY(-3px);
+        }
+
+    /* BOOKING FORM */
+    .booking-section {
+        margin-bottom: 5rem;
+        padding-top: 3rem;
+        border-top: 1px solid #eee; /* Đường kẻ ngăn cách nhẹ */
+    }
+
+    .booking-list {
+        margin-top: 25px;
+        list-style: none;
+        padding-left: 0;
+        font-size: 0.9rem;
+        color: #bfa38a;
+        line-height: 2.2;
+    }
+
+        .booking-list li i {
+            margin-right: 10px;
+        }
+
+    .form-custom {
+        border: 1px solid #eee;
+        border-radius: 4px;
+        padding: 12px 15px;
+        font-size: 0.95rem;
+        font-weight: 300;
+        background-color: #fff;
+        color: #555;
+        transition: 0.3s;
+    }
+
+        .form-custom:focus {
+            border-color: #a67c52;
+            box-shadow: 0 0 0 4px rgba(166, 124, 82, 0.05);
+            outline: none;
+        }
+
+    .form-label-custom {
+        font-size: 0.75rem;
+        color: #888;
+        margin-bottom: 8px;
+        display: block;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+    }
+
+    .flag-group .input-group-text {
+        background: #f9f9f9;
+        border: 1px solid #eee;
+        border-right: none;
+    }
+
+    .flag-group input {
+        border-left: none;
+    }
+</style>
+
+<div class="hero-section">
+    <div class="hero-text-box serif-font" data-aos="zoom-in" data-aos-duration="1500">
+        <h1 class="hero-title">Dịch vụ và sự kiện</h1>
+
+        <div class="hero-nav" data-aos="fade-up" data-aos-delay="300" data-aos-duration="1000">
+            <span>Tổ chức sinh nhật</span>
+            <span>Teambuilding</span>
+            <span>Tiệc cưới nhỏ</span>
+            <span>Lễ kỷ niệm</span>
+            <span>Đặt lịch</span>
+        </div>
+    </div>
+</div>
+
+<div class="container content-section">
+
+    <div class="row align-items-center event-block">
+        <div class="col-md-5 offset-md-1 pe-md-5 text-md-end text-center mb-4 mb-md-0"
+             data-aos="fade-right" data-aos-duration="1000">
+            <h2 class="event-title serif-font">Tổ chức sinh nhật</h2>
+            <p class="event-desc">
+                Chúng tôi cung cấp không gian tổ chức sinh nhật ấm cúng, trang trí theo yêu cầu với phong cách hiện đại hoặc cổ điển.
+                Dịch vụ trọn gói bao gồm tiệc trà, bánh ngọt và âm nhạc du dương giúp bạn lưu giữ những khoảnh khắc đẹp nhất.
+            </p>
+            <div>
+                <a asp-controller="Events" asp-action="Details" asp-route-id="@(birthdayEvent?.Id)" class="btn-brown-fill">XEM CHI TIẾT</a>
+                <a href="#booking" class="btn-brown-outline">ĐẶT LỊCH <i class="fas fa-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+
+        <div class="col-md-5" data-aos="fade-left" data-aos-duration="1000">
+            <img src="~/images/events/birthday.png" class="event-img" alt="Sinh nhật" onerror="this.src='https://images.unsplash.com/photo-1530103862676-de3c9da59af7?auto=format&fit=crop&w=800'">
+        </div>
+    </div>
+
+    <div class="row align-items-center event-block">
+        <div class="col-md-5 offset-md-1 mb-4 mb-md-0 order-md-1 order-1"
+             data-aos="fade-right" data-aos-duration="1000">
+            <img src="~/images/events/teambuilding.png" class="event-img" alt="Teambuilding" onerror="this.src='https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800'">
+        </div>
+
+        <div class="col-md-5 ps-md-5 text-md-start text-center order-md-2 order-2"
+             data-aos="fade-left" data-aos-duration="1000">
+            <h2 class="event-title serif-font">Teambuilding</h2>
+            <p class="event-desc">
+                Không gian sân vườn rộng rãi thích hợp cho các hoạt động ngoài trời, gắn kết tinh thần đồng đội.
+                Hỗ trợ setup các trò chơi vận động, âm thanh, ánh sáng và tiệc nướng BBQ sau chương trình.
+            </p>
+            <div>
+                <a asp-controller="Events" asp-action="Details" asp-route-id="@(teamEvent?.Id)" class="btn-brown-fill">XEM CHI TIẾT</a>
+                <a href="#booking" class="btn-brown-outline">ĐẶT LỊCH <i class="fas fa-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row align-items-center event-block">
+        <div class="col-md-5 offset-md-1 pe-md-5 text-md-end text-center mb-4 mb-md-0"
+             data-aos="fade-right" data-aos-duration="1000">
+            <h2 class="event-title serif-font">Tiệc cưới nhỏ</h2>
+            <p class="event-desc">
+                Một lễ cưới thân mật, lãng mạn bên những người thân yêu nhất.
+                Không gian được trang hoàng lộng lẫy với hoa tươi, nến và phong cách phục vụ chuẩn 5 sao.
+            </p>
+            <div>
+                <a asp-controller="Events" asp-action="Details" asp-route-id="@(weddingEvent?.Id)" class="btn-brown-fill">XEM CHI TIẾT</a>
+                <a href="#booking" class="btn-brown-outline">ĐẶT LỊCH <i class="fas fa-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+        <div class="col-md-5" data-aos="fade-left" data-aos-duration="1000">
+            <img src="~/images/events/wedding.png" class="event-img" alt="Tiệc cưới" onerror="this.src='https://images.unsplash.com/photo-1519225468359-69ea46e310d6?auto=format&fit=crop&w=800'">
+        </div>
+    </div>
+
+    <div class="row align-items-center event-block">
+        <div class="col-md-5 offset-md-1 mb-4 mb-md-0" data-aos="fade-right" data-aos-duration="1000">
+            <img src="~/images/events/celebrate.png" class="event-img" alt="Kỷ niệm" onerror="this.src='https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=800'">
+        </div>
+        <div class="col-md-5 ps-md-5 text-md-start text-center" data-aos="fade-left" data-aos-duration="1000">
+            <h2 class="event-title serif-font">Lễ kỷ niệm</h2>
+            <p class="event-desc">
+                Kỷ niệm ngày cưới, gặp mặt bạn cũ hay những cột mốc quan trọng.
+                Chúng tôi mang đến không gian riêng tư, thực đơn phong phú và sự phục vụ tận tâm.
+            </p>
+            <div>
+                <a asp-controller="Events" asp-action="Details" asp-route-id="@(celebrateEvent?.Id)" class="btn-brown-fill">XEM CHI TIẾT</a>
+                <a href="#booking" class="btn-brown-outline">ĐẶT LỊCH <i class="fas fa-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="booking" class="container booking-section" data-aos="fade-up" data-aos-duration="1200" data-aos-offset="200">
+    <div class="row">
+        <div class="col-md-5 offset-md-1 mb-4 mb-md-0">
+            <div style="position: sticky; top: 100px;">
+                <img src="~/images/events/service.png" class="w-100 shadow-sm rounded" style="height: 350px; object-fit: cover;" alt="Service">
+                <ul class="booking-list">
+                    <li><i class="fas fa-check"></i> Không gian sang trọng, riêng tư.</li>
+                    <li><i class="fas fa-check"></i> Thực đơn phong phú Á - Âu.</li>
+                    <li><i class="fas fa-check"></i> Đội ngũ phục vụ chuyên nghiệp.</li>
+                    <li><i class="fas fa-check"></i> Hỗ trợ trang trí theo chủ đề.</li>
+                    <li><i class="fas fa-check"></i> Hệ thống âm thanh, ánh sáng hiện đại.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-5 ps-md-5">
+            <h2 class="serif-font mb-4" style="font-size: 2.5rem; color: #cda683;">Đặt lịch sự kiện</h2>
+
+            <form asp-controller="Events" asp-action="Booking" method="post" class="mt-4">
+                <input type="hidden" name="eventId" value="@(listEvents.FirstOrDefault()?.Id ?? 1)" />
+
+                <div class="mb-4">
+                    <label class="form-label-custom">Họ và tên *</label>
+                    <input type="text" name="fullName" class="form-control form-custom" placeholder="Nhập họ và tên của bạn" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label-custom">Email *</label>
+                    <input type="email" name="email" class="form-control form-custom" placeholder="Nhập địa chỉ email liên hệ" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label-custom">Số điện thoại *</label>
+                    <div class="input-group flag-group">
+                        <span class="input-group-text">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg" width="24">
+                        </span>
+                        <input type="tel" name="phone" class="form-control form-custom" placeholder="0901 xxx xxx" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label-custom">Chọn dịch vụ quan tâm *</label>
+                    <select name="service" class="form-control form-custom" style="cursor: pointer;">
+                        <option value="Standard">-- Vui lòng chọn --</option>
+                        <option value="Tổ chức sinh nhật">Tổ chức sinh nhật</option>
+                        <option value="Teambuilding">Teambuilding</option>
+                        <option value="Tiệc cưới nhỏ">Tiệc cưới nhỏ</option>
+                        <option value="Lễ kỷ niệm">Lễ kỷ niệm</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label-custom">Tin nhắn / Yêu cầu đặc biệt</label>
+                    <textarea name="message" class="form-control form-custom" rows="4" placeholder="Ví dụ: Số lượng khách dự kiến, ngày mong muốn..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-brown-fill w-100 py-3 shadow-sm" style="font-size: 0.85rem; letter-spacing: 2px; font-weight: 600;">
+                    GỬI YÊU CẦU TƯ VẤN <i class="fas fa-paper-plane ms-2"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        once: true,    // Hiệu ứng chỉ chạy 1 lần khi cuộn xuống (không bị lặp lại gây rối mắt)
+        offset: 120,   // Bắt đầu chạy hiệu ứng khi cách mép dưới 120px
+        easing: 'ease-out-cubic', // Kiểu chuyển động mượt mà
+    });
+</script>

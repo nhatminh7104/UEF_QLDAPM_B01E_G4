@@ -1,0 +1,98 @@
+﻿@model IEnumerable<VillaManagementWeb.Models.RoomCategory>
+
+@{
+    ViewData["Title"] = "Quản lý Danh mục phòng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-inner py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Danh Mục Phòng</h2>
+            <p class="text-muted small">Quản lý nội dung giới thiệu cho từng loại phòng (Wooden House, Villa...)</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Thêm mới
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th style="width: 15%;">Banner</th>
+                            <th style="width: 20%;">Tên danh mục</th>
+                            <th style="width: 35%;">Mô tả ngắn</th>
+                            <th style="width: 15%;">Số lượng phòng</th>
+                            <th class="text-end" style="width: 15%;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@(string.IsNullOrEmpty(item.BannerUrl) ? "/images/no-image.png" : item.BannerUrl)"
+                                         class="rounded border" style="width: 100px; height: 60px; object-fit: cover;" />
+                                </td>
+                                <td class="fw-bold text-primary">@item.Name</td>
+                                <td>
+                                    <small class="text-muted text-truncate d-inline-block" style="max-width: 300px;">
+                                        @(item.ShortDescription ?? "Chưa có mô tả")
+                                    </small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">
+                                        @(item.Rooms?.Count ?? 0) phòng
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" title="Sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger ms-1 delete-btn" data-id="@item.Id" title="Xóa">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // 🔥 JS XỬ LÝ DELETE VỚI CONFIRM VÀ AJAX
+            $('.delete-btn').on('click', function () {
+                var id = $(this).data('id');
+                var row = $(this).closest('tr');
+
+                if (confirm('Bạn có chắc muốn xóa danh mục này? Hành động này không thể hoàn tác!')) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "Categories")',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function (result) {
+                            if (result.success) {
+                                row.fadeOut(300, function () {
+                                    $(this).remove();
+                                });
+                                alert(result.message); // Hoặc dùng toast nếu có
+                            } else {
+                                alert('Có lỗi xảy ra khi xóa!');
+                            }
+                        },
+                        error: function () {
+                            alert('Lỗi kết nối! Vui lòng thử lại.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

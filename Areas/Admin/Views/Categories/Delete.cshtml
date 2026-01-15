@@ -1,0 +1,32 @@
+﻿@model VillaManagementWeb.Models.RoomCategory
+
+@{
+    ViewData["Title"] = "Xóa danh mục";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="card border-danger mx-auto shadow" style="max-width: 600px;">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0 fw-bold"><i class="fas fa-exclamation-triangle"></i> Xác nhận xóa danh mục</h5>
+        </div>
+        <div class="card-body text-center p-5">
+            <h3 class="mb-3">Bạn có chắc chắn muốn xóa?</h3>
+            <p class="lead fw-bold text-danger">@Model.Name</p>
+
+            <div class="alert alert-warning text-start small">
+                <strong><i class="fas fa-radiation"></i> CẢNH BÁO QUAN TRỌNG:</strong><br />
+                Hành động này <b>KHÔNG THỂ</b> hoàn tác.<br />
+                Nếu bạn xóa danh mục này, tất cả các phòng thuộc danh mục <b>@Model.Name</b> cũng sẽ bị xóa vĩnh viễn (nếu cấu hình Cascade Delete) hoặc bị lỗi hệ thống.
+                <br /><br />
+                Hãy đảm bảo bạn đã chuyển các phòng sang danh mục khác trước khi xóa.
+            </div>
+
+            <form asp-action="Delete" class="mt-4">
+                <input type="hidden" asp-for="Id" />
+                <a asp-action="Index" class="btn btn-secondary px-4 me-2">Hủy bỏ</a>
+                <button type="submit" class="btn btn-danger px-4">Xác nhận xóa</button>
+            </form>
+        </div>
+    </div>
+</div>

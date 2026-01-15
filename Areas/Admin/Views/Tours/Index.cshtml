@@ -1,77 +1,106 @@
 ﻿@model IEnumerable<VillaManagementWeb.Models.Tour>
 
 @{
-    ViewData["Title"] = "Quản lý Tour du lịch";
+    ViewData["Title"] = "Quản lý Tour";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="col-md-12">
-    <div class="card">
-        <div class="card-header">
-            <div class="d-flex align-items-center">
-                <h4 class="card-title">Danh sách các Tour</h4>
-                <a asp-action="Create" class="btn btn-primary btn-round ms-auto">
-                    <i class="fa fa-plus"></i> Thêm Tour mới
-                </a>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="tours-table" class="display table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Ảnh</th>
-                            <th>Tên Tour</th>
-                            <th>Giá / Khách</th>
-                            <th>Thời lượng</th>
-                            <th>Mô tả</th>
-                            <th style="width: 10%">Thao tác</th>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">Danh Sách Tour Du Lịch</h6>
+        <a asp-action="Create" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus"></i> Thêm Mới
+        </a>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="tourTable" width="100%" cellspacing="0">
+                <thead class="thead-light">
+                    <tr>
+                        <th style="width: 25%">Tên Tour</th>
+                        <th>Ảnh</th>
+                        <th>Giá/Người</th>
+                        <th>Thời gian</th>
+                        <th style="width: 15%">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row_@item.Id">
+                            <td class="align-middle font-weight-bold">@item.TourName</td>
+                            <td class="text-center align-middle">
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.TourName"
+                                        style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;" />
+                                }
+                                else
+                                {
+                                    <span class="badge badge-secondary">No Image</span>
+                                }
+                            </td>
+                            <td class="align-middle">@item.PricePerPerson.ToString("N0") đ</td>
+                            <td class="align-middle">@item.DurationHours giờ</td>
+                            <td class="align-middle text-center">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm" title="Sửa">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm"
+                                    title="Chi tiết">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                                <button onclick="deleteItem(@item.Id)" class="btn btn-danger btn-sm" title="Xóa">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/no-image.png" : item.ImageUrl)"
-                                        class="rounded" style="width: 70px; height: 50px; object-fit: cover;" />
-                                </td>
-                                <td class="fw-bold">@item.TourName</td>
-                                <td class="text-primary fw-bold">@item.PricePerPerson.ToString("N0") đ</td>
-                                <td>
-                                    <span class="badge badge-count">@item.DurationHours giờ</span>
-                                </td>
-                                <td>
-                                    <div class="text-truncate" style="max-width: 200px;">@item.Description</div>
-                                </td>
-                                <td>
-                                    <div class="form-button-action">
-                                        <a asp-action="Edit" asp-route-id="@item.Id"
-                                            class="btn btn-link btn-primary btn-lg">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-link btn-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
-        $(document).ready(function () {
-            $("#tours-table").DataTable({
-                pageLength: 10,
-                language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json' },
-                columnDefs: [{ orderable: false, targets: [0, 5] }]
-            });
-        });
+        function deleteItem(id) {
+            Swal.fire({
+                title: 'Bạn có chắc chắn?',
+                text: "Dữ liệu sẽ không thể khôi phục sau khi xóa!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Xóa ngay!',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Admin/Tours/Delete',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function (res) {
+                            if (res.success) {
+                                Swal.fire(
+                                    'Đã xóa!',
+                                    res.message,
+                                    'success'
+                                );
+                                // Xóa dòng trong bảng mà không cần reload
+                                $('#row_' + id).remove();
+                            } else {
+                                Swal.fire('Lỗi!', res.message, 'error');
+                            }
+                        },
+                        error: function () {
+                            Swal.fire('Lỗi!', 'Có lỗi xảy ra khi gọi server.', 'error');
+                        }
+                    });
+                }
+            })
+        }
     </script>
 }

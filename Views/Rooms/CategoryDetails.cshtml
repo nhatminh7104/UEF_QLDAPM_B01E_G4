@@ -1,0 +1,215 @@
+﻿@model VillaManagementWeb.ViewModels.RoomCategoryViewModel
+
+@{
+    ViewData["Title"] = Model.CategoryName;
+    Layout = "~/Views/Shared/_Layout_Tailwind.cshtml";
+}
+
+<div class="relative h-[60vh] w-full overflow-hidden">
+    <div class="absolute inset-0 bg-cover bg-center bg-fixed transition-transform duration-700 hover:scale-105"
+         style="background-image: url('@Model.BannerImage');">
+    </div>
+    <div class="absolute inset-0 bg-black/30"></div>
+
+    <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4">
+        <span class="text-gold tracking-[0.2em] text-sm md:text-base uppercase font-bold mb-2 animate-fadeInUp">
+            The Wandering Rose
+        </span>
+        <h1 class="font-serif-display text-5xl md:text-7xl mb-4 drop-shadow-lg animate-fadeInUp animate-delay-1s">
+            @Model.CategoryName
+        </h1>
+        <div class="h-1 w-24 bg-gold rounded mt-2 mb-6"></div>
+    </div>
+</div>
+
+<section class="py-20 bg-white" id="intro">
+    <div class="container mx-auto px-4 max-w-6xl">
+
+        <div class="text-center max-w-4xl mx-auto mb-16">
+            <h2 class="text-4xl font-serif-display text-[#A67C52] mb-8">Giới thiệu</h2>
+            <div class="prose max-w-none text-gray-600 leading-relaxed text-justify md:text-center text-lg">
+                @Html.Raw(Model.Description.Replace("\n", "<br>"))
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            @if (Model.GalleryImages != null && Model.GalleryImages.Any())
+            {
+                @foreach (var img in Model.GalleryImages)
+                {
+                    <div class="relative w-full aspect-[3/4] overflow-hidden group">
+                        <img src="@img" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="bg-gray-100 aspect-[3/4] flex items-center justify-center text-gray-400">Ảnh 1</div>
+                <div class="bg-gray-100 aspect-[3/4] flex items-center justify-center text-gray-400">Ảnh 2</div>
+                <div class="bg-gray-100 aspect-[3/4] flex items-center justify-center text-gray-400">Ảnh 3</div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-[#FDFBF7]" id="room-list">
+    <div class="container mx-auto px-4 max-w-6xl space-y-24">
+
+        @foreach (var room in Model.Rooms)
+        {
+            <div class="room-item-block">
+                <div class="text-center mb-10">
+                    <h3 class="text-5xl font-serif-display text-[#A67C52] mb-3">@room.Name</h3>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-10 items-start">
+
+                    <div class="w-full md:w-[65%] aspect-[16/10] overflow-hidden relative shadow-lg group">
+                        <div class="swiper room-gallery-slider w-full h-full">
+                            <div class="swiper-wrapper">
+                                @if (room.ImageList != null && room.ImageList.Any())
+                                {
+                                    foreach (var img in room.ImageList)
+                                    {
+                                        <div class="swiper-slide">
+                                            <img src="@img" alt="@room.Name" class="w-full h-full object-cover">
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="swiper-slide">
+                                        <img src="@room.ImageUrl" alt="@room.Name" class="w-full h-full object-cover">
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="swiper-button-next text-white/70 hover:text-white transition"></div>
+                            <div class="swiper-button-prev text-white/70 hover:text-white transition"></div>
+                            <div class="swiper-pagination"></div>
+                        </div>
+                    </div>
+
+                    <div class="w-full md:w-[35%] flex flex-col justify-center py-4">
+
+                        <div class="space-y-4 mb-8 text-gray-600 font-light">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-[#A67C52]">person</span>
+                                <span>@room.CapacityAdults người lớn, @room.CapacityChildren trẻ em</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-[#A67C52]">square_foot</span>
+                                <span>@room.Area m²</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-[#A67C52]">bed</span>
+                                <span>@room.Bedrooms phòng ngủ (@room.Beds giường)</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-[#A67C52]">bathtub</span>
+                                <span>Phòng tắm riêng</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <span class="block text-sm text-gray-400">Giá chỉ từ</span>
+                            <span class="text-3xl font-serif-display text-gray-800">
+                                @room.Price.ToString("N0") <span class="text-lg font-sans text-gray-500">VNĐ</span>
+                            </span>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <a asp-controller="Booking" asp-action="Index" asp-route-roomId="@room.Id"
+                               class="bg-[#A67C52] text-white px-8 py-3 uppercase text-xs font-bold tracking-widest hover:bg-black transition duration-300">
+                                Đặt ngay
+                            </a>
+                            <a href="@room.DetailUrl"
+                               class="border border-[#A67C52] text-[#A67C52] px-6 py-3 uppercase text-xs font-bold tracking-widest hover:bg-[#A67C52] hover:text-white transition duration-300">
+                                Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>               
+
+            </div>            
+
+            @if (room != Model.Rooms.Last())
+            {
+                <div class="w-24 h-[1px] bg-[#A67C52] mx-auto opacity-50"></div>
+            }
+        }
+        <div class="flex flex-col items-center max-w-2xl mx-auto">
+            <h1 class="text-4xl font-serif-display text-[#A67C52] mb-8">
+                Tiện nghi đã bao gồm
+            </h1>
+
+            @if (Model.Amenities != null && Model.Amenities.Any())
+            {
+                var index = 0;
+
+                foreach (var amenity in Model.Amenities)
+                {
+                    if (index % 2 == 0)
+                    {
+                        @* LẺ *@
+                        <h3 class="text-5xl font-serifLuxury font-light text-gold tracking-wide text-center mt-4">
+                            @amenity
+                        </h3>
+                    }
+                    else
+                    {
+                        @* CHẴN *@
+                        <p class="text-sm text-gold/80 font-serifLuxury italic tracking-wide text-center mt-2">
+                            @amenity
+                        </p>
+
+                        <div class="w-full px-6 my-4">
+                            <div class="h-px bg-gold/50"></div>
+                        </div>
+
+                    }
+
+                    index++;
+                }
+            }
+            else
+            {
+                <p class="text-gray-400 italic text-center">
+                    Đang cập nhật tiện nghi...
+                </p>
+            }
+        </div>
+    </div>
+</section>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Khởi tạo tất cả slider có class 'room-gallery-slider'
+            const sliders = document.querySelectorAll('.room-gallery-slider');
+
+            sliders.forEach(sliderElement => {
+                new Swiper(sliderElement, {
+                    loop: true,               // Lặp lại vô tận
+                    effect: 'fade',           // Hiệu ứng mờ dần (sang trọng hơn cho hotel)
+                    fadeEffect: { crossFade: true },
+                    autoplay: {
+                        delay: 3500,          // Tự chuyển sau 3.5s
+                        disableOnInteraction: false,
+                    },
+                    navigation: {
+                        nextEl: sliderElement.querySelector('.swiper-button-next'),
+                        prevEl: sliderElement.querySelector('.swiper-button-prev'),
+                    },
+                    pagination: {
+                        el: sliderElement.querySelector('.swiper-pagination'),
+                        clickable: true,
+                        dynamicBullets: true,
+                    },
+                });
+            });
+        });
+    </script>
+}

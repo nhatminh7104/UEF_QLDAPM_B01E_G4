@@ -1,70 +1,143 @@
 ﻿@model IEnumerable<VillaManagementWeb.Models.Event>
 
 @{
-    ViewData["Title"] = "Quản lý sự kiện";
+    ViewData["Title"] = "Danh Sách Sự Kiện";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="col-md-12">
-    <div class="card">
-        <div class="card-header">
-            <div class="d-flex align-items-center">
-                <h4 class="card-title">Danh sách sự kiện</h4>
-                <a asp-area="Admin" asp-controller="Events" asp-action="Create"
-                    class="btn btn-primary btn-round ms-auto">
-                    <i class="fa fa-plus"></i> Thêm sự kiện mới
-                </a>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+<script>
+    tailwind.config = {
+        corePlugins: {
+            preflight: false,
+            visibility: false
+        },
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    primary: "#13a4ec",
+                    "primary-dark": "#0b8bc9"
+                },
+                fontFamily: {
+                    display: ["Inter", "sans-serif"]
+                }
+            }
+        }
+    }
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
+
+<div class="flex-1 p-6 font-display">
+    <div class="max-w-7xl mx-auto space-y-6">
+
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold">Danh Sách Sự Kiện</h1>
+                <p class="text-sm text-slate-500 mt-1">Quản lý các sự kiện trong hệ thống</p>
             </div>
+
+            <a asp-action="Create"
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg shadow-sm">
+                <span class="material-symbols-outlined">add</span>
+                Thêm sự kiện
+            </a>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="events-table" class="display table table-striped table-hover">
-                    <thead>
+
+        <!-- Table -->
+        <div class="bg-white rounded-xl border shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 border-b">
                         <tr>
-                            <th>Hình ảnh</th>
-                            <th>Tên sự kiện</th>
-                            <th>Ngày tổ chức</th>
-                            <th>Địa điểm</th>
-                            <th>Số vé</th>
-                            <th style="width: 10%">Thao tác</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Hình ảnh</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Thông tin</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase hidden lg:table-cell">Mô
+                                tả</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Thời gian</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Vé</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase text-right">Hành động
+                            </th>
                         </tr>
                     </thead>
-                    <tbody>
+
+                    <tbody class="divide-y">
                         @foreach (var item in Model)
                         {
-                            <tr>
-                                <td>
-                                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/no-image.png" : item.ImageUrl)"
-                                        alt="Event" class="rounded" style="width: 60px; height: 45px; object-fit: cover;" />
+                            var isUpcoming = item.EventDate >= DateTime.Now;
+
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-6 py-4">
+                                    <div class="w-16 h-12 rounded bg-slate-200 overflow-hidden">
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                        {
+                                            <img src="@item.ImageUrl" class="w-full h-full object-cover" />
+                                        }
+                                    </div>
                                 </td>
-                                <td>
-                                    <span class="fw-bold">@item.Title</span>
-                                    <br />
-                                    <small class="text-muted text-truncate"
-                                        style="max-width: 150px; display: inline-block;">
-                                        @item.Description
-                                    </small>
+
+                                <td class="px-6 py-4">
+                                    <a asp-action="Details" asp-route-id="@item.Id"
+                                        class="font-semibold hover:text-primary">
+                                        @item.Title
+                                    </a>
+                                    <div class="text-xs text-slate-500 mt-1">
+                                        @item.Location
+                                    </div>
                                 </td>
-                                <td>@item.EventDate.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>
-                                    <span class="badge badge-info">@item.Location</span>
+
+                                <td class="px-6 py-4 hidden lg:table-cell">
+                                    <p class="text-sm text-slate-600 line-clamp-2">
+                                        @(item.Description ?? "Không có mô tả")
+                                    </p>
                                 </td>
-                                <td>
-                                    <span class="fw-bold">@item.TotalTickets</span> Vé
+
+                                <td class="px-6 py-4">
+                                    <div class="text-sm font-medium">
+                                        @item.EventDate.ToString("dd/MM/yyyy")
+                                    </div>
+                                    <div class="text-xs text-slate-500">
+                                        @item.EventDate.ToString("HH:mm")
+                                    </div>
                                 </td>
-                                <td>
-                                    <div class="form-button-action">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-link btn-primary btn-lg"
-                                            data-bs-toggle="tooltip" title="Chỉnh sửa">
-                                            <i class="fa fa-edit"></i>
+
+                                <td class="px-6 py-4">
+                                    <span class="font-semibold">@item.TotalTickets</span> vé
+                                    <div class="mt-1">
+                                        <span
+                                            class="text-xs px-2 py-0.5 rounded-full
+                                                                @(isUpcoming ? "bg-green-100 text-green-700" : "bg-slate-200 text-slate-600")">
+                                            @(isUpcoming ? "Sắp diễn ra" : "Đã kết thúc")
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex justify-end gap-2">
+                                        <a asp-action="Details" asp-route-id="@item.Id"
+                                            class="text-slate-400 hover:text-primary">
+                                            <span class="material-symbols-outlined">visibility</span>
                                         </a>
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-link btn-info btn-lg"
-                                            data-bs-toggle="tooltip" title="Chi tiết">
-                                            <i class="fa fa-info-circle"></i>
+                                        <a asp-action="Edit" asp-route-id="@item.Id"
+                                            class="text-slate-400 hover:text-blue-600">
+                                            <span class="material-symbols-outlined">edit</span>
                                         </a>
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-link btn-danger"
-                                            data-bs-toggle="tooltip" title="Xóa">
-                                            <i class="fa fa-times"></i>
+                                        <a asp-action="Delete" asp-route-id="@item.Id"
+                                            class="text-slate-400 hover:text-red-600">
+                                            <span class="material-symbols-outlined">delete</span>
                                         </a>
                                     </div>
                                 </td>
@@ -73,22 +146,10 @@
                     </tbody>
                 </table>
             </div>
+
+            <div class="px-6 py-4 bg-slate-50 border-t text-sm text-slate-500">
+                Tổng cộng <b>@Model.Count()</b> sự kiện
+            </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            $("#events-table").DataTable({
-                pageLength: 10,
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json'
-                },
-                columnDefs: [
-                    { orderable: false, targets: [0, 5] } // Tắt sắp xếp cho cột Hình ảnh và Thao tác
-                ]
-            });
-        });
-    </script>
-}

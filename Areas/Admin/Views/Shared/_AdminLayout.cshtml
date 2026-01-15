@@ -10,7 +10,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>The Wandering Rose Ba Vi - Admin Dashboard</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-    <link rel="icon" href="/Admin-template/assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="~/Admin-template/assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
     <script src="/Admin-template/assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
@@ -32,14 +34,162 @@
         });
     </script>
 
-    <link rel="stylesheet" href="/Admin-template/assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/Admin-template/assets/css/plugins.min.css" />
-    <link rel="stylesheet" href="/Admin-template/assets/css/kaiadmin.min.css" />
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="~/Admin-template/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Admin-template/assets/css/plugins.min.css" />
+    <link rel="stylesheet" href="~/Admin-template/assets/css/kaiadmin.min.css" />
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    @* <link rel="stylesheet" href="~/Admin-template/assets/css/demo.css" /> *@
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 
 <body>
     <div class="wrapper">
-        <partial name="_Sidebar" />
+        <!-- Sidebar -->
+        <div class="sidebar" data-background-color="dark">
+            <div class="sidebar-logo">
+                <!-- Logo Header -->
+                <div class="logo-header" data-background-color="dark">
+                    <a href="index.html" class="logo">
+                        <img src="~/Admin-template/assets/img/kaiadmin/logo_light.svg" alt="navbar brand"
+                            class="navbar-brand" height="20" />
+                    </a>
+                    <div class="nav-toggle">
+                        <button class="btn btn-toggle toggle-sidebar">
+                            <i class="gg-menu-right"></i>
+                        </button>
+                        <button class="btn btn-toggle sidenav-toggler">
+                            <i class="gg-menu-left"></i>
+                        </button>
+                    </div>
+                    <button class="topbar-toggler more">
+                        <i class="gg-more-vertical-alt"></i>
+                    </button>
+                </div>
+                <!-- End Logo Header -->
+            </div>
+            <div class="sidebar-wrapper scrollbar scrollbar-inner">
+                <div class="sidebar-content">
+                    <ul class="nav nav-secondary">
+                        <li
+                            class="nav-item @(currentArea == "Admin" && currentController == "Dashboard" ? "active" : "")">
+                            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="nav-link">
+                                <i class="fas fa-home"></i>
+                                <p>Bảng điều khiển</p>
+                                @* Chỉ giữ lại caret nếu bạn có menu con (submenu) bên dưới *@
+                                @* <span class="caret"></span> *@
+                            </a>
+                        </li>
+                        <li class="nav-section">
+                            <span class="sidebar-mini-icon">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </span>
+                            <h4 class="text-section">Quản lý hệ thống</h4>
+                        </li>
+
+                        <li class="nav-item @(currentController == "Rooms" ? "active submenu" : "")">
+                            <a data-bs-toggle="collapse" href="#roomsMenu">
+                                <i class="fas fa-bed"></i>
+                                <p>Quản lý Phòng</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse @(currentController == "Rooms" ? "show" : "")" id="roomsMenu">
+                                <ul class="nav nav-collapse">
+                                    <li>
+                                        <a asp-area="Admin" asp-controller="Categories" asp-action="Index">
+                                            <span class="sub-item">Danh mục phòng</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-area="Admin" asp-controller="Rooms" asp-action="Index">
+                                            <span class="sub-item">Danh sách phòng</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-area="Admin" asp-controller="Rooms" asp-action="Create">
+                                            <span class="sub-item">Thêm mới phòng</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-area="Admin" asp-controller="Roomimages" asp-action="index">
+                                            <span class="sub-item">Ảnh phòng</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-area="Admin" asp-controller="CategoryRoomImages" asp-action="index">
+                                            <span class="sub-item">Ảnh loại phòng</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item @(currentController == "Bookings" ? "active" : "")">
+                            <a asp-area="Admin" asp-controller="Bookings" asp-action="Index">
+                                <i class="fas fa-calendar-check"></i>
+                                <p>Quản lý Đặt phòng</p>
+                            </a>
+                        </li>
+
+                        <li
+                            class="nav-item @(currentController == "Events" || currentController == "Tickets" ? "active submenu" : "")">
+                            <a data-bs-toggle="collapse" href="#eventsMenu">
+                                <i class="fas fa-ticket-alt"></i>
+                                <p>Sự kiện & Vé</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse @(currentController == "Events" || currentController == "Tickets" ? "show" : "")"
+                                id="eventsMenu">
+                                <ul class="nav nav-collapse">
+                                    <li>
+                                        <a asp-area="Admin" asp-controller="Events" asp-action="Index">
+                                            <span class="sub-item">Danh sách sự kiện</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-area="Admin" asp-controller="Tickets" asp-action="Index">
+                                            <span class="sub-item">Quản lý vé bán</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li
+                            class="nav-item @(currentController == "Tours" || currentController == "Tours" ? "active submenu" : "")">
+                            <a data-bs-toggle="collapse" href="#toursMenu">
+                                <i class="fas fa-ticket-alt"></i>
+                                <p>Tour & Vé</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse @(currentController == "Tours" || currentController == "Tours" ? "show" : "")"
+                                id="toursMenu">
+                                <ul class="nav nav-collapse">
+                                    <li>
+                                        <a asp-area="Admin" asp-controller="Tours" asp-action="Index">
+                                            <span class="sub-item">Danh sách tour</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-area="Admin" asp-controller="Tourbookings" asp-action="Index">
+                                            <span class="sub-item">Quản lý vé bán</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item @(currentController == "News" ? "active" : "")">
+                            <a asp-area="Admin" asp-controller="News" asp-action="Index">
+                                <i class="fas fa-newspaper"></i>
+                                <p>Quản lý Tin tức</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- End Sidebar -->
 
         <div class="main-panel">
             <div class="main-header">
@@ -74,15 +224,42 @@
 
             <footer class="footer">
                 <div class="container-fluid d-flex justify-content-between">
+                    <nav class="pull-left">
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="http://www.themekita.com">
+                                    ThemeKita
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"> Help </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"> Licenses </a>
+                            </li>
+                        </ul>
+                    </nav>
                     <div class="copyright">
-                        2026, made with <i class="fa fa-heart heart text-danger"></i> by
-                        <a href="#">The Wandering Rose Team</a>
+                        2024, made with <i class="fa fa-heart heart text-danger"></i> by
+                        <a href="http://www.themekita.com">ThemeKita</a>
                     </div>
                     <div>
-                        Hệ thống quản lý Villa v1.0
+                        Distributed by
+                        <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
                     </div>
                 </div>
-            </footer>
+
+                <footer class="footer">
+                    <div class="container-fluid d-flex justify-content-between">
+                        <div class="copyright">
+                            2026, made with <i class="fa fa-heart heart text-danger"></i> by
+                            <a href="#">The Wandering Rose Team</a>
+                        </div>
+                        <div>
+                            Hệ thống quản lý Villa v1.0
+                        </div>
+                    </div>
+                </footer>
         </div>
     </div>
 

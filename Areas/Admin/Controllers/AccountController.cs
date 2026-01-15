@@ -31,20 +31,27 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
-
-            if (result.Succeeded)
+            // Tối ưu hóa: Tìm user theo email trước để lấy UserName chính xác
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user != null)
             {
-                // Quay lại trang cũ nếu có, không thì về Dashboard
-                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                    return Redirect(returnUrl);
+                var result = await _signInManager.PasswordSignInAsync(user.UserName!, model.Password, model.RememberMe, false);
 
-                return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                if (result.Succeeded)
+                {
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                        return Redirect(returnUrl);
+
+                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                }
             }
 
             ModelState.AddModelError("", "Tài khoản hoặc mật khẩu không chính xác.");
             return View(model);
         }
+
+        [HttpGet]
+        public IActionResult Register() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -52,11 +59,18 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var user = new User { Email = model.Email, UserName = model.Email, FullName = model.FullName };
+            var user = new User
+            {
+                Email = model.Email,
+                UserName = model.Email, // Sử dụng Email làm UserName cho đồng bộ
+                FullName = model.FullName,
+            };
+
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
             {
+                // Mặc định đăng ký từ trang Admin sẽ là Role Admin hoặc tùy bạn chỉnh sửa
                 await _userManager.AddToRoleAsync(user, "Admin");
                 await _signInManager.SignInAsync(user, false);
                 return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
@@ -74,6 +88,12 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home", new { area = "" });
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

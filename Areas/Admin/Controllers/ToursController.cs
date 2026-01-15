@@ -1,38 +1,77 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using VillaManagementWeb.Models;
-using VillaManagementWeb.Admin.Services.Interfaces;
+using VillaManagementWeb.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting; // Thêm namespace này để xử lý file
+using System.IO;
+using VillaManagementWeb.Services.Implementations;
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
     public class ToursController : Controller
     {
-        private readonly IToursService _toursService;
+        private readonly ITourService _tourService;
+        private readonly IWebHostEnvironment _webHostEnvironment; // Inject môi trường để lấy đường dẫn
 
-        public ToursController(IToursService toursService)
+        public ToursController(ITourService tourService, IWebHostEnvironment webHostEnvironment)
         {
-            _toursService = toursService;
+            _tourService = tourService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<IActionResult> Index() => View(await _toursService.GetAllToursAsync());
+        public async Task<IActionResult> Index()
+        {
+            return View(await _tourService.GetAllToursAsync());
+        }
+
 
         public async Task<IActionResult> Details(int id)
         {
-            var tour = await _toursService.GetTourByIdAsync(id);
-            return tour == null ? NotFound() : View(tour);
+            return View(await _tourService.GetAllToursAsync());
         }
 
-        public IActionResult Create() => View();
+        // GET: Admin/Tours/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null) return NotFound();
+            var tour = await _tourService.GetTourByIdAsync(id.Value);
+            if (tour == null) return NotFound();
+            return View(tour);
+        }
 
+        // GET: Admin/Tours/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Admin/Tours/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Tour tour, IFormFile? imageFile)
         {
+            ModelState.Remove("TourBookings");
             if (ModelState.IsValid)
             {
-                await _toursService.CreateTourAsync(tour, imageFile);
+                // Xử lý upload ảnh
+                if (imageFile != null)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "tours");
+                    if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(fileStream);
+                    }
+                    tour.ImageUrl = "/images/tours/" + uniqueFileName;
+                }
+
+                await _tourService.CreateTourAsync(tour);
                 return RedirectToAction(nameof(Index));
             }
             return View(tour);
@@ -40,10 +79,13 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var tour = await _toursService.GetTourByIdAsync(id);
-            return tour == null ? NotFound() : View(tour);
+            var tour = await _tourService.GetTourByIdAsync(id);
+            if (tour == null) return NotFound();
+
+            return View(tour);
         }
 
+        // POST: Admin/Tours/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Tour tour, IFormFile? imageFile)
@@ -54,23 +96,50 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             {
                 try
                 {
-                    await _toursService.UpdateTourAsync(tour, imageFile);
+                    // Xử lý upload ảnh mới nếu có
+                    if (imageFile != null)
+                    {
+                        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "tours");
+                        if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await imageFile.CopyToAsync(fileStream);
+                        }
+                        tour.ImageUrl = "/images/tours/" + uniqueFileName;
+                    }
+
+                    await _tourService.UpdateTourAsync(tour);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", ex.Message);
+                    ModelState.AddModelError("", $"Lỗi: {ex.Message}");
                 }
             }
             return View(tour);
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        // POST: Admin/Tours/Delete/5 (Dùng cho AJAX)
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
         {
-            await _toursService.DeleteTourAsync(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var deleted = await _tourService.DeleteTourAsync(id);
+                if (deleted)
+                {
+                    return Json(new { success = true, message = "Xóa tour thành công!" });
+                }
+                return Json(new { success = false, message = "Không tìm thấy tour hoặc lỗi hệ thống." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
     }
 }

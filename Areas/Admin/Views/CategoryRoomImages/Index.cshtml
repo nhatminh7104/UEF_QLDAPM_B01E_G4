@@ -1,0 +1,43 @@
+﻿@model IEnumerable<VillaManagementWeb.Models.CategoryRoomImage>
+
+@{
+    ViewData["Title"] = "Thư viện ảnh Category";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Quản lý Thư viện ảnh Hạng phòng</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i> Thêm ảnh mới</a>
+</p>
+<table class="table table-bordered table-hover">
+    <thead class="thead-light">
+        <tr>
+            <th style="width: 200px;">Hình ảnh</th>
+            <th>Hạng phòng</th>
+            <th>Đường dẫn</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-center">
+                    <img src="@item.ImageUrl" style="width: 120px; height: 80px; object-fit: cover; border-radius: 4px;" />
+                </td>
+                <td class="align-middle">
+                    <strong>@Html.DisplayFor(modelItem => item.RoomCategory.Name)</strong>
+                </td>
+                <td class="align-middle text-muted small">
+                    @Html.DisplayFor(modelItem => item.ImageUrl)
+                </td>
+                <td class="align-middle">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Sửa</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Xem</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

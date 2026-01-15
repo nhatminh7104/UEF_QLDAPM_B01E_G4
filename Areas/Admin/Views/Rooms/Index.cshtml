@@ -41,6 +41,7 @@
                                 <td>@item.RoomNumber</td>
                                 <td><span class="badge badge-info">@item.Type</span></td>
                                 <td class="fw-bold">@item.PricePerNight.ToString("N0") VNĐ</td>
+                                <div class="small text-muted mt-1">@item.Category</div>
                                 <td>
                                     <div class="d-flex gap-2 text-muted">
                                         <i class="fas fa-wifi @(item.HasWifi ? "text-primary" : "opacity-25")"

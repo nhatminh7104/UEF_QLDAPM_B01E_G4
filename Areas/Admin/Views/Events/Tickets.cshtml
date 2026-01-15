@@ -1,0 +1,112 @@
+@model IEnumerable<VillaManagementWeb.Models.Ticket>
+
+@{
+    ViewData["Title"] = "Tickets";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var eventEntity = ViewBag.Event as VillaManagementWeb.Models.Event;
+}
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <div>
+                    <h4 class="card-title">Vé bán cho sự kiện: @(eventEntity?.Title ?? "N/A")</h4>
+                    @if (eventEntity != null)
+                    {
+                        <p class="text-muted mb-0">Ngày sự kiện: @eventEntity.EventDate.ToString("dd/MM/yyyy HH:mm") | Địa điểm: @eventEntity.Location</p>
+                    }
+                </div>
+                <a asp-action="Index" class="btn btn-secondary btn-round ms-auto">
+                    <i class="fa fa-arrow-left"></i> Quay lại danh sách sự kiện
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="add-row" class="display table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Loại vé</th>
+                            <th>Giá</th>
+                            <th>Tên khách hàng</th>
+                            <th>Email</th>
+                            <th>Số lượng</th>
+                            <th>Ngày đặt</th>
+                            <th>Mã QR</th>
+                            <th>Trạng thái</th>
+                            <th style="width: 15%">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>
+                                    <span class="badge @(item.TicketType == "VIP" ? "badge-warning" : "badge-info")">
+                                        @item.TicketType
+                                    </span>
+                                </td>
+                                <td class="fw-bold">@item.Price.ToString("N0") VNĐ</td>
+                                <td>@item.CustomerName</td>
+                                <td>@item.CustomerEmail</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.BookingDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    <small class="font-monospace">@item.QRCode</small>
+                                </td>
+                                <td>
+                                    @if (item.IsUsed)
+                                    {
+                                        <span class="badge badge-success">Đã sử dụng</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-secondary">Chưa sử dụng</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="form-button-action">
+                                        <a asp-controller="Tickets" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-link btn-primary btn-lg" data-toggle="tooltip" title="Sửa">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a asp-controller="Tickets" asp-action="Details" asp-route-id="@item.Id" class="btn btn-link btn-info btn-lg" data-toggle="tooltip" title="Chi tiết">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <a asp-controller="Tickets" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-link btn-danger btn-lg" data-toggle="tooltip" title="Xóa">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="10" class="text-center text-muted py-4">
+                                    Chưa có vé nào được bán cho sự kiện này.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#add-row").DataTable({
+                pageLength: 10,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json'
+                }
+            });
+        });
+    </script>
+}
+

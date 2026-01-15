@@ -7,6 +7,8 @@ using AdminInterfaces = VillaManagementWeb.Admin.Services.Interfaces;
 using AdminImpl = VillaManagementWeb.Admin.Services.Implementations;
 using AdminRepoInterfaces = VillaManagementWeb.Admin.Repositories.Interfaces;
 using AdminRepoImpl = VillaManagementWeb.Admin.Repositories.Implementations;
+using VillaManagementWeb.Services.Implementations;
+using VillaManagementWeb.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +55,33 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 .AddEntityFrameworkStores<VillaDbContext>()
 .AddDefaultTokenProviders();
 
-// 3. Cấu hình Cookie
+// Register Repositories
+// builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+// builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+// builder.Services.AddScoped<IEventRepository, EventRepository>();
+// builder.Services.AddScoped<INewsRepository, NewsRepository>();
+// builder.Services.AddScoped<ITourRepository, TourRepository>();
+// builder.Services.AddScoped<ITourBookingRepository, TourBookingRepository>();
+// builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+// builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+// MVC + Runtime Compilation
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+// Register Services
+// builder.Services.AddScoped<IRoomService, RoomService>();
+// builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<INewsService, NewsService>();
+builder.Services.AddScoped<ITourService, TourService>();
+builder.Services.AddScoped<ITourBookingService, TourBookingService>();
+builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<LayoutService>();
+// Identity
+builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<VillaDbContext>().AddDefaultTokenProviders();
+
+// Cookie paths (vì Account nằm trong Admin Area)
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Admin/Account/Login";

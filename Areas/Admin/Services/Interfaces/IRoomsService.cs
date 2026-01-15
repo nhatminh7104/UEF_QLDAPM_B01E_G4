@@ -7,9 +7,16 @@ namespace VillaManagementWeb.Admin.Services.Interfaces
         Task<IEnumerable<Room>> GetAllRoomsAsync();
         Task<IEnumerable<Room>> GetRoomsWithStatusAsync();
         Task<Room?> GetRoomByIdAsync(int id);
+        Task<Room?> GetRoomWithImagesAsync(int id);
+
         Task<bool> CreateRoomAsync(Room room, List<IFormFile> imageFiles);
         Task<bool> UpdateRoomAsync(Room room, List<IFormFile> imageFiles);
         Task<bool> DeleteRoomAsync(int id);
+
+        Task<bool> DeleteRoomImageAsync(int imageId);
+        Task<IEnumerable<RoomCategory>> GetRoomCategoriesAsync();
+
         Task<bool> RoomExistsAsync(int id);
     }
+
 }

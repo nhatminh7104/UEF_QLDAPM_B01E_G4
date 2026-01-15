@@ -1,59 +1,190 @@
 ﻿@model VillaManagementWeb.Models.Event
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Tạo Sự Kiện Mới";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Create</h1>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-<h4>Event</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+<script>
+    tailwind.config = {
+        corePlugins: {
+            preflight: false,
+            visibility: false
+        },
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#13a4ec",
+                    "primary-dark": "#0b8bc9",
+                    "background-light": "#f8f9fa",
+                    "background-dark": "#101c22",
+                    "surface-light": "#ffffff",
+                    "surface-dark": "#1a2c35",
+                },
+                fontFamily: {
+                    "display": ["Inter", "sans-serif"]
+                },
+            },
+        },
+    }
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+<div class="flex-1 bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 p-6">
+    <div class="max-w-7xl mx-auto">
+
+        <div class="flex flex-wrap items-center gap-2 mb-6 text-sm">
+            <a href="/Admin" class="text-slate-500 dark:text-slate-400 hover:text-primary font-medium">Dashboard</a>
+            <span class="text-slate-300 dark:text-slate-600 material-symbols-outlined text-base">chevron_right</span>
+            <a asp-action="Index" class="text-slate-500 dark:text-slate-400 hover:text-primary font-medium">Sự kiện</a>
+            <span class="text-slate-300 dark:text-slate-600 material-symbols-outlined text-base">chevron_right</span>
+            <span class="text-primary font-medium">Tạo mới</span>
+        </div>
+
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div class="max-w-2xl">
+                <h1 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-2">Tạo Sự Kiện Mới</h1>
+                <p class="text-slate-500 dark:text-slate-400 text-base">Điền thông tin chi tiết bên dưới để lên lịch cho sự kiện mới tại Villa. Đảm bảo mọi thông tin hậu cần đều chính xác.</p>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <form asp-action="Create" enctype="multipart/form-data" class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div asp-validation-summary="ModelOnly" class="text-red-500 p-4"></div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-200 dark:divide-slate-700">
+
+                <div class="lg:col-span-8 p-6 md:p-8 space-y-8">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-6">
+                            <span class="material-symbols-outlined text-primary">edit_note</span>
+                            Chi tiết Sự kiện
+                        </h3>
+
+                        <div class="space-y-6">
+                            <label class="block">
+                                <span class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Tên sự kiện <span class="text-red-500">*</span></span>
+                                <input asp-for="Title" class="w-full h-12 px-4 rounded-lg bg-slate-50 dark:bg-[#101c22] border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="Ví dụ: Gala Dinner Mùa Hè 2025" />
+                                <span asp-validation-for="Title" class="text-xs text-red-500 mt-1 block"></span>
+                            </label>
+
+                            <div class="block">
+                                <span class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Mô tả chi tiết</span>
+                                <div class="rounded-lg border border-slate-200 dark:border-slate-600 overflow-hidden bg-slate-50 dark:bg-[#101c22] focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary transition-all">
+                                    <div class="flex items-center gap-1 p-2 border-b border-slate-200 dark:border-slate-600 bg-white dark:bg-[#1a2c35]">
+                                        <button type="button" class="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"><span class="material-symbols-outlined text-xl">format_bold</span></button>
+                                        <button type="button" class="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"><span class="material-symbols-outlined text-xl">format_italic</span></button>
+                                        <div class="w-px h-6 bg-slate-200 dark:bg-slate-600 mx-1"></div>
+                                        <button type="button" class="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"><span class="material-symbols-outlined text-xl">format_list_bulleted</span></button>
+                                        <button type="button" class="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"><span class="material-symbols-outlined text-xl">link</span></button>
+                                    </div>
+                                    <textarea asp-for="Description" class="w-full p-4 h-48 bg-transparent border-none focus:ring-0 text-slate-900 dark:text-white resize-y placeholder:text-slate-400" placeholder="Mô tả nội dung chương trình, lịch trình cụ thể..."></textarea>
+                                </div>
+                                <span asp-validation-for="Description" class="text-xs text-red-500 mt-1 block"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4 p-6 md:p-8 bg-slate-50/50 dark:bg-slate-800/20">
+                    <div class="space-y-8">
+
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-6">
+                                <span class="material-symbols-outlined text-primary">settings_suggest</span>
+                                Hậu cần (Logistics)
+                            </h3>
+                            <div class="space-y-5">
+                                <label class="block">
+                                    <span class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Thời gian tổ chức</span>
+                                    <div class="relative">
+                                        <input asp-for="EventDate" class="w-full h-12 pl-10 pr-4 rounded-lg bg-white dark:bg-[#101c22] border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all [color-scheme:light] dark:[color-scheme:dark]" type="datetime-local" />
+                                        <span class="material-symbols-outlined absolute left-3 top-3 text-slate-400 pointer-events-none">calendar_month</span>
+                                    </div>
+                                    <span asp-validation-for="EventDate" class="text-xs text-red-500 mt-1 block"></span>
+                                </label>
+                                <label class="block">
+                                    <span class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Thời gian tổ chức</span>
+                                    <div class="relative">
+                                        <input asp-for="StartDate" class="w-full h-12 pl-10 pr-4 rounded-lg bg-white dark:bg-[#101c22] border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all [color-scheme:light] dark:[color-scheme:dark]" type="datetime-local" />
+                                        <span class="material-symbols-outlined absolute left-3 top-3 text-slate-400 pointer-events-none">calendar_month</span>
+                                    </div>
+                                    <span asp-validation-for="StartDate" class="text-xs text-red-500 mt-1 block"></span>
+                                </label>
+                                <label class="block">
+                                    <span class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Thời gian tổ chức</span>
+                                    <div class="relative">
+                                        <input asp-for="EndDate" class="w-full h-12 pl-10 pr-4 rounded-lg bg-white dark:bg-[#101c22] border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all [color-scheme:light] dark:[color-scheme:dark]" type="datetime-local" />
+                                        <span class="material-symbols-outlined absolute left-3 top-3 text-slate-400 pointer-events-none">calendar_month</span>
+                                    </div>
+                                    <span asp-validation-for="EndDate" class="text-xs text-red-500 mt-1 block"></span>
+                                </label>
+                                <label class="block">
+                                    <span class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Địa điểm</span>
+                                    <div class="relative">
+                                        <input asp-for="Location" class="w-full h-12 pl-10 pr-4 rounded-lg bg-white dark:bg-[#101c22] border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="Ví dụ: Sảnh chính, Hồ bơi A" />
+                                        <span class="material-symbols-outlined absolute left-3 top-3 text-slate-400 pointer-events-none">location_on</span>
+                                    </div>
+                                    <span asp-validation-for="Location" class="text-xs text-red-500 mt-1 block"></span>
+                                </label>
+
+                                <label class="block">
+                                    <span class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Tổng số vé phát hành</span>
+                                    <div class="relative">
+                                        <input asp-for="TotalTickets" class="w-full h-12 pl-10 pr-4 rounded-lg bg-white dark:bg-[#101c22] border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="0" type="number" min="0" />
+                                        <span class="material-symbols-outlined absolute left-3 top-3 text-slate-400 pointer-events-none">confirmation_number</span>
+                                    </div>
+                                    <span asp-validation-for="TotalTickets" class="text-xs text-red-500 mt-1 block"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-4">
+                                <span class="material-symbols-outlined text-primary">image</span>
+                                Ảnh bìa sự kiện
+                            </h3>
+
+                            <label class="block mb-2">
+                                <span class="text-xs text-slate-500 uppercase font-bold">Đường dẫn ảnh (URL)</span>
+                                <input asp-for="ImageUrl" class="w-full mt-1 px-3 py-2 rounded border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#101c22] text-sm" placeholder="https://..." />
+                            </label>
+
+                            <div class="group relative w-full aspect-video rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 bg-white dark:bg-[#101c22] hover:border-primary dark:hover:border-primary transition-colors cursor-pointer flex flex-col items-center justify-center p-4 text-center">
+                                <div class="size-12 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined text-slate-400 dark:text-slate-300 text-2xl">cloud_upload</span>
+                                </div>
+                                <p class="text-sm font-medium text-slate-700 dark:text-slate-200">Nhấn để tải ảnh lên</p>
+                                <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">SVG, PNG, JPG (max. 3MB)</p>
+                                <input type="file" name="ImageFile" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="EventDate" class="control-label"></label>
-                <input asp-for="EventDate" class="form-control" />
-                <span asp-validation-for="EventDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Location" class="control-label"></label>
-                <input asp-for="Location" class="form-control" />
-                <span asp-validation-for="Location" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalTickets" class="control-label"></label>
-                <input asp-for="TotalTickets" class="form-control" />
-                <span asp-validation-for="TotalTickets" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <div class="border-t border-slate-200 dark:border-slate-700 p-6 bg-slate-50 dark:bg-[#101c22]/50 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
+                <a asp-action="Index" class="text-slate-600 dark:text-slate-300 font-medium hover:text-primary transition-colors text-sm px-4 py-2">
+                    Quay lại danh sách
+                </a>
+                <div class="flex items-center gap-4 w-full sm:w-auto">
+                    <button type="button" class="flex-1 sm:flex-none px-6 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-sm">
+                        Lưu nháp
+                    </button>
+                    <button type="submit" class="flex-1 sm:flex-none px-6 py-2.5 rounded-lg bg-primary hover:bg-sky-500 text-white font-medium shadow-sm shadow-primary/30 transition-all text-sm flex items-center justify-center gap-2">
+                        <span>Tạo sự kiện</span>
+                        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                    </button>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 }

@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VillaManagementWeb.Models;
 using VillaManagementWeb.Admin.Services.Interfaces;
@@ -6,7 +11,7 @@ using VillaManagementWeb.Admin.Services.Interfaces;
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class NewsController : Controller
     {
         private readonly INewsService _newsService;

@@ -9,6 +9,13 @@
         <div class="card-header">
             <div class="d-flex align-items-center">
                 <h4 class="card-title">Danh sách đặt phòng</h4>
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
                 <a asp-area="Admin" asp-controller="Bookings" asp-action="Create"
                     class="btn btn-primary btn-round ms-auto">
                     <i class="fa fa-plus"></i> Thêm đặt phòng mới

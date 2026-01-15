@@ -1,0 +1,91 @@
+﻿@model VillaManagementWeb.ViewModels.TicketCheckoutVM
+@{
+    ViewData["Title"] = "Mua Vé Sự Kiện";
+    Layout = "~/Views/Shared/_Layout_Tailwind.cshtml";
+}
+
+<div class="bg-gray-50 min-h-screen py-10">
+    <div class="container mx-auto px-4 max-w-6xl">
+        <form asp-action="Create" method="post" class="flex flex-col lg:flex-row gap-8">
+            <input type="hidden" asp-for="EventId" />
+
+            <div class="flex-1 space-y-6">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#A67C52]">confirmation_number</span>
+                        Thông tin mua vé
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Loại vé</label>
+                            <select asp-for="TicketType" class="w-full border-gray-300 rounded text-sm focus:ring-[#A67C52]" onchange="updatePrice(this.value)">
+                                <option value="Standard">Standard (100.000đ)</option>
+                                <option value="VIP">VIP (200.000đ)</option>
+                            </select>
+                        </div>
+
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Số lượng</label>
+                            <input asp-for="Quantity" type="number" min="1" max="10" class="w-full border-gray-300 rounded text-sm focus:ring-[#A67C52]" onchange="calcTotal()">
+                        </div>
+
+                        <div class="col-span-2">
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Họ tên *</label>
+                            <input asp-for="CustomerName" class="w-full border-gray-300 rounded text-sm focus:ring-[#A67C52]" placeholder="Nhập họ tên người nhận vé">
+                            <span asp-validation-for="CustomerName" class="text-red-500 text-xs"></span>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Email (Nhận vé QR)</label>
+                            <input asp-for="CustomerEmail" class="w-full border-gray-300 rounded text-sm focus:ring-[#A67C52]">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Số điện thoại *</label>
+                            <input asp-for="CustomerPhone" class="w-full border-gray-300 rounded text-sm focus:ring-[#A67C52]">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-gray-900 hover:bg-[#A67C52] text-white font-bold py-4 rounded-lg shadow-lg uppercase transition">
+                    Thanh toán & Nhận vé
+                </button>
+            </div>
+
+            <div class="w-full lg:w-80">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 sticky top-24">
+                    <img src="@Model.ImageUrl" class="w-full h-40 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-bold text-gray-900 mb-2">@Model.EventTitle</h4>
+                        <div class="text-xs text-gray-500 space-y-2 mb-4">
+                            <p class="flex items-center"><span class="material-symbols-outlined text-sm mr-2">calendar_month</span> @Model.EventDate.ToString("dd/MM/yyyy HH:mm")</p>
+                            <p class="flex items-center"><span class="material-symbols-outlined text-sm mr-2">location_on</span> @Model.Location</p>
+                        </div>
+
+                        <div class="border-t pt-4 flex justify-between items-center">
+                            <span class="font-bold text-gray-700">Tổng tiền:</span>
+                            <span class="font-bold text-xl text-red-600" id="totalEventPrice">100.000 ₫</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentPrice = 100000;
+
+        function updatePrice(type) {
+            if(type === 'VIP') currentPrice = 200000;
+            else currentPrice = 100000;
+            calcTotal();
+        }
+
+        function calcTotal() {
+            const qty = document.getElementById('Quantity').value || 1;
+            const total = currentPrice * qty;
+            document.getElementById('totalEventPrice').innerText = total.toLocaleString('vi-VN') + ' ₫';
+        }
+    </script>
+}
