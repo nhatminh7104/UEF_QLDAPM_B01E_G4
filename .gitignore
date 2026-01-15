@@ -369,3 +369,5 @@ FodyWeavers.xsd
 # Ignore appsettings
 **/appsettings.json
 **/appsettings.*.json
+/Views/Events/Details.cshtml
+/appsettings.json
