@@ -13,5 +13,7 @@ namespace VillaManagementWeb.Models
         public string? ImageUrl { get; set; }
 
         public ICollection<Ticket> Tickets { get; set; } = null!;
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 }

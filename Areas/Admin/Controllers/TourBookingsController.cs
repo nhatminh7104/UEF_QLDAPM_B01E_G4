@@ -84,7 +84,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TourId,TourDate,NumberOfPeople,TotalPrice,ContactInfo,CustomerName,Status")] TourBooking tourBooking)
+        public async Task<IActionResult> Create([Bind("Id,TourId,TourDate,CustomerPhone,CustomerEmail,NumberOfPeople,TotalPrice,ContactInfo,CustomerName,Status,Note")] TourBooking tourBooking)
         {
             if (ModelState.IsValid)
             {
@@ -132,7 +132,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TourId,TourDate,NumberOfPeople,TotalPrice,ContactInfo,CustomerName,Status")] TourBooking tourBooking)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TourId,TourDate,CustomerPhone,CustomerEmail,NumberOfPeople,TotalPrice,ContactInfo,CustomerName,Status,Note")] TourBooking tourBooking)
         {
             if (id != tourBooking.Id)
             {

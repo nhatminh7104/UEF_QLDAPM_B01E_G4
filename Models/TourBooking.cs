@@ -15,8 +15,17 @@ namespace VillaManagementWeb.Models
 
         [ForeignKey("CustomerId")]
         public Customer? Customer { get; set; }
-        public string ContactInfo { get; set; } = null!;
+
+        // --- CÁC TRƯỜNG CŨ (Giữ lại nếu muốn tương thích ngược, hoặc có thể xóa nếu không dùng) ---
+        public string? ContactInfo { get; set; }
+
+        // --- CÁC TRƯỜNG MỚI CẦN THÊM (Fix lỗi CS0117) ---
         public string CustomerName { get; set; } = null!;
-        public string Status { get; set; } = null!;
+        public string? CustomerPhone { get; set; } // Thêm dòng này
+        public string? CustomerEmail { get; set; } // Thêm dòng này
+        public string? Note { get; set; }          // Thêm dòng này
+        public DateTime CreatedAt { get; set; } = DateTime.Now; // Thêm dòng này
+
+        public string Status { get; set; } = "Pending";
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using VillaManagementWeb.Data;
 using VillaManagementWeb.Models;
-
+using VillaManagementWeb.ViewModels; 
 namespace VillaManagementWeb.Controllers;
 
 public class HomeController : Controller
@@ -19,8 +19,15 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var rooms = await _context.Rooms.Where(r => r.IsActive).ToListAsync();
-        return View(rooms);
+        var viewModel = new HomeViewModel
+        {
+            Rooms = await _context.Rooms.Where(r => r.IsActive).ToListAsync(),
+            Categories = await _context.RoomCategories.ToListAsync(),
+            Tours = await _context.Tours.ToListAsync(),
+            Events = await _context.Events.ToListAsync(),
+            NewsItems = await _context.News.ToListAsync()
+        };
+        return View(viewModel);
     }
 
     public IActionResult Privacy()

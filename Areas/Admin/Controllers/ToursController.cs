@@ -1,26 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using VillaManagementWeb.Data;
 using VillaManagementWeb.Models;
 using VillaManagementWeb.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting; // Thêm namespace này để xử lý file
+using System.IO;
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = "Admin")]
     public class ToursController : Controller
     {
         private readonly ITourService _tourService;
+        private readonly IWebHostEnvironment _webHostEnvironment; // Inject môi trường để lấy đường dẫn
 
-        public ToursController(ITourService tourService)
+        public ToursController(ITourService tourService, IWebHostEnvironment webHostEnvironment)
         {
             _tourService = tourService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Admin/Tours
@@ -32,17 +29,9 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         // GET: Admin/Tours/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
             var tour = await _tourService.GetTourByIdAsync(id.Value);
-            if (tour == null)
-            {
-                return NotFound();
-            }
-
+            if (tour == null) return NotFound();
             return View(tour);
         }
 
@@ -53,29 +42,31 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         }
 
         // POST: Admin/Tours/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TourName,Description,PricePerPerson,DurationHours,ImageUrl")] Tour tour)
+        public async Task<IActionResult> Create(Tour tour, IFormFile? imageFile)
         {
+            ModelState.Remove("TourBookings");
             if (ModelState.IsValid)
             {
-                try
+                // Xử lý upload ảnh
+                if (imageFile != null)
                 {
-                    await _tourService.CreateTourAsync(tour);
-                    return RedirectToAction(nameof(Index));
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "tours");
+                    if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(fileStream);
+                    }
+                    tour.ImageUrl = "/images/tours/" + uniqueFileName;
                 }
-                catch (ArgumentException ex)
-                {
-                    ModelState.AddModelError("", ex.Message);
-                    return View(tour);
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", $"Lỗi khi tạo tour: {ex.Message}");
-                    return View(tour);
-                }
+
+                await _tourService.CreateTourAsync(tour);
+                return RedirectToAction(nameof(Index));
             }
             return View(tour);
         }
@@ -83,81 +74,68 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         // GET: Admin/Tours/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
             var tour = await _tourService.GetTourByIdAsync(id.Value);
-            if (tour == null)
-            {
-                return NotFound();
-            }
+            if (tour == null) return NotFound();
             return View(tour);
         }
 
         // POST: Admin/Tours/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TourName,Description,PricePerPerson,DurationHours,ImageUrl")] Tour tour)
+        public async Task<IActionResult> Edit(int id, Tour tour, IFormFile? imageFile)
         {
-            if (id != tour.Id)
-            {
-                return NotFound();
-            }
+
+            if (id != tour.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Xử lý upload ảnh mới nếu có
+                    if (imageFile != null)
+                    {
+                        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "tours");
+                        if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await imageFile.CopyToAsync(fileStream);
+                        }
+                        tour.ImageUrl = "/images/tours/" + uniqueFileName;
+                    }
+
                     await _tourService.UpdateTourAsync(tour);
                     return RedirectToAction(nameof(Index));
                 }
-                catch (ArgumentException ex)
-                {
-                    ModelState.AddModelError("", ex.Message);
-                    return View(tour);
-                }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", $"Lỗi khi cập nhật tour: {ex.Message}");
-                    return View(tour);
+                    ModelState.AddModelError("", $"Lỗi: {ex.Message}");
                 }
             }
             return View(tour);
         }
 
-        // GET: Admin/Tours/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: Admin/Tours/Delete/5 (Dùng cho AJAX)
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                var deleted = await _tourService.DeleteTourAsync(id);
+                if (deleted)
+                {
+                    return Json(new { success = true, message = "Xóa tour thành công!" });
+                }
+                return Json(new { success = false, message = "Không tìm thấy tour hoặc lỗi hệ thống." });
             }
-
-            var tour = await _tourService.GetTourByIdAsync(id.Value);
-            if (tour == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return Json(new { success = false, message = ex.Message });
             }
-
-            return View(tour);
-        }
-
-        // POST: Admin/Tours/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var deleted = await _tourService.DeleteTourAsync(id);
-            if (!deleted)
-            {
-                return NotFound();
-            }
-
-            return RedirectToAction(nameof(Index));
         }
     }
 }
