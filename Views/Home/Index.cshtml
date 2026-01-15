@@ -1,114 +1,290 @@
-﻿@model IEnumerable<VillaManagementWeb.Models.Room>
+﻿@model VillaManagementWeb.ViewModels.HomeViewModel
 @{
     ViewData["Title"] = "Trang chủ";
+    Layout = "~/Views/Shared/_Layout_Tailwind.cshtml";
 }
-<div class="hero-wrapper" style="position: relative;">
-    <header class="header text-white text-center d-flex align-items-center"
-            style="background: url('/images/hero-bg-scaled.jpg') no-repeat center center;
-               background-size: cover; height: 100vh; width: 100%;">
-        <div class="container" style="padding-bottom: 100px;">
-            <div class="animate-fadeInUp">
-                <span class="mb-2 d-block">
-                    <i class="star-rating text-warning small">★★★★★</i>
-                </span>
-                <h4 class="animate-delay-1s">Villa & Homestay giữa rừng Ba Vì</h4>
-            </div>
 
-            <h1 class="animate-fadeInUp animate-delay-1s mt-3">
-                Tìm thấy sự bình<br>yên trong từng<br>khoảnh khắc
-            </h1>
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        /* Ép buộc layout nằm ngang cho Swiper */
+        .swiper-wrapper {
+            display: flex;
+            flex-direction: row;
+        }
 
-            <div class="animate-fadeInUp animate-delay-2s mt-4">
-                <a href="#rooms" class="btn btn-outline-light px-4 py-2 text-uppercase"
-                   style="letter-spacing: 2px; font-size: 13px;">
-                    Xem phòng
-                </a>
-            </div>
-        </div>
-    </header>
+        .swiper-slide {
+            height: auto;
+            display: flex;
+            justify-content: center;
+        }
+        /* Chỉnh nút mũi tên nhỏ lại và đổi màu */
+        .swiper-button-next, .swiper-button-prev {
+            color: #A67C52 !important;
+            transform: scale(0.6);
+            font-weight: bold;
+        }
+    </style>
+}
 
-    <section id="booking" class="booking-wrapper">
-        <div class="container">
-            <div class="booking-inner shadow-lg">
-                <form class="row g-0 align-items-center" asp-controller="Booking" asp-action="Index" method="GET">
-
-                    <div class="col-md-3 border-end">
-                        <div class="p-3">
-                            <label class="small text-uppercase fw-bold text-muted">Ngày đến</label>
-                            <input type="date" class="form-control border-0 p-0 fw-bold" name="checkIn"
-                                   value="@DateTime.Now.ToString("yyyy-MM-dd")" required>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 border-end">
-                        <div class="p-3">
-                            <label class="small text-uppercase fw-bold text-muted">Ngày đi</label>
-                            <input type="date" class="form-control border-0 p-0 fw-bold" name="checkOut"
-                                   value="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" required>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 border-end">
-                        <div class="p-3">
-                            <label class="small text-uppercase fw-bold text-muted">Người lớn</label>
-                            <select class="form-select border-0 p-0 fw-bold cursor-pointer" name="adults">
-                                <option value="1">1 Người lớn</option>
-                                <option value="2" selected>2 Người lớn</option>
-                                <option value="3">3 Người lớn</option>
-                                <option value="4">4 Người lớn</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 border-end">
-                        <div class="p-3">
-                            <label class="small text-uppercase fw-bold text-muted">Trẻ em</label>
-                            <select class="form-select border-0 p-0 fw-bold cursor-pointer" name="children">
-                                <option value="0" selected>0 Trẻ em</option>
-                                <option value="1">1 Trẻ em</option>
-                                <option value="2">2 Trẻ em</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 p-0">
-                        <button type="submit" class="btn btn-dark w-100 h-100 rounded-0 py-4 fw-bold text-gold-hover" style="background-color: #212529;">
-                            ĐẶT PHÒNG
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
+<div class="relative h-screen w-full overflow-hidden">
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+         style="background-image: url('/images/hero-bg-scaled.jpg');">
+    </div>
+    <div class="absolute inset-0 bg-black/30"></div>
+    <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4">
+        <span class="text-gold tracking-[0.2em] text-sm md:text-base uppercase font-bold mb-2 animate-fadeInUp">
+            The Wandering Rose
+        </span>
+        <h1 class="font-serif-display text-5xl md:text-7xl mb-6 drop-shadow-lg leading-tight animate-fadeInUp animate-delay-1s">
+            Tìm thấy sự bình yên <br> trong từng khoảnh khắc
+        </h1>
+        <a href="#booking-categories" class="border border-white hover:bg-white hover:text-black text-white px-8 py-3 uppercase text-xs tracking-widest transition duration-300 animate-fadeInUp animate-delay-2s">
+            Khám phá ngay
+        </a>
+    </div>
 </div>
 
-<section id="rooms" class="section-padding py-5 bg-cream">
-    <div class="container mt-5">
-        <div class="section-subtitle animate-fadeInUp">Villa & Homestay giữa rừng Ba Vì</div>
-        <h2 class="section-title mb-5 animate-fadeInUp">Tất cả phòng</h2>
-        <div class="row">
-            @foreach (var room in Model)
-            {
-                <div class="col-md-4 mb-4" data-aos="fade-up">
-                    <a asp-controller="Booking" asp-action="Index" asp-route-roomId="@room.Id" class="text-decoration-none text-white">
-                        <div class="room-item position-relative overflow-hidden shadow-sm">
-                            <img src="@room.ImageUrl" class="img-fluid transition-img" alt="@room.RoomNumber">
-
-                            <div class="room-overlay"></div>
-
-                            <div class="room-content position-absolute p-4 w-100 border-box">
-                                <h6 class="small text-uppercase mb-1 opacity-75">@room.Type</h6>
-                                <h5 class="fw-bold mb-1">@room.RoomNumber - @room.PricePerNight.ToString("N0") VNĐ</h5>
-                                <p class="small mb-0"><i class="ti-user me-2"></i>Sức chứa: @room.Capacity người</p>
-
-                                <div class="room-details-hover mt-3">
-                                    <span class="text-uppercase small fw-bold">Details <i class="ti-arrow-right"></i></span>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            }
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-4 max-w-6xl">
+        <div class="flex flex-col md:flex-row items-center gap-12">
+            <div class="w-full md:w-1/2">
+                <img src="/images/1.png" onerror="this.src='https://placehold.co/600x400?text=Vi+Tri'" class="rounded-lg shadow-lg w-full h-auto object-cover" alt="Vị trí">
+            </div>
+            <div class="w-full md:w-1/2">
+                <span class="text-gold text-xs font-bold uppercase tracking-widest">Vị trí đắc địa</span>
+                <h2 class="text-3xl font-serif-display text-gray-800 mt-2 mb-4">Không gian giữa rừng già</h2>
+                <p class="text-gray-600 leading-relaxed mb-6">
+                    Nằm ẩn mình dưới chân núi Ba Vì, The Wandering Rose sở hữu vị trí "tựa sơn hướng thủy" hiếm có.
+                    Chỉ cách trung tâm Hà Nội 45 phút di chuyển, nơi đây tách biệt hoàn toàn với khói bụi thành phố.
+                </p>
+                <ul class="space-y-2 text-gray-600 text-sm">
+                    <li class="flex items-center"><span class="material-symbols-outlined text-gold mr-2">location_on</span> Cách Vườn Quốc Gia 2km</li>
+                    <li class="flex items-center"><span class="material-symbols-outlined text-gold mr-2">directions_car</span> Bãi đỗ xe rộng rãi</li>
+                </ul>
+            </div>
         </div>
     </div>
 </section>
+
+<section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-6xl">
+        <div class="flex flex-col md:flex-row-reverse items-center gap-12">
+            <div class="w-full md:w-1/2">
+                <img src="/images/2.png" onerror="this.src='https://placehold.co/600x400?text=Thien+Nhien'" class="rounded-lg shadow-lg w-full h-auto object-cover" alt="Thiên nhiên">
+            </div>
+            <div class="w-full md:w-1/2 text-right md:text-left">
+                <span class="text-gold text-xs font-bold uppercase tracking-widest">Trải nghiệm xanh</span>
+                <h2 class="text-3xl font-serif-display text-gray-800 mt-2 mb-4">Hòa mình vào thiên nhiên</h2>
+                <p class="text-gray-600 leading-relaxed mb-6">
+                    Đánh thức mọi giác quan với tiếng suối chảy róc rách, tiếng chim hót mỗi sớm mai và hương thơm của rừng thông.
+                </p>
+                <a asp-controller="Pictures" asp-action="Index" class="text-[#A67C52] font-bold uppercase text-xs border-b border-[#A67C52] pb-1 hover:text-gray-800 transition">Xem thư viện ảnh</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-20 relative bg-fixed bg-cover bg-center" style="background-image: url('/images/hero-bg-scaled.jpg');">
+    <div class="absolute inset-0 bg-black/60"></div>
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-serif-display text-white">Quyền Lợi Khi Đặt Phòng</h2>
+            <p class="text-white/80 mt-2">Những ưu đãi độc quyền chỉ có tại The Wandering Rose</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+            <div class="p-6 border border-white/20 rounded-lg backdrop-blur-sm hover:bg-white/10 transition">
+                <span class="material-symbols-outlined text-4xl text-gold mb-4">wifi</span>
+                <h4 class="text-white font-bold mb-2">Wifi Tốc Độ Cao</h4>
+                <p class="text-white/70 text-sm">Miễn phí toàn khu vực</p>
+            </div>
+            <div class="p-6 border border-white/20 rounded-lg backdrop-blur-sm hover:bg-white/10 transition">
+                <span class="material-symbols-outlined text-4xl text-gold mb-4">pool</span>
+                <h4 class="text-white font-bold mb-2">Bể Bơi Vô Cực</h4>
+                <p class="text-white/70 text-sm">View núi rừng hùng vĩ</p>
+            </div>
+            <div class="p-6 border border-white/20 rounded-lg backdrop-blur-sm hover:bg-white/10 transition">
+                <span class="material-symbols-outlined text-4xl text-gold mb-4">restaurant</span>
+                <h4 class="text-white font-bold mb-2">Bữa Sáng Miễn Phí</h4>
+                <p class="text-white/70 text-sm">Thực đơn Á - Âu đa dạng</p>
+            </div>
+            <div class="p-6 border border-white/20 rounded-lg backdrop-blur-sm hover:bg-white/10 transition">
+                <span class="material-symbols-outlined text-4xl text-gold mb-4">support_agent</span>
+                <h4 class="text-white font-bold mb-2">Hỗ Trợ 24/7</h4>
+                <p class="text-white/70 text-sm">Quản gia riêng tận tâm</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="booking-categories" class="py-16 bg-white">
+    <div class="container mx-auto px-4 max-w-7xl">
+        <div class="text-center mb-10">
+            <span class="text-gold text-xs font-bold uppercase tracking-widest">Nghỉ dưỡng</span>
+            <h2 class="text-3xl font-serif-display text-gray-800 mt-2">Các Hạng Phòng</h2>
+        </div>
+
+        <div class="swiper commonSwiper px-4 py-8">
+            <div class="swiper-wrapper">
+                @foreach (var category in Model.Categories)
+                {
+                    <div class="swiper-slide">
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 h-full flex flex-col w-full group border border-gray-100">
+                            <div class="h-64 overflow-hidden relative">
+                                <img src="@category.BannerUrl" alt="@category.Name"
+                                     class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                            </div>
+                            <div class="p-6 flex-1 flex flex-col items-center text-center">
+                                <h3 class="text-xl font-serif-display text-[#A67C52] mb-3">@category.Name</h3>
+                                <p class="text-gray-500 text-sm line-clamp-2 mb-4">
+                                    @(category.Description ?? "Trải nghiệm không gian sang trọng...")
+                                </p>
+                                <a asp-controller="Rooms" asp-action="CategoryDetails" asp-route-categoryName="@category.Name"
+                                   class="text-[#A67C52] text-xs font-bold uppercase border border-[#A67C52] px-6 py-2 rounded-full hover:bg-[#A67C52] hover:text-white transition">
+                                    Xem chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+</section>
+
+<section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-4xl text-center flex flex-col items-center">
+        <span class="text-gold text-xs font-bold uppercase tracking-widest mb-2">Khám phá</span>
+        <h2 class="text-3xl md:text-4xl font-serif-display text-gray-800 mb-6">Các Khu Tại The Wandering Rose</h2>
+        <div class="w-16 h-1 bg-gold mb-8"></div>
+
+        <p class="text-gray-600 leading-relaxed mb-8">
+            The Wandering Rose được chia thành 3 phân khu chính: Khu Rừng Thông tĩnh lặng, Khu Bên Suối sôi động và Khu Đồi Cao ngắm hoàng hôn.
+        </p>
+
+        <div class="flex gap-4">
+            <a href="https://www.google.com/maps" target="_blank" class="inline-block bg-[#1a3b5d] text-white px-8 py-3 uppercase text-xs font-bold tracking-widest hover:bg-[#A67C52] transition duration-300">
+                Xem bản đồ
+            </a>
+            <a asp-controller="Home" asp-action="Contact" class="inline-block border border-gray-800 text-gray-800 px-8 py-3 uppercase text-xs font-bold tracking-widest hover:bg-gray-800 hover:text-white transition duration-300">
+                Liên hệ tư vấn
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4 max-w-7xl">
+        <div class="text-center mb-10">
+            <span class="text-gold text-xs font-bold uppercase tracking-widest">Hoạt động</span>
+            <h2 class="text-3xl font-serif-display text-gray-800 mt-2">Dịch Vụ & Sự Kiện</h2>
+        </div>
+
+        <div class="swiper commonSwiper px-4 py-8">
+            <div class="swiper-wrapper">
+                @foreach (var item in Model.Events)
+                {
+                    <div class="swiper-slide">
+                        <div class="bg-white rounded-lg border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition h-full w-full group">
+                            <div class="h-64 overflow-hidden relative">
+                                <img src="@item.ImageUrl" alt="@item.Title"
+                                     class="w-full h-full object-cover transition duration-500 group-hover:scale-105">
+                                <div class="absolute top-3 right-3 bg-white/90 px-3 py-1 rounded text-xs font-bold text-gray-800 uppercase shadow-sm">
+                                    Sắp diễn ra
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-1 group-hover:text-[#A67C52] transition">@item.Title</h3>
+                                <div class="text-xs text-gray-400 mb-3 flex items-center">
+                                    <span class="material-symbols-outlined text-sm mr-1">calendar_month</span>
+                                    @(item.StartDate.HasValue? item.StartDate.Value.ToString("dd/MM/yyyy") : "Liên hệ")
+                                </div>
+                                <p class="text-gray-500 text-sm line-clamp-2 mb-4">
+                                    @(item.Description ?? "Tham gia các sự kiện hấp dẫn...")
+                                </p>
+                                <a asp-controller="Tickets" asp-action="Create" asp-route-eventId="@item.Id"
+                                   class="inline-block text-[#A67C52] text-sm font-bold uppercase hover:underline">
+                                    Chi tiết & Mua vé &rarr;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-7xl">
+        <div class="text-center mb-10">
+            <span class="text-gold text-xs font-bold uppercase tracking-widest">Khám phá Ba Vì</span>
+            <h2 class="text-3xl font-serif-display text-gray-800 mt-2">Trải Nghiệm & Tour</h2>
+        </div>
+
+        <div class="swiper commonSwiper px-4 py-8">
+            <div class="swiper-wrapper">
+                @foreach (var tour in Model.Tours)
+                {
+                    <div class="swiper-slide">
+                        <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition h-full w-full group relative">
+                            <div class="h-64 overflow-hidden relative">
+                                <img src="@tour.ImageUrl" alt="@tour.TourName"
+                                     class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                                <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-6 pt-12">
+                                    <h3 class="text-white text-lg font-bold">@tour.TourName</h3>
+                                    <span class="text-gold text-sm font-bold">@tour.PricePerPerson.ToString("N0") VNĐ</span>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <a asp-controller="TourBookings" asp-action="Create" asp-route-tourId="@tour.Id"
+                                   class="block w-full text-center bg-[#1a3b5d] text-white text-xs font-bold py-3 rounded hover:bg-[#A67C52] transition uppercase tracking-wider">
+                                    Đặt Tour Ngay
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        new Swiper(".commonSwiper", {
+            spaceBetween: 24,
+            loop: true,
+            grabCursor: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+                dynamicBullets: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            breakpoints: {
+                0: { slidesPerView: 1, spaceBetween: 16 },
+                768: { slidesPerView: 2, spaceBetween: 20 },
+                1024: { slidesPerView: 3, spaceBetween: 24 }
+            }
+        });
+    </script>
+}

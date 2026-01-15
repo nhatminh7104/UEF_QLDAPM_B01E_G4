@@ -99,5 +99,26 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var category = await _context.RoomCategories.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            // Xóa ảnh banner nếu có
+            if (!string.IsNullOrEmpty(category.BannerUrl))
+            {
+                var imagePath = Path.Combine(_hostEnvironment.WebRootPath, category.BannerUrl.TrimStart('/'));
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+            _context.RoomCategories.Remove(category);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Danh mục đã được xóa thành công!" });
+        }
     }
 }

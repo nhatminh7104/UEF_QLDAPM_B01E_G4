@@ -52,9 +52,9 @@
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" title="Sửa">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger ms-1" title="Xóa">
+                                    <button type="button" class="btn btn-sm btn-outline-danger ms-1 delete-btn" data-id="@item.Id" title="Xóa">
                                         <i class="fas fa-trash-alt"></i>
-                                    </a>
+                                    </button>
                                 </td>
                             </tr>
                         }
@@ -64,3 +64,35 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // 🔥 JS XỬ LÝ DELETE VỚI CONFIRM VÀ AJAX
+            $('.delete-btn').on('click', function () {
+                var id = $(this).data('id');
+                var row = $(this).closest('tr');
+
+                if (confirm('Bạn có chắc muốn xóa danh mục này? Hành động này không thể hoàn tác!')) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "Categories")',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function (result) {
+                            if (result.success) {
+                                row.fadeOut(300, function () {
+                                    $(this).remove();
+                                });
+                                alert(result.message); // Hoặc dùng toast nếu có
+                            } else {
+                                alert('Có lỗi xảy ra khi xóa!');
+                            }
+                        },
+                        error: function () {
+                            alert('Lỗi kết nối! Vui lòng thử lại.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

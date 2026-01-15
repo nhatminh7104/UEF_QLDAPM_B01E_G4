@@ -61,7 +61,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,EventDate,Location,TotalTickets,ImageUrl")] Event @event)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,EventDate,StartDate,EndDate,Location,TotalTickets,ImageUrl")] Event @event)
         {
             if (ModelState.IsValid)
             {
@@ -105,7 +105,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,EventDate,Location,TotalTickets,ImageUrl")] Event @event, IFormFile? ImageFile)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,EventDate,StartDate,EndDate,Location,TotalTickets,ImageUrl")] Event @event, IFormFile? ImageFile)
         {
             if (id != @event.Id)
             {

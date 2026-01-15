@@ -230,10 +230,10 @@ namespace VillaManagementWeb.Migrations
                         {
                             Id = 1,
                             AdultsCount = 2,
-                            CheckIn = new DateTime(2026, 1, 13, 12, 41, 35, 561, DateTimeKind.Local).AddTicks(2874),
-                            CheckOut = new DateTime(2026, 1, 16, 12, 41, 35, 561, DateTimeKind.Local).AddTicks(2880),
+                            CheckIn = new DateTime(2026, 1, 16, 15, 41, 46, 839, DateTimeKind.Local).AddTicks(1449),
+                            CheckOut = new DateTime(2026, 1, 19, 15, 41, 46, 839, DateTimeKind.Local).AddTicks(1457),
                             ChildrenCount = 1,
-                            CreatedAt = new DateTime(2026, 1, 11, 12, 41, 35, 561, DateTimeKind.Local).AddTicks(2859),
+                            CreatedAt = new DateTime(2026, 1, 14, 15, 41, 46, 839, DateTimeKind.Local).AddTicks(1436),
                             CustomerEmail = "a@gmail.com",
                             CustomerName = "Nguyễn Văn A",
                             CustomerPhone = "0901234567",
@@ -242,6 +242,28 @@ namespace VillaManagementWeb.Migrations
                             Status = "Confirmed",
                             TotalAmount = 15000000m
                         });
+                });
+
+            modelBuilder.Entity("VillaManagementWeb.Models.CategoryRoomImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RoomCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomCategoryId");
+
+                    b.ToTable("CategoryRoomImages");
                 });
 
             modelBuilder.Entity("VillaManagementWeb.Models.Customer", b =>
@@ -292,6 +314,9 @@ namespace VillaManagementWeb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("EventDate")
                         .HasColumnType("datetime2");
 
@@ -301,6 +326,9 @@ namespace VillaManagementWeb.Migrations
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -318,7 +346,7 @@ namespace VillaManagementWeb.Migrations
                         {
                             Id = 1,
                             Description = "Chúng tôi cung cấp không gian tổ chức sinh nhật ấm cúng, trang trí theo yêu cầu với phong cách hiện đại hoặc cổ điển. Dịch vụ trọn gói bao gồm tiệc trà, bánh ngọt.",
-                            EventDate = new DateTime(2026, 1, 18, 12, 41, 35, 561, DateTimeKind.Local).AddTicks(2911),
+                            EventDate = new DateTime(2026, 1, 21, 15, 41, 46, 839, DateTimeKind.Local).AddTicks(1479),
                             ImageUrl = "/images/events/birthday.png",
                             Location = "Sân vườn Villa",
                             Title = "Tổ chức sinh nhật",
@@ -328,7 +356,7 @@ namespace VillaManagementWeb.Migrations
                         {
                             Id = 2,
                             Description = "Không gian sân vườn rộng rãi thích hợp cho các hoạt động ngoài trời, gắn kết tinh thần đồng đội. Hỗ trợ setup các trò chơi vận động, âm thanh, ánh sáng.",
-                            EventDate = new DateTime(2026, 1, 25, 12, 41, 35, 561, DateTimeKind.Local).AddTicks(2914),
+                            EventDate = new DateTime(2026, 1, 28, 15, 41, 46, 839, DateTimeKind.Local).AddTicks(1482),
                             ImageUrl = "/images/events/teambuilding.png",
                             Location = "Bãi cỏ trung tâm",
                             Title = "Teambuilding",
@@ -338,7 +366,7 @@ namespace VillaManagementWeb.Migrations
                         {
                             Id = 3,
                             Description = "Một lễ cưới thân mật, lãng mạn bên những người thân yêu nhất. Không gian được trang hoàng lộng lẫy với hoa tươi, nến và phong cách phục vụ chuẩn 5 sao.",
-                            EventDate = new DateTime(2026, 2, 10, 12, 41, 35, 561, DateTimeKind.Local).AddTicks(2917),
+                            EventDate = new DateTime(2026, 2, 13, 15, 41, 46, 839, DateTimeKind.Local).AddTicks(1484),
                             ImageUrl = "/images/events/wedding.png",
                             Location = "Sảnh tiệc chính",
                             Title = "Tiệc cưới nhỏ",
@@ -348,7 +376,7 @@ namespace VillaManagementWeb.Migrations
                         {
                             Id = 4,
                             Description = "Kỷ niệm ngày cưới, gặp mặt bạn cũ hay những cột mốc quan trọng. Chúng tôi mang đến không gian riêng tư, thực đơn phong phú và sự phục vụ tận tâm.",
-                            EventDate = new DateTime(2026, 1, 21, 12, 41, 35, 561, DateTimeKind.Local).AddTicks(2919),
+                            EventDate = new DateTime(2026, 1, 24, 15, 41, 46, 839, DateTimeKind.Local).AddTicks(1485),
                             ImageUrl = "/images/events/celebrate.png",
                             Location = "Nhà hàng ven hồ",
                             Title = "Lễ kỷ niệm",
@@ -389,7 +417,7 @@ namespace VillaManagementWeb.Migrations
                         {
                             Id = 1,
                             Category = "Sự kiện âm nhạc",
-                            CreatedAt = new DateTime(2026, 1, 11, 12, 41, 35, 561, DateTimeKind.Local).AddTicks(4700),
+                            CreatedAt = new DateTime(2026, 1, 14, 15, 41, 46, 839, DateTimeKind.Local).AddTicks(2958),
                             ImageUrl = "/images/news/news1.png",
                             Title = "Music Concert Night"
                         },
@@ -397,7 +425,7 @@ namespace VillaManagementWeb.Migrations
                         {
                             Id = 2,
                             Category = "Tin tức",
-                            CreatedAt = new DateTime(2026, 1, 11, 12, 41, 35, 561, DateTimeKind.Local).AddTicks(4706),
+                            CreatedAt = new DateTime(2026, 1, 14, 15, 41, 46, 839, DateTimeKind.Local).AddTicks(2961),
                             ImageUrl = "/images/news/news2.jpg",
                             Title = "New Villa Opening"
                         });
@@ -619,6 +647,9 @@ namespace VillaManagementWeb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CustomerPhone")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("EventId")
                         .HasColumnType("int");
 
@@ -652,7 +683,7 @@ namespace VillaManagementWeb.Migrations
                         new
                         {
                             Id = 1,
-                            BookingDate = new DateTime(2026, 1, 11, 12, 41, 35, 561, DateTimeKind.Local).AddTicks(2946),
+                            BookingDate = new DateTime(2026, 1, 14, 15, 41, 46, 839, DateTimeKind.Local).AddTicks(1510),
                             CustomerEmail = "b@gmail.com",
                             CustomerName = "Trần Thị B",
                             EventId = 1,
@@ -715,7 +746,12 @@ namespace VillaManagementWeb.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ContactInfo")
-                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CustomerEmail")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CustomerId")
@@ -723,6 +759,12 @@ namespace VillaManagementWeb.Migrations
 
                     b.Property<string>("CustomerName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerPhone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("NumberOfPeople")
@@ -754,11 +796,12 @@ namespace VillaManagementWeb.Migrations
                         {
                             Id = 1,
                             ContactInfo = "0988777666",
+                            CreatedAt = new DateTime(2026, 1, 14, 15, 41, 46, 839, DateTimeKind.Local).AddTicks(1549),
                             CustomerName = "Lê Văn C",
                             NumberOfPeople = 4,
                             Status = "Pending",
                             TotalPrice = 2000000m,
-                            TourDate = new DateTime(2026, 1, 21, 12, 41, 35, 561, DateTimeKind.Local).AddTicks(3044),
+                            TourDate = new DateTime(2026, 1, 24, 15, 41, 46, 839, DateTimeKind.Local).AddTicks(1550),
                             TourId = 1
                         });
                 });
@@ -900,6 +943,17 @@ namespace VillaManagementWeb.Migrations
                     b.Navigation("Room");
                 });
 
+            modelBuilder.Entity("VillaManagementWeb.Models.CategoryRoomImage", b =>
+                {
+                    b.HasOne("VillaManagementWeb.Models.RoomCategory", "RoomCategory")
+                        .WithMany("CategoryImages")
+                        .HasForeignKey("RoomCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RoomCategory");
+                });
+
             modelBuilder.Entity("VillaManagementWeb.Models.Room", b =>
                 {
                     b.HasOne("VillaManagementWeb.Models.RoomCategory", "RoomCategory")
@@ -979,6 +1033,8 @@ namespace VillaManagementWeb.Migrations
 
             modelBuilder.Entity("VillaManagementWeb.Models.RoomCategory", b =>
                 {
+                    b.Navigation("CategoryImages");
+
                     b.Navigation("Rooms");
                 });
 

@@ -20,7 +20,7 @@ namespace VillaManagementWeb.Data
         public DbSet<Tour> Tours { get; set; }
         public DbSet<TourBooking> TourBookings { get; set; }
         public DbSet<RoomCategory> RoomCategories { get; set; }
-
+        public DbSet<CategoryRoomImage> CategoryRoomImages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

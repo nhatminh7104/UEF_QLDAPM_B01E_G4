@@ -18,36 +18,20 @@ namespace VillaManagementWeb.Controllers
         {
             if (string.IsNullOrEmpty(categoryName)) return RedirectToAction("Index", "Home");
 
-            // 1. Lấy Category Info
+            // 1. Lấy Category Info VÀ Include bảng CategoryRoomImages
             var categoryEntry = await _context.RoomCategories
                                               .AsNoTracking()
+                                              .Include(c => c.CategoryImages) // [MỚI] Lấy ảnh của Category
                                               .FirstOrDefaultAsync(c => c.Name == categoryName);
 
             if (categoryEntry == null) return View("NotFound");
 
-            // 2. Lấy Rooms và INCLUDE luôn RoomImages
+            // 2. Lấy Rooms (để hiển thị danh sách bên dưới)
             var dbRooms = await _context.Rooms
                                         .AsNoTracking()
-                                        .Include(r => r.RoomImages) // [Quan Trọng] Phải Include bảng này
+                                        .Include(r => r.RoomImages)
                                         .Where(r => r.RoomCategoryId == categoryEntry.Id)
                                         .ToListAsync();
-
-            // --- ĐOẠN CODE MỚI ĐỂ LẤY GALLERY ---
-            // Gom tất cả ảnh từ các phòng con, lấy tối đa 3-6 ảnh để hiển thị Gallery
-            var galleryUrls = dbRooms.SelectMany(r => r.RoomImages)
-                                     .Select(img => img.ImageUrl)
-                                     .Take(3) // Lấy 3 ảnh đầu tiên tìm thấy
-                                     .ToList();
-
-            // Nếu không có ảnh nào trong RoomImages, có thể fallback về ảnh đại diện phòng
-            if (!galleryUrls.Any())
-            {
-                galleryUrls = dbRooms.Where(r => !string.IsNullOrEmpty(r.ImageUrl))
-                                     .Select(r => r.ImageUrl)
-                                     .Take(3)
-                                     .ToList();
-            }
-            // ------------------------------------
 
             // 3. Map dữ liệu sang ViewModel
             var model = new RoomCategoryViewModel
@@ -56,8 +40,11 @@ namespace VillaManagementWeb.Controllers
                 Description = categoryEntry.Description ?? "Đang cập nhật...",
                 BannerImage = categoryEntry.BannerUrl ?? "/images/default-banner.jpg",
 
-                // Gán danh sách ảnh vừa lấy được vào đây
-                GalleryImages = galleryUrls,
+                // [MỚI] Lấy ảnh từ bảng CategoryRoomImage
+                GalleryImages = categoryEntry.CategoryImages
+                                             .Select(img => img.ImageUrl)
+                                             .Take(3) // Lấy 3 ảnh
+                                             .ToList(),
 
                 Amenities = !string.IsNullOrEmpty(categoryEntry.Amenities)
                             ? categoryEntry.Amenities.Split('\n').ToList()
@@ -68,11 +55,11 @@ namespace VillaManagementWeb.Controllers
                     Id = r.Id,
                     Name = r.Type ?? r.RoomNumber,
                     Description = r.Description,
-                    // Logic lấy ảnh đại diện: Nếu Room có ImageUrl thì lấy, ko thì lấy ảnh đầu trong Album
+                    // Lấy ảnh đại diện phòng
                     ImageUrl = !string.IsNullOrEmpty(r.ImageUrl)
                                ? r.ImageUrl
                                : (r.RoomImages.FirstOrDefault()?.ImageUrl ?? "/images/no-image.png"),
-
+                    ImageList = r.RoomImages.Select(img => img.ImageUrl).ToList(),
                     Price = r.PricePerNight,
                     CapacityAdults = r.Capacity,
                     CapacityChildren = r.CapacityChildren,

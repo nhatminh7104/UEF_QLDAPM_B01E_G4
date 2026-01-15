@@ -25,5 +25,6 @@ namespace VillaManagementWeb.Models
         [Display(Name = "Danh sách tiện ích")]
         public string? Amenities { get; set; } // Lưu dạng text, mỗi dòng là 1 tiện ích (để split \n như view hiện tại)
         public ICollection<Room> Rooms { get; set; }
+        public virtual ICollection<CategoryRoomImage> CategoryImages { get; set; } = new List<CategoryRoomImage>();
     }
 }

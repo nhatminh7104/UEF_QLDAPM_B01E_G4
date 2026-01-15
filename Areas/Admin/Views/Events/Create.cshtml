@@ -107,7 +107,22 @@
                                     </div>
                                     <span asp-validation-for="EventDate" class="text-xs text-red-500 mt-1 block"></span>
                                 </label>
-
+                                <label class="block">
+                                    <span class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Thời gian tổ chức</span>
+                                    <div class="relative">
+                                        <input asp-for="StartDate" class="w-full h-12 pl-10 pr-4 rounded-lg bg-white dark:bg-[#101c22] border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all [color-scheme:light] dark:[color-scheme:dark]" type="datetime-local" />
+                                        <span class="material-symbols-outlined absolute left-3 top-3 text-slate-400 pointer-events-none">calendar_month</span>
+                                    </div>
+                                    <span asp-validation-for="StartDate" class="text-xs text-red-500 mt-1 block"></span>
+                                </label>
+                                <label class="block">
+                                    <span class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Thời gian tổ chức</span>
+                                    <div class="relative">
+                                        <input asp-for="EndDate" class="w-full h-12 pl-10 pr-4 rounded-lg bg-white dark:bg-[#101c22] border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all [color-scheme:light] dark:[color-scheme:dark]" type="datetime-local" />
+                                        <span class="material-symbols-outlined absolute left-3 top-3 text-slate-400 pointer-events-none">calendar_month</span>
+                                    </div>
+                                    <span asp-validation-for="EndDate" class="text-xs text-red-500 mt-1 block"></span>
+                                </label>
                                 <label class="block">
                                     <span class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Địa điểm</span>
                                     <div class="relative">

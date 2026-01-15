@@ -55,7 +55,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         // POST: Admin/Tickets/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,EventId,TicketType,Price,CustomerEmail,CustomerName,Quantity,BookingDate,IsUsed")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,EventId,TicketType,Price,Quantity,BookingDate,CustomerName,CustomerPhone,CustomerEmail,Status")] Ticket ticket)
         {
             // 1. Tự động sinh mã QR (Thay thế giá trị placeholder từ View)
             // Format ví dụ: TKT-20231025-A1B2
@@ -96,7 +96,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         // POST: Admin/Tickets/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,EventId,TicketType,Price,CustomerEmail,CustomerName,Quantity,BookingDate,QRCode,IsUsed")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,EventId,TicketType,Price,Quantity,BookingDate,CustomerName,CustomerPhone,CustomerEmail,Status")] Ticket ticket)
         {
             if (id != ticket.Id) return NotFound();
 

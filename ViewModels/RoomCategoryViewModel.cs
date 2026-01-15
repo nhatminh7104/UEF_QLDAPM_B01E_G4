@@ -18,6 +18,7 @@ namespace VillaManagementWeb.ViewModels
         public string Name { get; set; } // Forest room, Deluxe room...
         public string Description { get; set; }
         public string ImageUrl { get; set; }
+        public List<string> ImageList { get; set; } = new List<string>(); // Danh sách ảnh slide
         public decimal Price { get; set; }
         public int CapacityAdults { get; set; }
         public int CapacityChildren { get; set; }
