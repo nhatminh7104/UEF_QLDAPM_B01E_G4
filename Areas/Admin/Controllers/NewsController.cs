@@ -11,7 +11,7 @@ using VillaManagementWeb.Admin.Services.Interfaces;
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class NewsController : Controller
     {
         private readonly INewsService _newsService;

@@ -11,7 +11,7 @@ using IRoomsService = VillaManagementWeb.Admin.Services.Interfaces.IRoomsService
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class BookingsController : Controller
     {
         private readonly IRoomBookingsService _bookingService;

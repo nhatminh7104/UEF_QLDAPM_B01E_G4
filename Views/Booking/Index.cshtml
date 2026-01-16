@@ -105,15 +105,30 @@
                             </select>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-1">NGƯỜI LỚN</label>
-                                <input asp-for="BookingRequest.AdultsCount" type="number" min="1" max="10" class="w-full border-gray-300 rounded">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-1">TRẺ EM</label>
-                                <input asp-for="BookingRequest.ChildrenCount" type="number" min="0" max="5" class="w-full border-gray-300 rounded">
-                            </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Người lớn</label>
+                            <input asp-for="BookingRequest.AdultsCount"
+                                   type="number"
+                                   id="AdultsCount"
+                                   min="1"
+                                   max="@Model.CapacityAdults"
+                                   class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#A67C52] focus:ring focus:ring-[#A67C52] focus:ring-opacity-50" />
+
+                            <span id="adult-error" class="text-red-500 text-sm hidden">Vượt quá số lượng người lớn cho phép!</span>
+                            <span asp-validation-for="BookingRequest.AdultsCount" class="text-red-500 text-sm"></span>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Trẻ em</label>
+                            <input asp-for="BookingRequest.ChildrenCount"
+                                   type="number"
+                                   id="ChildrenCount"
+                                   min="0"
+                                   max="@Model.CapacityChildren"
+                                   class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#A67C52] focus:ring focus:ring-[#A67C52] focus:ring-opacity-50" />
+
+                            <span id="child-error" class="text-red-500 text-sm hidden">Vượt quá số lượng trẻ em cho phép!</span>
+                            <span asp-validation-for="BookingRequest.ChildrenCount" class="text-red-500 text-sm"></span>
                         </div>
 
                         <div class="space-y-3 mb-6 border-t pt-4">
@@ -175,99 +190,182 @@
 </div>
 
 @section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
     <script>
-        function calculateTotal() {
-            const price = parseFloat(document.getElementById('basePrice').value);
-            const qty = parseInt(document.getElementById('roomQty').value);
-
-            // Lấy giá trị input datetime-local
-            const checkInVal = document.getElementById('checkInDate').value;
-            const checkOutVal = document.getElementById('checkOutDate').value;
-
-            if (!checkInVal || !checkOutVal) return;
-
-            const checkIn = new Date(checkInVal);
-            const checkOut = new Date(checkOutVal);
-
-            // Tính số mili-giây chênh lệch
-            let timeDiff = checkOut.getTime() - checkIn.getTime();
-
-            // Đổi ra số ngày (đêm)
-            let nights = timeDiff / (1000 * 3600 * 24);
-
-            // LOGIC LÀM TRÒN:
-            // Math.ceil: Làm tròn lên (1.1 đêm -> tính 2 đêm)
-            // Math.round: Làm tròn gần nhất
-            // Math.max(1, ...): Tối thiểu tính 1 đêm
-            nights = Math.ceil(nights);
-
-            if (nights < 1) nights = 1; // Tối thiểu tính tiền 1 đêm
-
-            const total = price * nights * qty;
-
-            // Cập nhật giao diện
-            document.getElementById('displayNights').innerText = nights;
-            document.getElementById('displayTotal').innerText = total.toLocaleString('vi-VN') + ' đ';
-            document.getElementById('hiddenTotal').value = total;
-        }
-        async function updateAvailableSlots() {
-            const checkInVal = document.getElementById('checkInDate').value;
-            const checkOutVal = document.getElementById('checkOutDate').value;
-            // Lấy RoomId từ model đã render ra input hidden
-            const roomId = document.getElementById('BookingRequest_RoomId').value;
-            const qtySelect = document.getElementById('roomQty');
-
-            if (!checkInVal || !checkOutVal) return;
-
-            try {
-                // Gọi về Server để check
-                const response = await fetch(`/Booking/CheckAvailability?roomId=${roomId}&checkIn=${checkInVal}&checkOut=${checkOutVal}`);
-                const data = await response.json();
-
-                const maxSlots = data.maxSlots;
-
-                // Xóa các option cũ
-                qtySelect.innerHTML = '';
-
-                if (maxSlots > 0) {
-                    // Tạo lại option từ 1 đến maxSlots
-                    for (let i = 1; i <= maxSlots; i++) {
-                        let option = document.createElement("option");
-                        option.value = i;
-                        option.text = i + " Phòng";
-                        qtySelect.add(option);
-                    }
-                    // Bật lại nút submit nếu cần
-                } else {
-                    // Nếu hết phòng
-                    let option = document.createElement("option");
-                    option.text = "Hết phòng";
-                    qtySelect.add(option);
-                    alert("Rất tiếc, ngày bạn chọn đã hết phòng loại này!");
-                }
-
-                // Tính lại tiền sau khi cập nhật số lượng
-                calculateTotal();
-
-            } catch (error) {
-                console.error('Lỗi check phòng:', error);
-            }
-        }
         document.addEventListener('DOMContentLoaded', function() {
-            flatpickr(".date-picker", {
+            // --- 1. KHAI BÁO BIẾN DÙNG CHUNG ---
+            const checkInInput = document.getElementById('checkInDate');
+            const checkOutInput = document.getElementById('checkOutDate');
+            const qtySelect = document.getElementById('roomQty'); // Input số lượng phòng (nếu có)
+            const roomIdInput = document.getElementById('BookingRequest_RoomId'); // Hidden input
+
+            // Lấy giới hạn người từ Model (Server-side render ra số)
+            const maxAdults = @Model.CapacityAdults;
+            const maxChildren = @Model.CapacityChildren;
+
+            // --- 2. HÀM TÍNH TIỀN ---
+            function calculateTotal() {
+                // Đảm bảo input giá và input CheckIn/Out tồn tại
+                const basePriceElement = document.getElementById('basePrice');
+                if (!basePriceElement || !checkInInput || !checkOutInput) return;
+
+                const price = parseFloat(basePriceElement.value) || 0;
+                const qty = qtySelect ? parseInt(qtySelect.value) : 1;
+
+                const checkInVal = checkInInput.value;
+                const checkOutVal = checkOutInput.value;
+
+                if (!checkInVal || !checkOutVal) return;
+
+                const checkIn = new Date(checkInVal);
+                const checkOut = new Date(checkOutVal);
+
+                if (checkOut <= checkIn) return; // Ngày không hợp lệ thì không tính
+
+                // Tính số mili-giây chênh lệch
+                let timeDiff = checkOut.getTime() - checkIn.getTime();
+
+                // Đổi ra số ngày (đêm)
+                let nights = timeDiff / (1000 * 3600 * 24);
+                nights = Math.ceil(nights);
+                if (nights < 1) nights = 1;
+
+                const total = price * nights * qty;
+
+                // Cập nhật giao diện
+                const displayNights = document.getElementById('displayNights');
+                const displayTotal = document.getElementById('displayTotal');
+                const hiddenTotal = document.getElementById('hiddenTotal'); // Input hidden lưu tổng tiền
+
+                if (displayNights) displayNights.innerText = nights;
+                if (displayTotal) displayTotal.innerText = total.toLocaleString('vi-VN') + ' đ';
+                if (hiddenTotal) hiddenTotal.value = total;
+            }
+
+            // --- 3. HÀM CHECK PHÒNG TRỐNG (AJAX) ---
+            async function updateAvailableSlots() {
+                const checkInVal = checkInInput.value;
+                const checkOutVal = checkOutInput.value;
+                const roomId = roomIdInput ? roomIdInput.value : 0;
+
+                if (!checkInVal || !checkOutVal || !qtySelect) return;
+
+                try {
+                    // Gọi API (Backend cần có Action CheckAvailability)
+                    const response = await fetch(`/Booking/CheckAvailability?roomId=${roomId}&checkIn=${checkInVal}&checkOut=${checkOutVal}`);
+                    if (!response.ok) return;
+
+                    const data = await response.json();
+                    const maxSlots = data.maxSlots;
+
+                    // Xóa option cũ
+                    qtySelect.innerHTML = '';
+
+                    if (maxSlots > 0) {
+                        for (let i = 1; i <= maxSlots; i++) {
+                            let option = document.createElement("option");
+                            option.value = i;
+                            option.text = i + " Phòng";
+                            qtySelect.add(option);
+                        }
+                    } else {
+                        let option = document.createElement("option");
+                        option.text = "Hết phòng";
+                        qtySelect.add(option);
+                        alert("Rất tiếc, ngày bạn chọn đã hết phòng loại này!");
+                    }
+
+                    // Tính lại tiền sau khi update số lượng
+                    calculateTotal();
+
+                } catch (error) {
+                    console.error('Lỗi check phòng:', error);
+                }
+            }
+
+            // --- 4. CẤU HÌNH FLATPICKR (LỊCH) ---
+            const checkInPicker = flatpickr("#CheckIn", {
                 enableTime: true,
                 dateFormat: "Y-m-d H:i",
                 altInput: true,
                 altFormat: "d/m/Y h:i K",
-                time_24hr: false,
                 minDate: "today",
+                defaultHour: 14,
                 onChange: function(selectedDates, dateStr, instance) {
-                    // Khi đổi ngày -> Gọi check phòng trước -> Sau đó mới tính tiền
+                    if (selectedDates.length > 0) {
+                        const startDate = selectedDates[0];
+
+                        // Tự động set minDate cho CheckOut là ngày hôm sau (hoặc sau ít nhất 1 khoảng)
+                        const minCheckOutDate = new Date(startDate);
+                        // minCheckOutDate.setDate(minCheckOutDate.getDate() + 1);
+
+                        checkOutPicker.set('minDate', minCheckOutDate);
+
+                        // Nếu ngày CheckOut hiện tại < ngày CheckIn mới -> Reset CheckOut
+                        const currentEndDate = checkOutPicker.selectedDates[0];
+                        if (currentEndDate && currentEndDate <= startDate) {
+                            const nextDay = new Date(startDate);
+                            nextDay.setDate(nextDay.getDate() + 1);
+                            nextDay.setHours(12, 0, 0, 0);
+                            checkOutPicker.setDate(nextDay);
+                        }
+                    }
                     updateAvailableSlots();
                 }
             });
+
+            const checkOutPicker = flatpickr("#CheckOut", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                altInput: true,
+                altFormat: "d/m/Y h:i K",
+                minDate: "today",
+                defaultHour: 12,
+                onChange: function(selectedDates, dateStr, instance) {
+                    const endDate = selectedDates[0];
+                    const startDate = checkInPicker.selectedDates[0];
+
+                    if (startDate && endDate <= startDate) {
+                        alert("Ngày trả phòng phải sau ngày nhận phòng!");
+                        // Reset về ngày hợp lệ
+                        const validDate = new Date(startDate);
+                        validDate.setDate(validDate.getDate() + 1);
+                        checkOutPicker.setDate(validDate);
+                    }
+                    updateAvailableSlots();
+                }
+            });
+
+            // --- 5. VALIDATION SỐ LƯỢNG NGƯỜI (REAL-TIME) ---
+            const adultInput = document.getElementById("AdultsCount");
+            const childInput = document.getElementById("ChildrenCount");
+
+            function validateGuestInput(input, max, errorId) {
+                if (!input) return;
+                input.addEventListener("input", function() {
+                    const val = parseInt(this.value) || 0;
+                    const errorMsg = document.getElementById(errorId);
+
+                    if (val > max) {
+                        if (errorMsg) {
+                            errorMsg.classList.remove("hidden");
+                            errorMsg.innerText = `Tối đa ${max} người.`;
+                        }
+                        this.value = max; // Reset về max
+                    } else {
+                        if (errorMsg) errorMsg.classList.add("hidden");
+                    }
+                });
+            }
+
+            validateGuestInput(adultInput, maxAdults, "adult-error");
+            validateGuestInput(childInput, maxChildren, "child-error");
+
+            // --- 6. CHẠY KHỞI TẠO ---
+            calculateTotal(); // Tính tiền lần đầu khi load trang
         });
-        // Chạy tính toán 1 lần khi load trang
-        document.addEventListener('DOMContentLoaded', calculateTotal);
     </script>
 }

@@ -7,7 +7,7 @@ using VillaManagementWeb.Admin.Services.Interfaces;
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    // [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class TicketsController : Controller
     {
         private readonly ITicketsService _ticketsService;

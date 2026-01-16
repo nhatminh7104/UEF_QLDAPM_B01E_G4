@@ -1,3 +1,4 @@
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using VillaManagementWeb.Models;
@@ -6,6 +7,7 @@ using VillaManagementWeb.Admin.Services.Interfaces;
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class RoomImagesController : Controller
     {
         private readonly IRoomImagesService _imageService;
