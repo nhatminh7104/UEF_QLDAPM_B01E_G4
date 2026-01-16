@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VillaManagementWeb.Data;
@@ -8,6 +9,7 @@ using VillaManagementWeb.ViewModels; // Cần dùng RoomIndexVM
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class RoomsController : Controller
     {
         private readonly VillaDbContext _context;

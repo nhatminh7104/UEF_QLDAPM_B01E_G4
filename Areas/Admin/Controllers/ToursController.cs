@@ -1,14 +1,16 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting; // Thêm namespace này để xử lý file
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using VillaManagementWeb.Models;
 using VillaManagementWeb.Services.Interfaces;
-using Microsoft.AspNetCore.Hosting; // Thêm namespace này để xử lý file
-using System.IO;
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class ToursController : Controller
     {
         private readonly ITourService _tourService;

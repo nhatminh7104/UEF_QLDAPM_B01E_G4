@@ -47,7 +47,12 @@ namespace VillaManagementWeb.Controllers
             // Ép kiểu giờ chuẩn khách sạn
             var start = checkIn.Date.AddHours(14);
             var end = checkOut.Date.AddHours(12);
-
+            if (end <= start)
+            {
+                end = start.AddDays(1).Date.AddHours(12);
+                // Tùy chọn: Thêm thông báo nếu muốn hiển thị ra View
+                // ModelState.AddModelError("", "Ngày trả phòng đã được tự động điều chỉnh.");
+            }
             // Tái sử dụng hàm logic cũ
             var model = await LoadRoomDetails(roomId, start, end);
 
@@ -61,7 +66,7 @@ namespace VillaManagementWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RoomBookingDetailVM model)
         {
-            // Bỏ qua validate các trường hiển thị
+            // 1. Dọn dẹp ModelState (Bỏ qua các trường hiển thị không cần validate)
             ModelState.Remove("RoomName");
             ModelState.Remove("CategoryName");
             ModelState.Remove("ImageUrl");
@@ -71,42 +76,57 @@ namespace VillaManagementWeb.Controllers
             ModelState.Remove("BookingRequest.Status");
             ModelState.Remove("BookingRequest.PaymentMethod");
             ModelState.Remove("BookingRequest.Room");
+            ModelState.Remove("BookingRequest.Customer"); // Nếu có relation
 
             var booking = model.BookingRequest;
 
+            // 2. Lấy thông tin phòng gốc để VALIDATE SỨC CHỨA
+            var room = await _context.Rooms.FindAsync(booking.RoomId);
+            if (room == null) return NotFound();
+
+            // --- START: VALIDATION LOGIC ---
+
+            // Check ngày
             if (booking.CheckIn >= booking.CheckOut)
             {
-                ModelState.AddModelError("", "Ngày trả phòng phải sau ngày nhận phòng.");
+                ModelState.AddModelError("BookingRequest.CheckOut", "Ngày trả phòng phải sau ngày nhận phòng.");
             }
+
+            // Check quá số người (Logic bạn cần thêm)
+            if (booking.AdultsCount > room.Capacity)
+            {
+                ModelState.AddModelError("BookingRequest.AdultsCount", $"Phòng này chỉ chứa tối đa {room.Capacity} người lớn.");
+            }
+
+            if (booking.ChildrenCount > room.CapacityChildren)
+            {
+                ModelState.AddModelError("BookingRequest.ChildrenCount", $"Phòng này chỉ chứa tối đa {room.CapacityChildren} trẻ em.");
+            }
+            // --- END: VALIDATION LOGIC ---
 
             if (ModelState.IsValid)
             {
-                // --- LOGIC MỚI: TÌM PHÒNG TRỐNG TRONG NHÓM ---
+                // 3. LOGIC TỰ ĐỘNG TÌM PHÒNG TRỐNG (AUTO-ASSIGN)
 
-                // 1. Lấy thông tin phòng gốc để biết Loại (Type) và Danh mục (Category)
-                var requestedRoom = await _context.Rooms.FindAsync(booking.RoomId);
-                if (requestedRoom == null) return NotFound();
-
-                // 2. Tìm tất cả các ID phòng thuộc cùng nhóm này
+                // Tìm tất cả ID phòng cùng loại, cùng nhóm
                 var groupRoomIds = await _context.Rooms
-                    .Where(r => r.RoomCategoryId == requestedRoom.RoomCategoryId
-                             && r.Type == requestedRoom.Type
+                    .Where(r => r.RoomCategoryId == room.RoomCategoryId
+                             && r.Type == room.Type
                              && r.IsActive)
                     .Select(r => r.Id)
                     .ToListAsync();
 
-                // 3. Tìm các phòng ĐANG BẬN trong nhóm này vào khung giờ khách chọn
-                // (Bận = Có đơn đặt Status != Cancelled VÀ thời gian giao nhau)
+                // Tìm các phòng đang bận
                 var busyRoomIds = await _context.Bookings
                     .Where(b => groupRoomIds.Contains(b.RoomId)
                              && b.Status != "Cancelled"
                              && b.CheckIn < booking.CheckOut
-                             && b.CheckOut > booking.CheckIn)
+                             && b.CheckOut > booking.CheckIn) // Logic giao nhau thời gian
                     .Select(b => b.RoomId)
                     .Distinct()
                     .ToListAsync();
 
-                // 4. Suy ra các phòng CÒN TRỐNG
+                // Danh sách phòng trống
                 var availableRoomIds = groupRoomIds.Except(busyRoomIds).ToList();
 
                 if (availableRoomIds.Count == 0)
@@ -115,24 +135,21 @@ namespace VillaManagementWeb.Controllers
                 }
                 else
                 {
-                    // 5. TỰ ĐỘNG GÁN PHÒNG
-                    // Nếu phòng khách chọn (booking.RoomId) nằm trong danh sách trống -> Tốt quá, giữ nguyên.
-                    // Nếu không (đã bị người khác đặt), lấy đại diện phòng trống đầu tiên gán vào.
+                    // Nếu phòng khách chọn ban đầu bị bận, đổi sang phòng trống khác
                     if (!availableRoomIds.Contains(booking.RoomId))
                     {
                         booking.RoomId = availableRoomIds.First();
                     }
 
-                    // 6. Tính tiền & Lưu
+                    // 4. Tính toán và Lưu
                     booking.CreatedAt = DateTime.Now;
                     booking.Status = "Pending";
                     if (string.IsNullOrEmpty(booking.PaymentMethod)) booking.PaymentMethod = "BankTransfer";
 
-                    // Tính lại tiền (Security)
-                    var finalRoom = await _context.Rooms.FindAsync(booking.RoomId);
+                    // Tính tiền lại (Security)
                     var nights = Math.Ceiling((booking.CheckOut - booking.CheckIn).TotalDays);
                     if (nights < 1) nights = 1;
-                    booking.TotalAmount = finalRoom.PricePerNight * (decimal)nights;
+                    booking.TotalAmount = room.PricePerNight * (decimal)nights;
 
                     try
                     {
@@ -140,17 +157,19 @@ namespace VillaManagementWeb.Controllers
                         await _context.SaveChangesAsync();
                         return RedirectToAction("BookingSuccess", new { id = booking.Id });
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        ModelState.AddModelError("", "Lỗi hệ thống. Vui lòng thử lại.");
+                        ModelState.AddModelError("", "Lỗi hệ thống khi lưu đơn: " + ex.Message);
                     }
                 }
             }
 
-            // Nếu lỗi, load lại dữ liệu để hiển thị form
+            // 5. NẾU CÓ LỖI: Load lại dữ liệu để hiển thị lại View
+            // Quan trọng: Phải load lại thông tin phòng để View không bị lỗi Null
             var reloadedModel = await LoadRoomDetails(booking.RoomId, booking.CheckIn, booking.CheckOut);
             if (reloadedModel != null)
             {
+                // Gán lại dữ liệu khách vừa nhập để không bị mất
                 reloadedModel.BookingRequest = booking;
                 return View("Index", reloadedModel);
             }

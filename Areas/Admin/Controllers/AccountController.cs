@@ -1,86 +1,99 @@
-//using Microsoft.AspNetCore.Authorization;
-//using Microsoft.AspNetCore.Identity;
-//using Microsoft.AspNetCore.Mvc;
-//using VillaManagementWeb.Models;
-//using VillaManagementWeb.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using VillaManagementWeb.Models;
+using VillaManagementWeb.ViewModels;
 
-//namespace VillaManagementWeb.Areas.Admin.Controllers
-//{
-//    [Area("Admin")]
-//    public class AccountController : Controller
-//    {
-//        private readonly UserManager<User> _userManager;
-//        private readonly SignInManager<User> _signInManager;
+namespace VillaManagementWeb.Areas.Admin.Controllers
+{
+    [Area("Admin")]
+    public class AccountController : Controller
+    {
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-//        public AccountController(
-//            UserManager<User> userManager,
-//            SignInManager<User> signInManager)
-//        {
-//            _userManager = userManager;
-//            _signInManager = signInManager;
-//        }
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+        }
 
-//        [HttpGet]
-//        public IActionResult Register() => View();
+        [HttpGet]
+        public IActionResult Login(string? returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
 
-//        [HttpPost]
-//        public async Task<IActionResult> Register(RegisterVM model)
-//        {
-//            if (!ModelState.IsValid) return View(model);
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginVM model, string? returnUrl = null)
+        {
+            if (!ModelState.IsValid) return View(model);
 
-//            var user = new User
-//            {
-//                Email = model.Email,
-//                UserName = model.Email,   // ⚠️ Identity bắt buộc phải có UserName
-//                FullName = model.FullName
-//            };
+            // Tối ưu hóa: Tìm user theo email trước để lấy UserName chính xác
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user != null)
+            {
+                var result = await _signInManager.PasswordSignInAsync(user.UserName!, model.Password, model.RememberMe, false);
 
-//            var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                        return Redirect(returnUrl);
 
-//            if (result.Succeeded)
-//            {
-//                await _userManager.AddToRoleAsync(user, "User");
-//                await _signInManager.SignInAsync(user, false);
-//                return RedirectToAction("Index", "Home", new { area = "" });
-//            }
+                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                }
+            }
 
-//            foreach (var error in result.Errors)
-//                ModelState.AddModelError("", error.Description);
+            ModelState.AddModelError("", "Tài khoản hoặc mật khẩu không chính xác.");
+            return View(model);
+        }
 
-//            return View(model);
-//        }
+        [HttpGet]
+        public IActionResult Register() => View();
 
-//        [HttpGet]
-//        public IActionResult Login() => View();
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterVM model)
+        {
+            if (!ModelState.IsValid) return View(model);
 
-//        [HttpPost]
-//        public async Task<IActionResult> Login(LoginVM model)
-//        {
-//            if (!ModelState.IsValid) return View(model);
+            var user = new User
+            {
+                Email = model.Email,
+                UserName = model.Email, // Sử dụng Email làm UserName cho đồng bộ
+                FullName = model.FullName,
+            };
 
-//            var result = await _signInManager.PasswordSignInAsync(
-//                model.Email,
-//                model.Password,
-//                model.RememberMe,
-//                false
-//            );
+            var result = await _userManager.CreateAsync(user, model.Password);
 
-//            if (result.Succeeded)
-//                return RedirectToAction("Index", "Home", new { area = "" });
+            if (result.Succeeded)
+            {
+                // Mặc định đăng ký từ trang Admin sẽ là Role Admin hoặc tùy bạn chỉnh sửa
+                await _userManager.AddToRoleAsync(user, "Admin");
+                await _signInManager.SignInAsync(user, false);
+                return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+            }
 
-//            ModelState.AddModelError("", "Invalid login");
-//            return View(model);
-//        }
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
 
-//        public async Task<IActionResult> Logout()
-//        {
-//            await _signInManager.SignOutAsync();
-//            return RedirectToAction("Index", "Home", new { area = "" });
-//        }
+            return View(model);
+        }
 
-//        public IActionResult AccessDenied()
-//        {
-//            return View();
-//        }
-//    }
-//}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home", new { area = "" });
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+    }
+}
