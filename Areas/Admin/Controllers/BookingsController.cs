@@ -3,10 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using VillaManagementWeb.Admin.Services.Implementations;
 using VillaManagementWeb.Admin.Services.Interfaces;
 using VillaManagementWeb.Models;
-using IRoomsService = VillaManagementWeb.Admin.Services.Interfaces.IRoomsService;
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
@@ -17,7 +15,10 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         private readonly IRoomBookingsService _bookingService;
         private readonly IRoomsService _roomService;
 
-        public BookingsController(IRoomBookingsService bookingService, RoomsService roomService)
+        // CHỈ INJECT INTERFACE
+        public BookingsController(
+            IRoomBookingsService bookingService,
+            IRoomsService roomService)
         {
             _bookingService = bookingService;
             _roomService = roomService;
@@ -59,7 +60,6 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,RoomId,CustomerName,CustomerPhone,AdultsCount,ChildrenCount,CustomerEmail,CheckIn,CheckOut,TotalAmount,Status,PaymentMethod,Notes,CreatedAt")] RoomBooking booking)
         {
-
             if (ModelState.IsValid)
             {
                 try
@@ -77,6 +77,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                     ModelState.AddModelError("", ex.Message);
                 }
             }
+
             var rooms = await _roomService.GetAllRoomsAsync();
             ViewData["RoomId"] = new SelectList(rooms, "Id", "RoomNumber", booking.RoomId);
             return View(booking);
@@ -95,6 +96,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
             var rooms = await _roomService.GetAllRoomsAsync();
             ViewData["RoomId"] = new SelectList(rooms, "Id", "RoomNumber", booking.RoomId);
             return View(booking);
@@ -127,6 +129,7 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
                     ModelState.AddModelError("", ex.Message);
                 }
             }
+
             var rooms = await _roomService.GetAllRoomsAsync();
             ViewData["RoomId"] = new SelectList(rooms, "Id", "RoomNumber", booking.RoomId);
             return View(booking);

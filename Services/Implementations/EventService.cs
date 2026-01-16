@@ -6,9 +6,9 @@ namespace VillaManagementWeb.Services.Implementations
 {
     public class EventService : IEventService
     {
-        private readonly IEventRepository _eventRepository;
+        private readonly IEventsRepository _eventRepository;
 
-        public EventService(IEventRepository eventRepository)
+        public EventService(IEventsRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }

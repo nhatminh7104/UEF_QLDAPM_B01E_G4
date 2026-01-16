@@ -1,4 +1,5 @@
 using VillaManagementWeb.Models;
+using VillaManagementWeb.Repositories.Implementations;
 using VillaManagementWeb.Repositories.Interfaces;
 using VillaManagementWeb.Services.Interfaces;
 
@@ -7,12 +8,12 @@ namespace VillaManagementWeb.Services.Implementations
     public class TicketService : ITicketService
     {
         private readonly ITicketRepository _ticketRepository;
-        private readonly IEventRepository _eventRepository;
+        private readonly IEventsRepository _eventRepository;
 
-        public TicketService(ITicketRepository ticketRepository, IEventRepository eventRepository)
+        public TicketService(ITicketRepository ticketRepository, IEventsRepository eventRepository)
         {
             _ticketRepository = ticketRepository;
-            _eventRepository = eventRepository;
+            _eventRepository = eventRepository; // Bây giờ hai kiểu đã khớp nhau
         }
 
         public async Task<IEnumerable<Ticket>> GetAllTicketsAsync()

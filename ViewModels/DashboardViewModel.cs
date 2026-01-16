@@ -11,7 +11,7 @@ namespace VillaManagementWeb.ViewModels
         public double OccupancyRate { get; set; }      // Tỷ lệ lấp đầy phòng (%)
 
         // Danh sách đơn gần đây
-        public IEnumerable<Booking> RecentBookings { get; set; } = new List<Booking>();
+        public IEnumerable<RoomBooking> RecentBookings { get; set; } = new List<RoomBooking>();
 
         // Dữ liệu cho biểu đồ (Chart.js)
         public List<string> ChartLabels { get; set; } = new List<string>(); // ["20/10", "21/10",...]

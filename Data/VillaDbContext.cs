@@ -5,14 +5,13 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace VillaManagementWeb.Data
 {
-    // Quan trọng: Phải kế thừa IdentityDbContext với class User của bạn
     public class VillaDbContext : IdentityDbContext<User>
     {
         public VillaDbContext(DbContextOptions<VillaDbContext> options) : base(options) { }
 
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<RoomBooking> Bookings { get; set; }
+        public DbSet<RoomBooking> RoomBookings { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<News> News { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
@@ -20,6 +19,7 @@ namespace VillaManagementWeb.Data
         public DbSet<TourBooking> TourBookings { get; set; }
         public DbSet<RoomCategory> RoomCategories { get; set; }
         public DbSet<CategoryRoomImage> CategoryRoomImages { get; set; }
+        public DbSet<RoomImage> RoomImages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

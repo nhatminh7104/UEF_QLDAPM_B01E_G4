@@ -5,7 +5,7 @@ namespace VillaManagementWeb.Models
 {
     public class Customer
     {
-        [Key] 
+        [Key]
         public int Id { get; set; }
 
         [StringLength(100)]
@@ -24,13 +24,13 @@ namespace VillaManagementWeb.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-       
-        public ICollection<Booking> Bookings { get; set; }
 
-       
+        public ICollection<RoomBooking> Bookings { get; set; }
+
+
         public ICollection<Ticket> Tickets { get; set; }
 
-  
+
         public ICollection<TourBooking> TourBookings { get; set; }
 
     }

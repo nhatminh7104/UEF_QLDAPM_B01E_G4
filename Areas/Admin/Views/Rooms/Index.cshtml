@@ -39,9 +39,16 @@
                                         alt="Room" class="rounded" style="width: 60px; height: 45px; object-fit: cover;" />
                                 </td>
                                 <td>@item.RoomNumber</td>
-                                <td><span class="badge badge-info">@item.Type</span></td>
+                                <td>
+                                    <span class="badge badge-info">@item.Type</span>
+                                    @* Sửa lỗi 'Category' không tồn tại và đưa vào trong <td> hợp lệ *@
+                                    <div class="small text-muted mt-1">
+                                        @(item.RoomCategory?.Name ?? "Chưa phân loại")
+                                    </div>
+                                </td>
                                 <td class="fw-bold">@item.PricePerNight.ToString("N0") VNĐ</td>
-                                <div class="small text-muted mt-1">@item.Category</div>
+
+                                @* Cột Tiện nghi *@
                                 <td>
                                     <div class="d-flex gap-2 text-muted">
                                         <i class="fas fa-wifi @(item.HasWifi ? "text-primary" : "opacity-25")"
@@ -55,6 +62,8 @@
                                     </div>
                                     <small class="text-muted">@item.Capacity người | @item.SquareFootage m²</small>
                                 </td>
+
+                                @* Cột Trạng thái *@
                                 <td>
                                     @if (item.IsActive)
                                     {
@@ -65,24 +74,30 @@
                                         <span class="badge badge-danger">Ngừng kinh doanh</span>
                                     }
                                 </td>
-                                <td>
+
+                                @* Cột Vận hành (Ví dụ hiển thị icon thay vì text) *@
+                                <td class="text-center">
                                     @if (item.IsActive)
                                     {
-                                        <span>✓</span>
+                                        <span class="text-success"><i class="fa fa-check-circle"></i></span>
                                     }
                                     else
                                     {
-                                        <span>✘</span>
+                                        <span class="text-danger"><i class="fa fa-times-circle"></i></span>
                                     }
                                 </td>
+
+                                @* Cột Thao tác *@
                                 <td>
                                     <div class="form-button-action">
                                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-link btn-primary btn-lg"
                                             data-bs-toggle="tooltip" title="Chỉnh sửa">
                                             <i class="fa fa-edit"></i>
                                         </a>
+                                        @* Lưu ý: Nút xóa thường dùng form POST hoặc SweetAlert để bảo mật *@
                                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-link btn-danger"
-                                            data-bs-toggle="tooltip" title="Xóa">
+                                            data-bs-toggle="tooltip" title="Xóa"
+                                            onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
                                             <i class="fa fa-times"></i>
                                         </a>
                                     </div>

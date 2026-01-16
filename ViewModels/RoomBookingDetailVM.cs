@@ -20,6 +20,6 @@ namespace VillaManagementWeb.ViewModels
         public int MaxAvailableSlots { get; set; } // Số phòng còn trống tối đa của loại này
 
         // 2. Thông tin khách điền (Form Input)
-        public Booking BookingRequest { get; set; } = new Booking();
+        public RoomBooking BookingRequest { get; set; } = new RoomBooking();
     }
 }

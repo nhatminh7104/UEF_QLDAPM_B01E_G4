@@ -97,7 +97,7 @@ namespace VillaManagementWeb.Controllers
 
                 // 3. Tìm các phòng ĐANG BẬN trong nhóm này vào khung giờ khách chọn
                 // (Bận = Có đơn đặt Status != Cancelled VÀ thời gian giao nhau)
-                var busyRoomIds = await _context.Bookings
+                var busyRoomIds = await _context.RoomBookings
                     .Where(b => groupRoomIds.Contains(b.RoomId)
                              && b.Status != "Cancelled"
                              && b.CheckIn < booking.CheckOut
@@ -136,7 +136,7 @@ namespace VillaManagementWeb.Controllers
 
                     try
                     {
-                        _context.Bookings.Add(booking);
+                        _context.RoomBookings.Add(booking);
                         await _context.SaveChangesAsync();
                         return RedirectToAction("BookingSuccess", new { id = booking.Id });
                     }
@@ -162,7 +162,7 @@ namespace VillaManagementWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> BookingSuccess(int id)
         {
-            var booking = await _context.Bookings
+            var booking = await _context.RoomBookings
                 .Include(b => b.Room)
                 .ThenInclude(r => r.RoomCategory) // Lấy thêm Category để hiển thị cho đẹp
                 .FirstOrDefaultAsync(b => b.Id == id);
@@ -171,7 +171,7 @@ namespace VillaManagementWeb.Controllers
 
             return View(booking);
         }
-       
+
 
         // 2. Hàm kiểm tra phòng trống trong Database
         private async Task<RoomBookingDetailVM?> LoadRoomDetails(int roomId, DateTime checkIn, DateTime checkOut)
@@ -196,7 +196,7 @@ namespace VillaManagementWeb.Controllers
 
             // B. Số phòng đang bận trong khoảng thời gian này
             // Logic: Có booking nào (ko phải Cancelled) chen vào giữa checkIn & checkOut không?
-            int busyCount = await _context.Bookings
+            int busyCount = await _context.RoomBookings
                 .Where(b => allRoomsInGroup.Contains(b.RoomId)
                          && b.Status != "Cancelled"
                          && b.CheckIn < checkOut
@@ -224,7 +224,7 @@ namespace VillaManagementWeb.Controllers
                 // Hiển thị số lượng còn trống cho khách chọn (Nếu < 0 thì để 0)
                 MaxAvailableSlots = availableCount > 0 ? availableCount : 0,
 
-                BookingRequest = new Booking { RoomId = room.Id }
+                BookingRequest = new RoomBooking { RoomId = room.Id }
             };
         }
     }

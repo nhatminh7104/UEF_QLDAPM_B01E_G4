@@ -21,7 +21,7 @@ namespace VillaManagementWeb.Services.Implementations
             var sevenDaysAgo = today.AddDays(-6);
 
             // 1. Lấy dữ liệu Booking thô (chỉ lấy những đơn không bị hủy)
-            var activeBookings = await _context.Bookings
+            var activeBookings = await _context.RoomBookings
                 .Include(b => b.Room)
                 .Where(b => b.Status != "Cancelled")
                 .ToListAsync();
