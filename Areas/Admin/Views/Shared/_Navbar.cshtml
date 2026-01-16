@@ -1,0 +1,63 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+    <div class="container-fluid">
+        <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+            @if (SignInManager.IsSignedIn(User))
+            {
+                var currentUser = await UserManager.GetUserAsync(User);
+
+                <li class="nav-item topbar-user dropdown hidden-caret">
+                    <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                        <div class="avatar-sm">
+                            <img src="~/Admin-template/assets/img/profile.jpg" alt="..."
+                                class="avatar-img rounded-circle" />
+                        </div>
+                        <span class="profile-username">
+                            <span class="op-7">Xin chào,</span>
+                            @* Lấy UserName hoặc Email từ Cookie *@
+                            <span class="fw-bold">@User.Identity?.Name</span>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user animated fadeIn">
+                        <div class="dropdown-user-scroll scrollbar-outer">
+                            <li>
+                                <div class="user-box">
+                                    <div class="avatar-lg">
+                                        <img src="~/Admin-template/assets/img/profile.jpg" alt="image profile"
+                                            class="avatar-img rounded" />
+                                    </div>
+                                    <div class="u-text">
+                                        <h4>@User.Identity?.Name</h4>
+                                        <p class="text-muted">@currentUser?.Email</p>
+                                        <a href="#" class="btn btn-xs btn-secondary btn-sm">Xem hồ sơ</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Cài đặt tài khoản</a>
+                                <div class="dropdown-divider"></div>
+
+                                @* Form Đăng xuất *@
+                                <form asp-area="Identity" asp-page="/Account/Logout"
+                                    asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post"
+                                    id="logoutForm">
+                                    <button type="submit" class="dropdown-item">Đăng xuất</button>
+                                </form>
+                            </li>
+                        </div>
+                    </ul>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a>
+                </li>
+            }
+        </ul>
+    </div>
+</nav>

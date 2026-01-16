@@ -8,7 +8,7 @@
     window.tailwind = {
         config: {
             corePlugins: {
-                preflight: false, 
+                preflight: false,
                 visibility: false,
             },
             darkMode: "class",
@@ -53,214 +53,271 @@
         border-radius: 4px;
     }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
 
     .dark ::-webkit-scrollbar-thumb {
         background: #334155;
     }
 </style>
 <div id="tw-scope">
-<div class="flex-1 bg-background-light dark:bg-background-dark p-6 lg:p-8 font-display text-text-main dark:text-slate-100">
-    <div class="mx-auto max-w-7xl">
-        <nav class="mb-6 flex items-center text-sm font-medium text-text-secondary dark:text-slate-400">
-            <a href="/Admin" class="hover:text-primary transition-colors flex items-center gap-1">
-                <span class="material-symbols-outlined text-[18px]">home</span>
-                Dashboard
-            </a>
-            <span class="mx-2 text-slate-300 dark:text-slate-600">/</span>
-            <span class="text-text-main dark:text-white font-semibold">Tickets</span>
-        </nav>
+    <div
+        class="flex-1 bg-background-light dark:bg-background-dark p-6 lg:p-8 font-display text-text-main dark:text-slate-100">
+        <div class="mx-auto max-w-7xl">
+            <nav class="mb-6 flex items-center text-sm font-medium text-text-secondary dark:text-slate-400">
+                <a href="/Admin" class="hover:text-primary transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[18px]">home</span>
+                    Dashboard
+                </a>
+                <span class="mx-2 text-slate-300 dark:text-slate-600">/</span>
+                <span class="text-text-main dark:text-white font-semibold">Tickets</span>
+            </nav>
 
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-            <div class="flex flex-col gap-1">
-                <h1 class="text-3xl font-black tracking-tight text-text-main dark:text-white md:text-4xl">Danh Sách Vé</h1>
-                <p class="text-text-secondary dark:text-slate-400 text-base max-w-2xl">
-                    Quản lý toàn bộ vé đã bán, trạng thái check-in và thông tin khách hàng.
-                </p>
-            </div>
-            <a asp-action="Create" class="flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-bold h-10 px-5 rounded-lg shadow-sm hover:shadow transition-all whitespace-nowrap">
-                <span class="material-symbols-outlined text-[20px]">add</span>
-                Thêm Vé Mới
-            </a>
-        </div>
-
-        <div class="flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
-
-            <div class="p-5 border-b border-slate-200 dark:border-slate-700 flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center bg-slate-50/50 dark:bg-slate-800/20">
-                <div class="relative w-full max-w-md group">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <span class="material-symbols-outlined text-slate-400 group-focus-within:text-primary">search</span>
-                    </div>
-                    <input class="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm pl-10 pr-4 py-2.5 focus:border-primary focus:ring-primary dark:text-white placeholder:text-slate-400 shadow-sm transition-shadow" placeholder="Tìm kiếm theo email, tên hoặc mã vé..." type="text" />
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+                <div class="flex flex-col gap-1">
+                    <h1 class="text-3xl font-black tracking-tight text-text-main dark:text-white md:text-4xl">Danh Sách
+                        Vé</h1>
+                    <p class="text-text-secondary dark:text-slate-400 text-base max-w-2xl">
+                        Quản lý toàn bộ vé đã bán, trạng thái check-in và thông tin khách hàng.
+                    </p>
                 </div>
-
-                <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                    <div class="flex items-center rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 p-1">
-                        <label class="cursor-pointer relative">
-                            <input checked="" class="peer sr-only" name="status_filter" type="radio" value="all" />
-                            <span class="block px-3 py-1.5 text-xs font-medium rounded text-slate-500 dark:text-slate-400 peer-checked:bg-slate-100 dark:peer-checked:bg-slate-700 peer-checked:text-text-main dark:peer-checked:text-white transition-colors">Tất cả</span>
-                        </label>
-                        <label class="cursor-pointer relative">
-                            <input class="peer sr-only" name="status_filter" type="radio" value="used" />
-                            <span class="block px-3 py-1.5 text-xs font-medium rounded text-slate-500 dark:text-slate-400 peer-checked:bg-green-100 dark:peer-checked:bg-green-900/30 peer-checked:text-green-700 dark:peer-checked:text-green-400 transition-colors">Đã dùng</span>
-                        </label>
-                        <label class="cursor-pointer relative">
-                            <input class="peer sr-only" name="status_filter" type="radio" value="unused" />
-                            <span class="block px-3 py-1.5 text-xs font-medium rounded text-slate-500 dark:text-slate-400 peer-checked:bg-blue-100 dark:peer-checked:bg-blue-900/30 peer-checked:text-primary dark:peer-checked:text-blue-400 transition-colors">Chưa dùng</span>
-                        </label>
-                    </div>
-
-                    <button class="ml-auto lg:ml-0 flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg text-sm font-medium text-text-main dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                        <span class="hidden sm:inline">Export</span>
-                    </button>
-                </div>
+                <a asp-action="Create"
+                    class="flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-bold h-10 px-5 rounded-lg shadow-sm hover:shadow transition-all whitespace-nowrap">
+                    <span class="material-symbols-outlined text-[20px]">add</span>
+                    Thêm Vé Mới
+                </a>
             </div>
 
-            <div class="overflow-x-auto w-full">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
-                            <th class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[220px]">Sự Kiện</th>
-                            <th class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[120px]">Loại Vé</th>
-                            <th class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[240px]">Khách Hàng</th>
-                            <th class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[140px] text-right">Giá / SL</th>
-                            <th class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[140px]">Ngày Đặt</th>
-                            <th class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[80px] text-center">QR</th>
-                            <th class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[120px]">Trạng Thái</th>
-                            <th class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[120px] text-right">Thao Tác</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                        @foreach (var item in Model)
-                        {
-                            <tr class="group hover:bg-blue-50/50 dark:hover:bg-slate-700/30 transition-colors">
-                                <td class="p-4">
-                                    <div class="flex flex-col">
-                                        <span class="text-sm font-bold text-text-main dark:text-slate-100">
-                                            @Html.DisplayFor(modelItem => item.Event.Title)
-                                        </span>
-                                        <span class="text-xs text-text-secondary dark:text-slate-400 flex items-center gap-1 mt-0.5">
-                                            <span class="material-symbols-outlined text-[12px]">location_on</span>
-                                            @(item.Event.Location ?? "N/A")
-                                        </span>
-                                    </div>
-                                </td>
+            <div
+                class="flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
 
-                                <td class="p-4">
-                                    @{
-                                        var badgeColor = item.TicketType?.ToLower() switch
-                                        {
-                                            "vip" => "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 border-purple-200",
-                                            "vvip" => "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-200",
-                                            "earlybird" => "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-200",
-                                            _ => "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200"
-                                        };
-                                    }
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border @badgeColor">
-                                        @Html.DisplayFor(modelItem => item.TicketType)
-                                    </span>
-                                </td>
+                <div
+                    class="p-5 border-b border-slate-200 dark:border-slate-700 flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center bg-slate-50/50 dark:bg-slate-800/20">
+                    <div class="relative w-full max-w-md group">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span
+                                class="material-symbols-outlined text-slate-400 group-focus-within:text-primary">search</span>
+                        </div>
+                        <input
+                            class="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm pl-10 pr-4 py-2.5 focus:border-primary focus:ring-primary dark:text-white placeholder:text-slate-400 shadow-sm transition-shadow"
+                            placeholder="Tìm kiếm theo email, tên hoặc mã vé..." type="text" />
+                    </div>
 
-                                <td class="p-4">
-                                    <div class="flex flex-col">
-                                        <span class="text-sm font-semibold text-text-main dark:text-slate-100">@item.CustomerName</span>
-                                        <span class="text-xs text-text-secondary dark:text-slate-400">@item.CustomerEmail</span>
-                                    </div>
-                                </td>
+                    <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                        <div
+                            class="flex items-center rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 p-1">
+                            <label class="cursor-pointer relative">
+                                <input checked="" class="peer sr-only" name="status_filter" type="radio" value="all" />
+                                <span
+                                    class="block px-3 py-1.5 text-xs font-medium rounded text-slate-500 dark:text-slate-400 peer-checked:bg-slate-100 dark:peer-checked:bg-slate-700 peer-checked:text-text-main dark:peer-checked:text-white transition-colors">Tất
+                                    cả</span>
+                            </label>
+                            <label class="cursor-pointer relative">
+                                <input class="peer sr-only" name="status_filter" type="radio" value="used" />
+                                <span
+                                    class="block px-3 py-1.5 text-xs font-medium rounded text-slate-500 dark:text-slate-400 peer-checked:bg-green-100 dark:peer-checked:bg-green-900/30 peer-checked:text-green-700 dark:peer-checked:text-green-400 transition-colors">Đã
+                                    dùng</span>
+                            </label>
+                            <label class="cursor-pointer relative">
+                                <input class="peer sr-only" name="status_filter" type="radio" value="unused" />
+                                <span
+                                    class="block px-3 py-1.5 text-xs font-medium rounded text-slate-500 dark:text-slate-400 peer-checked:bg-blue-100 dark:peer-checked:bg-blue-900/30 peer-checked:text-primary dark:peer-checked:text-blue-400 transition-colors">Chưa
+                                    dùng</span>
+                            </label>
+                        </div>
 
-                                <td class="p-4 text-right">
-                                    <div class="flex flex-col items-end">
-                                        <span class="text-sm font-medium text-text-main dark:text-slate-100">
-                                            @item.Price.ToString("N0") ₫
-                                        </span>
-                                        <span class="text-xs text-text-secondary dark:text-slate-400">x @item.Quantity vé</span>
-                                    </div>
-                                </td>
+                        <button
+                            class="ml-auto lg:ml-0 flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg text-sm font-medium text-text-main dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                            <span class="hidden sm:inline">Export</span>
+                        </button>
+                    </div>
+                </div>
 
-                                <td class="p-4">
-                                    <div class="flex items-center gap-2 text-sm text-text-main dark:text-slate-300">
-                                        <span class="material-symbols-outlined text-[16px] text-slate-400">calendar_month</span>
-                                        @item.BookingDate.ToString("dd/MM/yyyy")
-                                    </div>
-                                </td>
-
-                                <td class="p-4 text-center">
-                                    <div class="flex justify-center">
-                                        <button class="relative group/qr">
-                                            <div class="w-8 h-8 rounded bg-white p-0.5 border border-slate-200">
-                                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=@item.QRCode" alt="QR" class="w-full h-full object-cover" />
-                                            </div>
-                                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/qr:block z-50 p-2 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-600">
-                                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=@item.QRCode" alt="QR Large" class="w-24 h-24" />
-                                            </div>
-                                        </button>
-                                    </div>
-                                </td>
-
-                                <td class="p-4">
-                                    @if (item.IsUsed)
-                                    {
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800/50">
-                                            <span class="material-symbols-outlined text-[14px]">check_circle</span>
-                                            Đã sử dụng
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                                            Chưa sử dụng
-                                        </span>
-                                    }
-                                </td>
-
-                                <td class="p-4 text-right">
-                                    <div class="flex items-center justify-end gap-1">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="p-1 text-slate-500 hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded transition-colors" title="Sửa">
-                                            <span class="material-symbols-outlined text-[16px]">edit</span>
-                                        </a>
-
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="p-1 text-slate-500 hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded transition-colors" title="Chi tiết">
-                                            <span class="material-symbols-outlined text-[16px]">visibility</span>
-                                        </a>
-
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="p-1 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors" title="Xóa">
-                                            <span class="material-symbols-outlined text-[16px]">delete</span>
-                                        </a>
-                                    </div>
-                                </td>
+                <div class="overflow-x-auto w-full">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr
+                                class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                                <th
+                                    class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[220px]">
+                                    Sự Kiện</th>
+                                <th
+                                    class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[120px]">
+                                    Loại Vé</th>
+                                <th
+                                    class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[240px]">
+                                    Khách Hàng</th>
+                                <th
+                                    class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[140px] text-right">
+                                    Giá / SL</th>
+                                <th
+                                    class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[140px]">
+                                    Ngày Đặt</th>
+                                <th
+                                    class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[80px] text-center">
+                                    QR</th>
+                                <th
+                                    class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[120px]">
+                                    Trạng Thái</th>
+                                <th
+                                    class="p-4 text-xs font-semibold text-text-secondary dark:text-slate-400 uppercase tracking-wider w-[120px] text-right">
+                                    Thao Tác</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                            @foreach (var item in Model)
+                            {
+                                <tr class="group hover:bg-blue-50/50 dark:hover:bg-slate-700/30 transition-colors">
+                                    <td class="p-4">
+                                        <div class="flex flex-col">
+                                            <span class="text-sm font-bold text-text-main dark:text-slate-100">
+                                                @Html.DisplayFor(modelItem => item.Event.Title)
+                                            </span>
+                                            <span
+                                                class="text-xs text-text-secondary dark:text-slate-400 flex items-center gap-1 mt-0.5">
+                                                <span class="material-symbols-outlined text-[12px]">location_on</span>
+                                                @(item.Event.Location ?? "N/A")
+                                            </span>
+                                        </div>
+                                    </td>
 
-            <div class="border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/20 p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-2 text-sm text-text-secondary dark:text-slate-400">
-                    <span>Hiển thị</span>
-                    <select class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded text-sm py-1 pl-2 pr-6 focus:ring-primary focus:border-primary">
-                        <option>10</option>
-                        <option>20</option>
-                        <option>50</option>
-                    </select>
-                    <span>kết quả</span>
+                                    <td class="p-4">
+                                        @{
+                                            var badgeColor = item.TicketType?.ToLower() switch
+                                            {
+                                                "vip" => "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300          border-purple-200",
+                                                "vvip" => "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300                 border-yellow-200",
+                                                "earlybird" => "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300                        border-green-200",
+                                                _ => "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300                               border-blue-200"
+                                            };
+                                        }
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border @badgeColor">
+                                            @Html.DisplayFor(modelItem => item.TicketType)
+                                        </span>
+                                    </td>
+
+                                    <td class="p-4">
+                                        <div class="flex flex-col">
+                                            <span
+                                                class="text-sm font-semibold text-text-main dark:text-slate-100">@item.CustomerName</span>
+                                            <span
+                                                class="text-xs text-text-secondary dark:text-slate-400">@item.CustomerEmail</span>
+                                        </div>
+                                    </td>
+
+                                    <td class="p-4 text-right">
+                                        <div class="flex flex-col items-end">
+                                            <span class="text-sm font-medium text-text-main dark:text-slate-100">
+                                                @item.Price.ToString("N0") ₫
+                                            </span>
+                                            <span class="text-xs text-text-secondary dark:text-slate-400">x @item.Quantity
+                                                vé</span>
+                                        </div>
+                                    </td>
+
+                                    <td class="p-4">
+                                        <div class="flex items-center gap-2 text-sm text-text-main dark:text-slate-300">
+                                            <span
+                                                class="material-symbols-outlined text-[16px] text-slate-400">calendar_month</span>
+                                            @item.BookingDate.ToString("dd/MM/yyyy")
+                                        </div>
+                                    </td>
+
+                                    <td class="p-4 text-center">
+                                        <div class="flex justify-center">
+                                            <button class="relative group/qr">
+                                                <div class="w-8 h-8 rounded bg-white p-0.5 border border-slate-200">
+                                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=@item.QRCode"
+                                                        alt="QR" class="w-full h-full object-cover" />
+                                                </div>
+                                                <div
+                                                    class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/qr:block z-50 p-2 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-600">
+                                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=@item.QRCode"
+                                                        alt="QR Large" class="w-24 h-24" />
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </td>
+
+                                    <td class="p-4">
+                                        @if (item.IsUsed)
+                                        {
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800/50">
+                                                <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                                Đã sử dụng
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                                Chưa sử dụng
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="p-4 text-right">
+                                        <div class="flex items-center justify-end gap-1">
+                                            <a asp-action="Edit" asp-route-id="@item.Id"
+                                                class="p-1 text-slate-500 hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded transition-colors"
+                                                title="Sửa">
+                                                <span class="material-symbols-outlined text-[16px]">edit</span>
+                                            </a>
+
+                                            <a asp-action="Details" asp-route-id="@item.Id"
+                                                class="p-1 text-slate-500 hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded transition-colors"
+                                                title="Chi tiết">
+                                                <span class="material-symbols-outlined text-[16px]">visibility</span>
+                                            </a>
+
+                                            <a asp-action="Delete" asp-route-id="@item.Id"
+                                                class="p-1 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+                                                title="Xóa">
+                                                <span class="material-symbols-outlined text-[16px]">delete</span>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
-                <div class="flex items-center gap-1">
-                    <button class="w-8 h-8 flex items-center justify-center rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50" disabled>
-                        <span class="material-symbols-outlined text-[18px]">chevron_left</span>
-                    </button>
-                    <button class="w-8 h-8 flex items-center justify-center rounded-md bg-primary text-white text-sm font-medium">1</button>
-                    <button class="w-8 h-8 flex items-center justify-center rounded-md border border-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 text-sm font-medium transition-colors">2</button>
-                    <span class="text-slate-400 text-sm px-1">...</span>
-                    <button class="w-8 h-8 flex items-center justify-center rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700">
-                        <span class="material-symbols-outlined text-[18px]">chevron_right</span>
-                    </button>
+
+                <div
+                    class="border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/20 p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-2 text-sm text-text-secondary dark:text-slate-400">
+                        <span>Hiển thị</span>
+                        <select
+                            class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded text-sm py-1 pl-2 pr-6 focus:ring-primary focus:border-primary">
+                            <option>10</option>
+                            <option>20</option>
+                            <option>50</option>
+                        </select>
+                        <span>kết quả</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button
+                            class="w-8 h-8 flex items-center justify-center rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50"
+                            disabled>
+                            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                        </button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center rounded-md bg-primary text-white text-sm font-medium">1</button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center rounded-md border border-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 text-sm font-medium transition-colors">2</button>
+                        <span class="text-slate-400 text-sm px-1">...</span>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700">
+                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>

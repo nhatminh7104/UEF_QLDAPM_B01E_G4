@@ -38,7 +38,8 @@
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
 
 <div class="flex-1 bg-background-light dark:bg-background-dark font-display text-text-main dark:text-slate-100 p-6">
     <div class="max-w-[1600px] mx-auto space-y-6">
@@ -46,29 +47,38 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
                 <h1 class="text-3xl font-black tracking-tight text-text-main dark:text-white">Danh Sách Đặt Tour</h1>
-                <p class="mt-1 text-sm text-text-secondary dark:text-slate-400">Quản lý tất cả các yêu cầu đặt tour và trạng thái xử lý.</p>
+                <p class="mt-1 text-sm text-text-secondary dark:text-slate-400">Quản lý tất cả các yêu cầu đặt tour và
+                    trạng thái xử lý.</p>
             </div>
-            <a asp-action="Create" class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary hover:bg-sky-600 text-white px-5 py-2.5 text-sm font-bold shadow-sm transition-all">
+            <a asp-action="Create"
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary hover:bg-sky-600 text-white px-5 py-2.5 text-sm font-bold shadow-sm transition-all">
                 <span class="material-symbols-outlined text-[20px]">add</span>
                 Thêm đặt tour mới
             </a>
         </div>
 
         <div class="grid grid-cols-1 gap-4 xl:grid-cols-4">
-            <div class="xl:col-span-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-surface-light dark:bg-surface-dark p-4 shadow-sm">
+            <div
+                class="xl:col-span-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-surface-light dark:bg-surface-dark p-4 shadow-sm">
                 <form method="get" asp-action="Index" class="flex flex-col gap-4 lg:flex-row lg:items-center">
 
                     <div class="relative flex-1">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">search</span>
-                        <input name="searchString" value="@ViewData["CurrentFilter"]" class="h-11 w-full rounded-lg border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-[#101c22] pl-10 pr-4 text-sm text-text-main dark:text-white placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" placeholder="Tìm tên khách, tên tour..." type="text" />
+                        <span
+                            class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">search</span>
+                        <input name="searchString" value="@ViewData["CurrentFilter"]"
+                            class="h-11 w-full rounded-lg border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-[#101c22] pl-10 pr-4 text-sm text-text-main dark:text-white placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                            placeholder="Tìm tên khách, tên tour..." type="text" />
                     </div>
 
                     <div class="relative min-w-[200px]">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">calendar_month</span>
-                        <input type="date" name="tourDate" value="@ViewBag.TourDate?.ToString("yyyy-MM-dd")" class="h-11 w-full rounded-lg border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-[#101c22] pl-10 pr-4 text-sm text-text-main dark:text-white placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
+                        <span
+                            class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">calendar_month</span>
+                        <input type="date" name="tourDate" value="@ViewBag.TourDate?.ToString("yyyy-MM-dd")"
+                            class="h-11 w-full rounded-lg border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-[#101c22] pl-10 pr-4 text-sm text-text-main dark:text-white placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
                     </div>
 
-                    <button type="submit" class="h-11 px-6 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                    <button type="submit"
+                        class="h-11 px-6 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
                         Lọc
                     </button>
 
@@ -76,22 +86,27 @@
                         @{
                             string GetTabClass(string status) => status == currentStatus
                             ? "bg-primary/10 text-primary font-bold"
-                            : "text-text-secondary dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium";
+                            : "text-text-secondary dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800       font-medium";
                         }
 
-                        <a asp-action="Index" class="whitespace-nowrap rounded-lg px-4 py-2.5 text-sm transition-colors @(string.IsNullOrEmpty(currentStatus) ? "bg-primary/10 text-primary font-bold" : "text-text-secondary dark:text-slate-400 hover:bg-slate-50 font-medium")">
+                        <a asp-action="Index"
+                            class="whitespace-nowrap rounded-lg px-4 py-2.5 text-sm transition-colors @(string.IsNullOrEmpty(currentStatus) ? "bg-primary/10 text-primary font-bold" : "text-text-secondary dark:text-slate-400 hover:bg-slate-50 font-medium")">
                             Tất cả
                         </a>
-                        <a asp-action="Index" asp-route-status="Pending" class="whitespace-nowrap rounded-lg px-4 py-2.5 text-sm transition-colors @GetTabClass("Pending")">
+                        <a asp-action="Index" asp-route-status="Pending"
+                            class="whitespace-nowrap rounded-lg px-4 py-2.5 text-sm transition-colors @GetTabClass("Pending")">
                             Chờ xác nhận
                         </a>
-                        <a asp-action="Index" asp-route-status="Confirmed" class="whitespace-nowrap rounded-lg px-4 py-2.5 text-sm transition-colors @GetTabClass("Confirmed")">
+                        <a asp-action="Index" asp-route-status="Confirmed"
+                            class="whitespace-nowrap rounded-lg px-4 py-2.5 text-sm transition-colors @GetTabClass("Confirmed")">
                             Đã xác nhận
                         </a>
-                        <a asp-action="Index" asp-route-status="Completed" class="whitespace-nowrap rounded-lg px-4 py-2.5 text-sm transition-colors @GetTabClass("Completed")">
+                        <a asp-action="Index" asp-route-status="Completed"
+                            class="whitespace-nowrap rounded-lg px-4 py-2.5 text-sm transition-colors @GetTabClass("Completed")">
                             Hoàn thành
                         </a>
-                        <a asp-action="Index" asp-route-status="Cancelled" class="whitespace-nowrap rounded-lg px-4 py-2.5 text-sm transition-colors @GetTabClass("Cancelled")">
+                        <a asp-action="Index" asp-route-status="Cancelled"
+                            class="whitespace-nowrap rounded-lg px-4 py-2.5 text-sm transition-colors @GetTabClass("Cancelled")">
                             Đã hủy
                         </a>
                     </div>
@@ -99,10 +114,12 @@
             </div>
         </div>
 
-        <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-surface-light dark:bg-surface-dark shadow-sm overflow-hidden">
+        <div
+            class="rounded-xl border border-slate-200 dark:border-slate-700 bg-surface-light dark:bg-surface-dark shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
-                    <thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase text-text-secondary dark:text-slate-400 font-semibold border-b border-slate-200 dark:border-slate-700">
+                    <thead
+                        class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase text-text-secondary dark:text-slate-400 font-semibold border-b border-slate-200 dark:border-slate-700">
                         <tr>
                             <th class="px-6 py-4 w-[280px]">Thông tin Tour</th>
                             <th class="px-6 py-4">Khách Hàng</th>
@@ -122,7 +139,8 @@
                                         <span class="font-bold text-text-main dark:text-white text-base mb-1">
                                             @(item.Tour?.TourName ?? "Tour không tồn tại")
                                         </span>
-                                        <div class="flex items-center gap-1.5 text-xs text-text-secondary dark:text-slate-400">
+                                        <div
+                                            class="flex items-center gap-1.5 text-xs text-text-secondary dark:text-slate-400">
                                             <span class="material-symbols-outlined text-[14px]">calendar_today</span>
                                             @item.TourDate.ToString("dd/MM/yyyy") - @item.TourDate.ToString("HH:mm")
                                         </div>
@@ -131,11 +149,14 @@
 
                                 <td class="px-6 py-4 align-top">
                                     <div class="flex items-center gap-3">
-                                        <div class="h-9 w-9 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500 font-bold text-xs">
-                                            @(string.IsNullOrEmpty(item.CustomerName) ? "KH" : item.CustomerName.Substring(0, 1).ToUpper())
+                                        <div
+                                            class="h-9 w-9 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500 font-bold text-xs">
+                                            @(string.IsNullOrEmpty(item.CustomerName) ? "KH" :
+                                                                                    item.CustomerName.Substring(0, 1).ToUpper())
                                         </div>
                                         <div>
-                                            <div class="font-semibold text-text-main dark:text-white">@item.CustomerName</div>
+                                            <div class="font-semibold text-text-main dark:text-white">@item.CustomerName
+                                            </div>
                                             <div class="text-xs text-text-secondary">Khách đặt</div>
                                         </div>
                                     </div>
@@ -147,7 +168,8 @@
                                         {
                                             // Giả sử ContactInfo chứa SĐT hoặc Email, hiển thị chung
                                             <div class="flex items-center gap-2 text-text-secondary dark:text-slate-300">
-                                                <span class="material-symbols-outlined text-[14px] text-slate-400">contact_phone</span>
+                                                <span
+                                                    class="material-symbols-outlined text-[14px] text-slate-400">contact_phone</span>
                                                 @item.ContactInfo
                                             </div>
                                         }
@@ -159,7 +181,8 @@
                                 </td>
 
                                 <td class="px-6 py-4 align-top text-center">
-                                    <span class="inline-flex items-center rounded-md bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-bold text-slate-700 dark:text-slate-300">
+                                    <span
+                                        class="inline-flex items-center rounded-md bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-bold text-slate-700 dark:text-slate-300">
                                         @item.NumberOfPeople Khách
                                     </span>
                                 </td>
@@ -174,10 +197,10 @@
                                     @{
                                         var statusStyle = item.Status switch
                                         {
-                                            "Confirmed" => "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800",
-                                            "Pending" => "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800",
-                                            "Cancelled" => "bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-800",
-                                            "Completed" => "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700",
+                                            "Confirmed" => "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20             dark:text-emerald-400 dark:border-emerald-800",
+                                            "Pending" => "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/20                               dark:text-amber-400 dark:border-amber-800",
+                                            "Cancelled" => "bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-900/20                     dark:text-rose-400 dark:border-rose-800",
+                                            "Completed" => "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800           dark:text-slate-400 dark:border-slate-700",
                                             _ => "bg-slate-50 text-slate-500 border-slate-200"
                                         };
                                         var statusLabel = item.Status switch
@@ -197,7 +220,8 @@
                                             _ => "bg-slate-400"
                                         };
                                     }
-                                    <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border @statusStyle">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border @statusStyle">
                                         <span class="h-1.5 w-1.5 rounded-full @dotColor"></span>
                                         @statusLabel
                                     </span>
@@ -205,15 +229,21 @@
 
                                 <td class="p-4 text-right">
                                     <div class="flex items-center justify-end gap-1">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="p-1 text-slate-500 hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded transition-colors" title="Sửa">
+                                        <a asp-action="Edit" asp-route-id="@item.Id"
+                                            class="p-1 text-slate-500 hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded transition-colors"
+                                            title="Sửa">
                                             <span class="material-symbols-outlined text-[16px]">edit</span>
                                         </a>
 
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="p-1 text-slate-500 hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded transition-colors" title="Chi tiết">
+                                        <a asp-action="Details" asp-route-id="@item.Id"
+                                            class="p-1 text-slate-500 hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded transition-colors"
+                                            title="Chi tiết">
                                             <span class="material-symbols-outlined text-[16px]">visibility</span>
                                         </a>
 
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="p-1 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors" title="Xóa">
+                                        <a asp-action="Delete" asp-route-id="@item.Id"
+                                            class="p-1 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+                                            title="Xóa">
                                             <span class="material-symbols-outlined text-[16px]">delete</span>
                                         </a>
                                     </div>
@@ -224,7 +254,8 @@
                 </table>
             </div>
 
-            <div class="flex items-center justify-between border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 px-6 py-4">
+            <div
+                class="flex items-center justify-between border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 px-6 py-4">
                 <div class="text-xs text-text-secondary dark:text-slate-400">
                     Hiển thị <span class="font-bold text-text-main dark:text-white">@Model.Count()</span> kết quả
                 </div>

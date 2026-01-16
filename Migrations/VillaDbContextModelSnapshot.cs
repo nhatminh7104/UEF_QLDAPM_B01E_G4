@@ -614,15 +614,7 @@ namespace VillaManagementWeb.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("RoomImage");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ImageUrl = "/images/rooms/villa1-1.jpg",
-                            RoomId = 1
-                        });
+                    b.ToTable("RoomImages");
                 });
 
             modelBuilder.Entity("VillaManagementWeb.Models.Ticket", b =>
@@ -729,11 +721,11 @@ namespace VillaManagementWeb.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Khám phá vẻ đẹp hoang sơ của núi rừng Ba Vì cùng hướng dẫn viên bản địa.",
+                            Description = "Khám phá vẻ đẹp núi rừng.",
                             DurationHours = 6,
                             ImageUrl = "/images/tours/trekking-bavi.jpg",
                             PricePerPerson = 500000m,
-                            TourName = "Trekking Rừng Quốc Gia Ba Vì"
+                            TourName = "Trekking Ba Vì"
                         });
                 });
 
@@ -775,6 +767,7 @@ namespace VillaManagementWeb.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalPrice")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("TourDate")
@@ -926,14 +919,14 @@ namespace VillaManagementWeb.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("VillaManagementWeb.Models.Booking", b =>
+            modelBuilder.Entity("VillaManagementWeb.Models.RoomBooking", b =>
                 {
                     b.HasOne("VillaManagementWeb.Models.Customer", "Customer")
                         .WithMany("Bookings")
                         .HasForeignKey("CustomerId");
 
                     b.HasOne("VillaManagementWeb.Models.Room", "Room")
-                        .WithMany("Bookings")
+                        .WithMany("RoomBookings")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1026,7 +1019,7 @@ namespace VillaManagementWeb.Migrations
 
             modelBuilder.Entity("VillaManagementWeb.Models.Room", b =>
                 {
-                    b.Navigation("Bookings");
+                    b.Navigation("RoomBookings");
 
                     b.Navigation("RoomImages");
                 });

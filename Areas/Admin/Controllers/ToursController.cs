@@ -22,8 +22,13 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        // GET: Admin/Tours
         public async Task<IActionResult> Index()
+        {
+            return View(await _tourService.GetAllToursAsync());
+        }
+
+
+        public async Task<IActionResult> Details(int id)
         {
             return View(await _tourService.GetAllToursAsync());
         }
@@ -73,12 +78,11 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             return View(tour);
         }
 
-        // GET: Admin/Tours/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
-            var tour = await _tourService.GetTourByIdAsync(id.Value);
+            var tour = await _tourService.GetTourByIdAsync(id);
             if (tour == null) return NotFound();
+
             return View(tour);
         }
 
@@ -87,7 +91,6 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Tour tour, IFormFile? imageFile)
         {
-
             if (id != tour.Id) return NotFound();
 
             if (ModelState.IsValid)

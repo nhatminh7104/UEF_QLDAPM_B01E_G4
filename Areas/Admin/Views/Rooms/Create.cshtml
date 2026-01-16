@@ -1,230 +1,290 @@
 ﻿@model VillaManagementWeb.Models.Room
+
 @{
-    ViewData["Title"] = "Thêm Mới Phòng";
+    ViewData["Title"] = "Thêm phòng mới";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="page-inner py-5" style="background-color: #f6f7f8;">
-    <div class="container">
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb" style="background: transparent; padding: 0;">
-                <li class="breadcrumb-item"><a href="#" class="text-secondary">Trang chủ</a></li>
-                <li class="breadcrumb-item"><a asp-action="Index" class="text-secondary">Danh sách phòng</a></li>
-                <li class="breadcrumb-item active text-primary fw-bold" aria-current="page">Thêm mới</li>
-            </ol>
-        </nav>
+<div class="container-fluid">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Thông tin phòng mới</div>
+                        </div>
+                        <div class="card-body">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <form asp-action="Create" enctype="multipart/form-data">
-            <input type="hidden" name="coverIndex" id="coverIndex" value="0" />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <form asp-action="Create" enctype="multipart/form-data">
+                                <input type="hidden" name="coverIndex" id="coverIndex" value="0" />
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
-                <div>
-                    <h1 class="fw-bold mb-1" style="font-size: 1.8rem;">Thêm Mới Phòng</h1>
-                    <p class="text-muted mb-0">Điền thông tin chi tiết để tạo phòng mới trong hệ thống.</p>
-                </div>
-                <div class="d-flex gap-2">
-                    <a asp-action="Index" class="btn btn-white border px-4">Hủy bỏ</a>
-                    <button type="submit" class="btn btn-primary px-4 d-flex align-items-center gap-2">
-                        <i class="fas fa-save"></i> Lưu thông tin
-                    </button>
-                </div>
-            </div>
+                                <div class="form-group">
+                                    <label asp-for="Type">Loại phòng</label>
+                                    <select asp-for="Type" class="form-control">
+                                        <option value="Villa">Villa</option>
+                                        <option value="Bungalow">Bungalow</option>
+                                        <option value="Suite">Suite</option>
+                                        <option value="Standard">Standard</option>
+                                    </select>
+                                    <span asp-validation-for="Type" class="text-danger"></span>
+                                </div>
 
-            <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
-                <div class="card-header bg-light border-bottom py-3">
-                    <h5 class="card-title mb-0 fw-bold text-dark d-flex align-items-center gap-2">
-                        <i class="fas fa-info-circle text-primary"></i> Thông tin cơ bản
-                    </h5>
-                </div>
-                <div class="card-body p-4 p-lg-5">
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Số phòng (Room No.) <span class="text-danger">*</span></label>
-                            <input asp-for="RoomNumber" class="form-control py-2 shadow-none" placeholder="VD: A-101" />
-                            <span asp-validation-for="RoomNumber" class="text-danger small"></span>
+                                <div class="form-group">
+                                    <label asp-for="PricePerNight">Giá mỗi đêm (VNĐ)</label>
+                                    <input asp-for="PricePerNight" type="number" class="form-control" />
+                                    <span asp-validation-for="PricePerNight" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="ImageUrl">Ảnh đại diện phòng</label>
+                                    <input type="file" name="imageFile" class="form-control-file" />
+                                    <small class="form-text text-muted">Chọn ảnh minh họa cho phòng.</small>
+                                </div>
                         </div>
+
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Loại phòng <span class="text-danger">*</span></label>
-                            <select asp-for="Type" class="form-select py-2 shadow-none">
-                                <option disabled selected>Chọn loại phòng</option>
-                                <option value="Red Rose House">Red Rose House - Rose House</option>
-                                <option value="White Rose House">White Rose House - Rose House</option>
-                                <option value="Pink Rose House">Pink Rose House - Rose House</option>
-                                <option value="Forest Room">Forest Room - Wooden House</option>
-                                <option value="Deluxe Roome">Deluxe Room - Wooden House</option>
-                                <option value="Family Room">Family Room - Wooden House</option>
-                            </select>
-                            <span asp-validation-for="Type" class="text-danger small"></span>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Danh mục (Category) <span class="text-danger">*</span></label>
-                            <select asp-for="RoomCategoryId" class="form-select" asp-items="ViewBag.RoomCategoryId">
-                                <option value="">-- Chọn danh mục --</option>
-                            </select>
-                            <span asp-validation-for="RoomCategoryId" class="text-danger small"></span>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Giá mỗi đêm <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <input asp-for="PricePerNight" class="form-control py-2 shadow-none" placeholder="0" />
-                                <span class="input-group-text bg-light border-start-0 text-muted">VND</span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Diện tích</label>
-                            <div class="input-group">
-                                <input asp-for="SquareFootage" class="form-control py-2 shadow-none" placeholder="0" />
-                                <span class="input-group-text bg-light border-start-0 text-muted">m²</span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Sức chứa (Người lớn)</label>
-                            <div class="d-flex align-items-center border rounded-lg overflow-hidden" style="max-width: 150px;">
-                                <button type="button" class="btn btn-light border-0 px-3" onclick="this.parentNode.querySelector('input').stepDown()">-</button>
-                                <input asp-for="Capacity" class="form-control border-0 text-center shadow-none p-0" value="2" min="1" />
-                                <button type="button" class="btn btn-light border-0 px-3" onclick="this.parentNode.querySelector('input').stepUp()">+</button>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Hạng phòng (Sao)</label>
-                            <div class="d-flex align-items-center gap-2 text-warning" style="font-size: 1.2rem;">
-                                <input type="hidden" asp-for="RatingStars" id="ratingValue" value="4" />
-                                <i class="fas fa-star cursor-pointer star-item" data-value="1"></i>
-                                <i class="fas fa-star cursor-pointer star-item" data-value="2"></i>
-                                <i class="fas fa-star cursor-pointer star-item" data-value="3"></i>
-                                <i class="fas fa-star cursor-pointer star-item" data-value="4"></i>
-                                <i class="far fa-star cursor-pointer star-item" data-value="5"></i>
-                                <span class="ms-2 text-muted small" id="ratingText">(4.0)</span>
-                            </div>
-                        </div>
-                        <div class="row g-4">
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Số phòng ngủ</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-door-open"></i></span>
-                                    <input asp-for="Bedrooms" class="form-control" type="number" min="1" placeholder="VD: 1" />
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label asp-for="Capacity">Sức chứa (Người)</label>
+                                        <input asp-for="Capacity" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label asp-for="SquareFootage">Diện tích (m²)</label>
+                                        <input asp-for="SquareFootage" class="form-control" />
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Số giường</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-bed"></i></span>
-                                    <input asp-for="Beds" class="form-control" type="number" min="1" placeholder="VD: 2" />
+                            <div class="form-group">
+                                <label>Tiện ích phòng</label>
+                                <div class="d-flex flex-wrap mt-2">
+                                    <div class="form-check me-3">
+                                        <label class="form-check-label">
+                                            <input asp-for="HasWifi" class="form-check-input" type="checkbox">
+                                            <span class="form-check-sign">Wifi miễn phí</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check me-3">
+                                        <label class="form-check-label">
+                                            <input asp-for="HasBreakfast" class="form-check-input" type="checkbox">
+                                            <span class="form-check-sign">Bữa sáng</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check me-3">
+                                        <label class="form-check-label">
+                                            <input asp-for="HasPool" class="form-check-input" type="checkbox">
+                                            <span class="form-check-sign">Hồ bơi</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input asp-for="HasTowel" class="form-check-input" type="checkbox">
+                                            <span class="form-check-sign">Khăn tắm</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Trẻ em tối đa</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-child"></i></span>
-                                    <input asp-for="CapacityChildren" class="form-control" type="number" min="0" placeholder="VD: 1" />
-                                </div>
+                            <div class="form-check mt-3">
+                                <label class="form-check-label">
+                                    <input asp-for="IsActive" class="form-check-input" type="checkbox">
+                                    <span class="form-check-sign fw-bold text-primary">Kích hoạt kinh
+                                        doanh</span>
+                                </label>
                             </div>
                         </div>
-                        <div class="col-12 mt-4">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input shadow-none" type="checkbox" asp-for="IsActive" id="statusToggle" checked>
-                                <label class="form-check-label fw-bold ms-2" for="statusToggle">Trạng thái hoạt động</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" asp-for="HasWifi">
-                                <label class="form-check-label">Wifi miễn phí</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" asp-for="HasBreakfast">
-                                <label class="form-check-label">Bữa sáng miễn phí</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" asp-for="HasPool">
-                                <label class="form-check-label">Hồ bơi</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" asp-for="HasTowel">
-                                <label class="form-check-label">Khăn tắm</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
-                <div class="card-body p-4 p-lg-5">
-                    <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
-                        <i class="fas fa-file-alt text-primary"></i> Mô tả chi tiết
-                    </h5>
-                    <div class="form-group mb-5 p-0">
-                        <textarea id="Description" asp-for="Description" class="form-control"></textarea>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label asp-for="Description">Mô tả chi tiết</label>
+                                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
-
-                    <h5 class="fw-bold mb-4 d-flex align-items-center gap-2 border-top pt-5">
-                        <i class="fas fa-images text-primary"></i> Thư viện ảnh
-                    </h5>
-                    <div class="upload-area border-2 border-dashed rounded-3 p-5 text-center bg-light cursor-pointer mb-3" onclick="document.getElementById('imageInput').click()">
-                        <div class="mb-3"><i class="fas fa-cloud-upload-alt fa-3x text-primary"></i></div>
-                        <p class="mb-1 fw-bold">Kéo thả hình ảnh vào đây hoặc <span class="text-primary">tải lên</span></p>
-                        <p class="text-muted small">Hỗ trợ JPG, PNG, WEBP (Tối đa 5MB)</p>
-                        <input type="file" id="imageInput" name="imageFiles" class="d-none" accept="image/*" onchange="previewImages(this)" multiple />
-                    </div>
-                    <div id="imagePreviewContainer" class="row g-3">
-                    </div>
-                </div>
             </div>
+            <div class="card-action">
+                <button type="submit" class="btn btn-success">
+                    <span class="btn-label"><i class="fa fa-check"></i></span> Lưu phòng
+                </button>
+                <a asp-action="Index" class="btn btn-danger">Hủy bỏ</a>
+            </div>
+        </div>
         </form>
     </div>
+
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-header bg-light border-bottom py-3">
+            <h5 class="card-title mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+                <i class="fas fa-info-circle text-primary"></i> Thông tin cơ bản
+            </h5>
+        </div>
+        <div class="card-body p-4 p-lg-5">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Số phòng (Room No.) <span class="text-danger">*</span></label>
+                    <input asp-for="RoomNumber" class="form-control py-2 shadow-none" placeholder="VD: A-101" />
+                    <span asp-validation-for="RoomNumber" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Loại phòng <span class="text-danger">*</span></label>
+                    <select asp-for="Type" class="form-select py-2 shadow-none">
+                        <option disabled selected>Chọn loại phòng</option>
+                        <option value="Red Rose House">Red Rose House - Rose House</option>
+                        <option value="White Rose House">White Rose House - Rose House</option>
+                        <option value="Pink Rose House">Pink Rose House - Rose House</option>
+                        <option value="Forest Room">Forest Room - Wooden House</option>
+                        <option value="Deluxe Roome">Deluxe Room - Wooden House</option>
+                        <option value="Family Room">Family Room - Wooden House</option>
+                    </select>
+                    <span asp-validation-for="Type" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Danh mục (Category) <span class="text-danger">*</span></label>
+                    <select asp-for="RoomCategoryId" class="form-select" asp-items="ViewBag.RoomCategoryId">
+                        <option value="">-- Chọn danh mục --</option>
+                    </select>
+                    <span asp-validation-for="RoomCategoryId" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Giá mỗi đêm <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <input asp-for="PricePerNight" class="form-control py-2 shadow-none" placeholder="0" />
+                        <span class="input-group-text bg-light border-start-0 text-muted">VND</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Diện tích</label>
+                    <div class="input-group">
+                        <input asp-for="SquareFootage" class="form-control py-2 shadow-none" placeholder="0" />
+                        <span class="input-group-text bg-light border-start-0 text-muted">m²</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Sức chứa (Người lớn)</label>
+                    <div class="d-flex align-items-center border rounded-lg overflow-hidden" style="max-width: 150px;">
+                        <button type="button" class="btn btn-light border-0 px-3"
+                            onclick="this.parentNode.querySelector('input').stepDown()">-</button>
+                        <input asp-for="Capacity" class="form-control border-0 text-center shadow-none p-0" value="2"
+                            min="1" />
+                        <button type="button" class="btn btn-light border-0 px-3"
+                            onclick="this.parentNode.querySelector('input').stepUp()">+</button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Hạng phòng (Sao)</label>
+                    <div class="d-flex align-items-center gap-2 text-warning" style="font-size: 1.2rem;">
+                        <input type="hidden" asp-for="RatingStars" id="ratingValue" value="4" />
+                        <i class="fas fa-star cursor-pointer star-item" data-value="1"></i>
+                        <i class="fas fa-star cursor-pointer star-item" data-value="2"></i>
+                        <i class="fas fa-star cursor-pointer star-item" data-value="3"></i>
+                        <i class="fas fa-star cursor-pointer star-item" data-value="4"></i>
+                        <i class="far fa-star cursor-pointer star-item" data-value="5"></i>
+                        <span class="ms-2 text-muted small" id="ratingText">(4.0)</span>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Số phòng ngủ</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-door-open"></i></span>
+                            <input asp-for="Bedrooms" class="form-control" type="number" min="1" placeholder="VD: 1" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Số giường</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-bed"></i></span>
+                            <input asp-for="Beds" class="form-control" type="number" min="1" placeholder="VD: 2" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Trẻ em tối đa</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-child"></i></span>
+                            <input asp-for="CapacityChildren" class="form-control" type="number" min="0"
+                                placeholder="VD: 1" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 mt-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input shadow-none" type="checkbox" asp-for="IsActive" id="statusToggle"
+                            checked>
+                        <label class="form-check-label fw-bold ms-2" for="statusToggle">Trạng thái hoạt động</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" asp-for="HasWifi">
+                        <label class="form-check-label">Wifi miễn phí</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" asp-for="HasBreakfast">
+                        <label class="form-check-label">Bữa sáng miễn phí</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" asp-for="HasPool">
+                        <label class="form-check-label">Hồ bơi</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" asp-for="HasTowel">
+                        <label class="form-check-label">Khăn tắm</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-body p-4 p-lg-5">
+            <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                <i class="fas fa-file-alt text-primary"></i> Mô tả chi tiết
+            </h5>
+            <div class="form-group mb-5 p-0">
+                <textarea id="Description" asp-for="Description" class="form-control"></textarea>
+            </div>
+
+            <h5 class="fw-bold mb-4 d-flex align-items-center gap-2 border-top pt-5">
+                <i class="fas fa-images text-primary"></i> Thư viện ảnh
+            </h5>
+            <div class="upload-area border-2 border-dashed rounded-3 p-5 text-center bg-light cursor-pointer mb-3"
+                onclick="document.getElementById('imageInput').click()">
+                <div class="mb-3"><i class="fas fa-cloud-upload-alt fa-3x text-primary"></i></div>
+                <p class="mb-1 fw-bold">Kéo thả hình ảnh vào đây hoặc <span class="text-primary">tải lên</span></p>
+                <p class="text-muted small">Hỗ trợ JPG, PNG, WEBP (Tối đa 5MB)</p>
+                <input type="file" id="imageInput" name="imageFiles" class="d-none" accept="image/*"
+                    onchange="previewImages(this)" multiple />
+            </div>
+            <div id="imagePreviewContainer" class="row g-3">
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
 </div>
 
-<style>
-    .cursor-pointer {
-        cursor: pointer;
-    }
-
-    .form-control:focus, .form-select:focus {
-        border-color: #13a4ec;
-    }
-
-    .upload-area:hover {
-        border-color: #13a4ec;
-        background-color: #f0f9ff !important;
-    }
-
-    .btn-white {
-        background-color: white;
-        color: #333;
-    }
-
-        .btn-white:hover {
-            background-color: #f8f9fa;
-        }
-
-    .form-switch .form-check-input {
-        width: 3em;
-        height: 1.5em;
-        cursor: pointer;
-    }
-
-        .form-switch .form-check-input:checked {
-            background-color: #13a4ec;
-            border-color: #13a4ec;
-        }
-</style>
-
 @section Scripts {
-<partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
 
     <script>
-                // Biến toàn cục để lưu trữ danh sách file thực tế sẽ gửi lên server
-                // 1. Hàm vẽ lại toàn bộ preview dựa trên những gì đang có trong thẻ input
-                // Khởi tạo bộ nhớ tạm để giữ tất cả file qua nhiều lần chọn
+        // Biến toàn cục để lưu trữ danh sách file thực tế sẽ gửi lên server
+        // 1. Hàm vẽ lại toàn bộ preview dựa trên những gì đang có trong thẻ input
+        // Khởi tạo bộ nhớ tạm để giữ tất cả file qua nhiều lần chọn
         let allFilesDT = new DataTransfer();
 
         function previewImages(input) {
@@ -244,7 +304,7 @@
             renderPreview();
         }
 
-                // Thay thế đoạn script cũ trong Create.cshtml bằng đoạn này
+        // Thay thế đoạn script cũ trong Create.cshtml bằng đoạn này
         function renderPreview() {
             const container = document.getElementById('imagePreviewContainer');
             container.innerHTML = '';
@@ -258,23 +318,23 @@
                 reader.onload = function (e) {
                     const isCover = fileIndex === currentCoverIndex;
                     const html = `
-                        <div class="col-md-3 col-6 mb-3 image-item">
-                            <div class="position-relative rounded overflow-hidden shadow-sm border ${isCover ? 'border-primary border-3' : ''}" style="aspect-ratio: 4/3;">
-                                <img src="${e.target.result}" class="w-100 h-100 object-fit-cover" />
+                                    <div class="col-md-3 col-6 mb-3 image-item">
+                                        <div class="position-relative rounded overflow-hidden shadow-sm border ${isCover ? 'border-primary border-3' : ''}" style="aspect-ratio: 4/3;">
+                                            <img src="${e.target.result}" class="w-100 h-100 object-fit-cover" />
 
-                                <span class="position-absolute top-0 start-0 m-2 badge ${isCover ? 'bg-primary' : 'bg-secondary cursor-pointer'}"
-                                      onclick="setAsCover(${fileIndex})">
-                                    ${isCover ? 'COVER' : 'LÀM ĐẠI DIỆN'}
-                                </span>
+                                            <span class="position-absolute top-0 start-0 m-2 badge ${isCover ? 'bg-primary' : 'bg-secondary cursor-pointer'}"
+                                                  onclick="setAsCover(${fileIndex})">
+                                                ${isCover ? 'COVER' : 'LÀM ĐẠI DIỆN'}
+                                            </span>
 
-                                <div class="position-absolute top-0 end-0 m-2">
-                                    <button type="button" class="btn btn-sm btn-danger p-1 rounded-circle shadow"
-                                            onclick="removeImage(${fileIndex})">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>`;
+                                            <div class="position-absolute top-0 end-0 m-2">
+                                                <button type="button" class="btn btn-sm btn-danger p-1 rounded-circle shadow"
+                                                        onclick="removeImage(${fileIndex})">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>`;
                     container.insertAdjacentHTML('beforeend', html);
                 };
                 reader.readAsDataURL(files[i]);
@@ -313,24 +373,23 @@
         }
 
         // 2. Xử lý chọn Rating Star bằng click chuột
-        $(document).ready(function() {
-            $('.star-item').on('click', function() {
+        $(document).ready(function () {
+            $('.star-item').on('click', function () {
                 const val = $(this).data('value');
                 $('#ratingValue').val(val);
                 $('#ratingText').text(`(${val}.0)`);
 
-                $('.star-item').each(function(index) {
+                $('.star-item').each(function (index) {
                     if (index < val) {
                         $(this).removeClass('far').addClass('fas');
                     } else {
-                        $(this).removeClass('fas').addClass('far'); 
+                        $(this).removeClass('fas').addClass('far');
                     }
                 });
             });
         });
     </script>
     @{
-        await Html.RenderPartialAsync("_Summernote", null,
-            new ViewDataDictionary(ViewData) { { "height", 250 }, { "selector", "#Description" } });
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

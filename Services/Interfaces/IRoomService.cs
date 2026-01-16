@@ -3,7 +3,7 @@ using VillaManagementWeb.ViewModels;
 
 namespace VillaManagementWeb.Services.Interfaces
 {
-    public interface IRoomService
+    public interface IRoomsService
     {
         Task<IEnumerable<Room>> GetAllRoomsAsync();
         Task<Room?> GetRoomByIdAsync(int id);

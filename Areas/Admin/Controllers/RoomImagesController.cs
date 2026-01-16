@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using VillaManagementWeb.Data;
 using VillaManagementWeb.Models;
+using VillaManagementWeb.Admin.Services.Interfaces;
 
 namespace VillaManagementWeb.Areas.Admin.Controllers
 {
@@ -11,27 +10,31 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class RoomImagesController : Controller
     {
-        private readonly VillaDbContext _context;
-        private readonly IWebHostEnvironment _hostEnvironment; // Cần cái này để xử lý file
+        private readonly IRoomImagesService _imageService;
+        private readonly IRoomsService _roomService;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public RoomImagesController(VillaDbContext context, IWebHostEnvironment hostEnvironment)
+        public RoomImagesController(
+            IRoomImagesService imageService,
+            IRoomsService roomService,
+            IWebHostEnvironment hostEnvironment)
         {
-            _context = context;
+            _imageService = imageService;
+            _roomService = roomService;
             _hostEnvironment = hostEnvironment;
         }
 
         // GET: Admin/RoomImages
         public async Task<IActionResult> Index()
         {
-            var images = await _context.RoomImage.Include(r => r.Room).ToListAsync();
-            return View(images);
+            return View(await _imageService.GetAllImagesAsync());
         }
 
         // GET: Admin/RoomImages/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            // Hiển thị tên phòng thay vì chỉ ID
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "RoomNumber");
+            var rooms = await _roomService.GetAllRoomsAsync();
+            ViewData["RoomId"] = new SelectList(rooms, "Id", "RoomName");
             return View();
         }
 
@@ -40,50 +43,48 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RoomImage roomImage, IFormFile? imageFile)
         {
-            // Bỏ qua validate ImageUrl vì ta sẽ gán nó sau khi upload
             ModelState.Remove("ImageUrl");
             ModelState.Remove("Room");
 
             if (ModelState.IsValid)
             {
-                if (imageFile != null)
-                {
-                    // Logic upload ảnh
-                    string wwwRootPath = _hostEnvironment.WebRootPath;
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-                    string path = Path.Combine(wwwRootPath, "images", "rooms");
-
-                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
-                    using (var fileStream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
-                    {
-                        await imageFile.CopyToAsync(fileStream);
-                    }
-
-                    roomImage.ImageUrl = "/images/rooms/" + fileName;
-
-                    _context.Add(roomImage);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                else
+                if (imageFile == null)
                 {
                     ModelState.AddModelError("ImageUrl", "Vui lòng chọn file ảnh.");
                 }
+                else
+                {
+                    string wwwRootPath = _hostEnvironment.WebRootPath;
+                    string fileName = Guid.NewGuid() + Path.GetExtension(imageFile.FileName);
+                    string folderPath = Path.Combine(wwwRootPath, "images", "rooms");
+
+                    if (!Directory.Exists(folderPath))
+                        Directory.CreateDirectory(folderPath);
+
+                    string fullPath = Path.Combine(folderPath, fileName);
+                    using var stream = new FileStream(fullPath, FileMode.Create);
+                    await imageFile.CopyToAsync(stream);
+
+                    roomImage.ImageUrl = "/images/rooms/" + fileName;
+
+                    await _imageService.CreateImageAsync(roomImage);
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "RoomNumber", roomImage.RoomId);
+
+            var rooms = await _roomService.GetAllRoomsAsync();
+            ViewData["RoomId"] = new SelectList(rooms, "Id", "RoomName", roomImage.RoomId);
             return View(roomImage);
         }
 
         // GET: Admin/RoomImages/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
-
-            var roomImage = await _context.RoomImage.FindAsync(id);
+            var roomImage = await _imageService.GetImageByIdAsync(id);
             if (roomImage == null) return NotFound();
 
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "RoomNumber", roomImage.RoomId);
+            var rooms = await _roomService.GetAllRoomsAsync();
+            ViewData["RoomId"] = new SelectList(rooms, "Id", "RoomName", roomImage.RoomId);
             return View(roomImage);
         }
 
@@ -95,60 +96,53 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
             if (id != roomImage.Id) return NotFound();
 
             ModelState.Remove("Room");
-            ModelState.Remove("ImageUrl"); // Có thể giữ ảnh cũ
+            ModelState.Remove("ImageUrl");
 
             if (ModelState.IsValid)
             {
-                try
+                var imageInDb = await _imageService.GetImageByIdAsync(id);
+                if (imageInDb == null) return NotFound();
+
+                if (imageFile != null)
                 {
-                    var imageInDb = await _context.RoomImage.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-                    if (imageInDb == null) return NotFound();
+                    string wwwRootPath = _hostEnvironment.WebRootPath;
 
-                    // Nếu có upload ảnh mới -> thay thế
-                    if (imageFile != null)
+                    if (!string.IsNullOrEmpty(imageInDb.ImageUrl))
                     {
-                        string wwwRootPath = _hostEnvironment.WebRootPath;
-                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-                        string path = Path.Combine(wwwRootPath, "images", "rooms");
-
-                        // Xóa ảnh cũ nếu có
-                        if (!string.IsNullOrEmpty(imageInDb.ImageUrl))
-                        {
-                            var oldPath = Path.Combine(wwwRootPath, imageInDb.ImageUrl.TrimStart('/'));
-                            if (System.IO.File.Exists(oldPath)) System.IO.File.Delete(oldPath);
-                        }
-
-                        using (var fileStream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
-                        {
-                            await imageFile.CopyToAsync(fileStream);
-                        }
-                        roomImage.ImageUrl = "/images/rooms/" + fileName;
-                    }
-                    else
-                    {
-                        // Giữ nguyên ảnh cũ
-                        roomImage.ImageUrl = imageInDb.ImageUrl;
+                        string oldPath = Path.Combine(wwwRootPath, imageInDb.ImageUrl.TrimStart('/'));
+                        if (System.IO.File.Exists(oldPath))
+                            System.IO.File.Delete(oldPath);
                     }
 
-                    _context.Update(roomImage);
-                    await _context.SaveChangesAsync();
+                    string fileName = Guid.NewGuid() + Path.GetExtension(imageFile.FileName);
+                    string folderPath = Path.Combine(wwwRootPath, "images", "rooms");
+
+                    if (!Directory.Exists(folderPath))
+                        Directory.CreateDirectory(folderPath);
+
+                    using var stream = new FileStream(Path.Combine(folderPath, fileName), FileMode.Create);
+                    await imageFile.CopyToAsync(stream);
+
+                    roomImage.ImageUrl = "/images/rooms/" + fileName;
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!_context.RoomImage.Any(e => e.Id == roomImage.Id)) return NotFound();
-                    else throw;
+                    roomImage.ImageUrl = imageInDb.ImageUrl;
                 }
+
+                await _imageService.UpdateImageAsync(roomImage);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "Id", "RoomNumber", roomImage.RoomId);
+
+            var rooms = await _roomService.GetAllRoomsAsync();
+            ViewData["RoomId"] = new SelectList(rooms, "Id", "RoomName", roomImage.RoomId);
             return View(roomImage);
         }
 
         // GET: Admin/RoomImages/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null) return NotFound();
-            var roomImage = await _context.RoomImage.Include(r => r.Room).FirstOrDefaultAsync(m => m.Id == id);
+            var roomImage = await _imageService.GetImageByIdAsync(id);
             if (roomImage == null) return NotFound();
             return View(roomImage);
         }
@@ -158,19 +152,15 @@ namespace VillaManagementWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var roomImage = await _context.RoomImage.FindAsync(id);
-            if (roomImage != null)
+            var image = await _imageService.GetImageByIdAsync(id);
+            if (image != null && !string.IsNullOrEmpty(image.ImageUrl))
             {
-                // Xóa file vật lý
-                if (!string.IsNullOrEmpty(roomImage.ImageUrl))
-                {
-                    var oldPath = Path.Combine(_hostEnvironment.WebRootPath, roomImage.ImageUrl.TrimStart('/'));
-                    if (System.IO.File.Exists(oldPath)) System.IO.File.Delete(oldPath);
-                }
-
-                _context.RoomImage.Remove(roomImage);
+                string oldPath = Path.Combine(_hostEnvironment.WebRootPath, image.ImageUrl.TrimStart('/'));
+                if (System.IO.File.Exists(oldPath))
+                    System.IO.File.Delete(oldPath);
             }
-            await _context.SaveChangesAsync();
+
+            await _imageService.DeleteImageAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

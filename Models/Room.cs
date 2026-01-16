@@ -21,20 +21,20 @@ namespace VillaManagementWeb.Models
         public int Bedrooms { get; set; }          // Số phòng ngủ (VD: 1, 2)
         public int Beds { get; set; }              // Số giường (VD: 1, 2, 3)
         public int CapacityChildren { get; set; }  // Số trẻ em tối đa
-        public string? ImageUrl { get; set; }    
+        public string? ImageUrl { get; set; }
         public double? SquareFootage { get; set; }
         public bool HasWifi { get; set; } = true;
         public bool HasBreakfast { get; set; } = true;
         public bool HasPool { get; set; } = true;
         public bool HasTowel { get; set; } = true;
 
-        // Quan hệ 1-N với Booking, RoomImages
-        public ICollection<Booking> Bookings { get; set; } = null!;
+        // Quan hệ 1-N với RoomBooking, RoomImages
+        public ICollection<RoomBooking> RoomBookings { get; set; } = null!;
         public ICollection<RoomImage> RoomImages { get; set; } = new List<RoomImage>();
         public Room()
         {
-            RoomImages = new List<RoomImage>(); 
-            Bookings = new List<Booking>();
+            RoomImages = new List<RoomImage>();
+            RoomBookings = new List<RoomBooking>();
         }
     }
 }

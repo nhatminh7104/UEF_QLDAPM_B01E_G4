@@ -17,25 +17,19 @@
         theme: {
             extend: {
                 colors: {
-                    "primary": "#13a4ec",
-                    "primary-dark": "#0b8bc9",
-                    "background-light": "#f8f9fa",
-                    "background-dark": "#101c22",
-                    "surface-light": "#ffffff",
-                    "surface-dark": "#1a2c35",
-                    "text-main": "#0d171b",
-                    "text-sub": "#4c809a",
+                    primary: "#13a4ec",
+                    "primary-dark": "#0b8bc9"
                 },
                 fontFamily: {
-                    "display": ["Inter", "sans-serif"]
-                },
-            },
-        },
+                    display: ["Inter", "sans-serif"]
+                }
+            }
+        }
     }
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 
 <style>
     .line-clamp-2 {
@@ -46,136 +40,104 @@
     }
 </style>
 
-<div class="flex-1 bg-background-light dark:bg-background-dark font-display text-text-main dark:text-slate-100 p-6">
+<div class="flex-1 p-6 font-display">
     <div class="max-w-7xl mx-auto space-y-6">
 
+        <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Danh Sách Sự Kiện</h1>
-                <p class="text-sm text-slate-500 mt-1">Quản lý các sự kiện đang diễn ra tại hệ thống Villa</p>
+                <h1 class="text-2xl font-bold">Danh Sách Sự Kiện</h1>
+                <p class="text-sm text-slate-500 mt-1">Quản lý các sự kiện trong hệ thống</p>
             </div>
-            <a asp-action="Create" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-sky-600 text-white font-medium rounded-lg transition-all shadow-sm hover:shadow-md">
-                <span class="material-symbols-outlined text-[20px]">add</span>
-                <span>Tạo Sự Kiện Mới</span>
+
+            <a asp-action="Create"
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg shadow-sm">
+                <span class="material-symbols-outlined">add</span>
+                Thêm sự kiện
             </a>
         </div>
 
-        <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-            <div class="flex flex-col md:flex-row gap-4">
-                <div class="flex-1 relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                    <input class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-slate-400 text-sm" placeholder="Tìm kiếm theo tên sự kiện, địa điểm..." type="text" />
-                </div>
-                <div class="w-full md:w-64 relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">calendar_today</span>
-                    <input class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-slate-400 text-sm" placeholder="Chọn ngày diễn ra" type="date" />
-                </div>
-                <div class="w-full md:w-48 relative">
-                    <select class="appearance-none w-full pl-4 pr-10 py-2.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm cursor-pointer">
-                        <option>Mới nhất</option>
-                        <option>Sắp diễn ra</option>
-                        <option>Vé bán chạy nhất</option>
-                    </select>
-                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                        <span class="material-symbols-outlined text-slate-400">expand_more</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+        <!-- Table -->
+        <div class="bg-white rounded-xl border shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-20">Hình ảnh</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider min-w-[200px]">Thông tin</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider min-w-[240px] hidden lg:table-cell">Mô tả</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider min-w-[140px]">Thời gian</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider min-w-[160px]">Vé (Tickets)</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-24 text-right">Hành động</th>
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 border-b">
+                        <tr>
+                            <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Hình ảnh</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Thông tin</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase hidden lg:table-cell">Mô
+                                tả</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Thời gian</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Vé</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase text-right">Hành động
+                            </th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+
+                    <tbody class="divide-y">
                         @foreach (var item in Model)
                         {
                             var isUpcoming = item.EventDate >= DateTime.Now;
-                            // Giả lập % bán vé (vì Model hiện tại chưa có field SoldTickets)
-                            var soldPercent = 0;
-                            var statusColor = isUpcoming ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600";
-                            var statusText = isUpcoming ? "Sắp diễn ra" : "Đã kết thúc";
 
-                            <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                                <td class="px-6 py-4 align-top">
-                                    <div class="w-16 h-12 rounded-lg bg-slate-200 overflow-hidden relative shadow-sm group-hover:scale-105 transition-transform">
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-6 py-4">
+                                    <div class="w-16 h-12 rounded bg-slate-200 overflow-hidden">
                                         @if (!string.IsNullOrEmpty(item.ImageUrl))
                                         {
-                                            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('@item.ImageUrl')"></div>
-                                        }
-                                        else
-                                        {
-                                            <div class="absolute inset-0 flex items-center justify-center bg-slate-100 text-slate-400">
-                                                <span class="material-symbols-outlined text-xl">image</span>
-                                            </div>
+                                            <img src="@item.ImageUrl" class="w-full h-full object-cover" />
                                         }
                                     </div>
                                 </td>
 
-                                <td class="px-6 py-4 align-top">
-                                    <div class="flex flex-col">
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors cursor-pointer">
-                                            @item.Title
-                                        </a>
-                                        <div class="flex items-center gap-1 mt-1 text-slate-500">
-                                            <span class="material-symbols-outlined text-[16px]">location_on</span>
-                                            <span class="text-xs">@(item.Location ?? "Chưa cập nhật")</span>
-                                        </div>
+                                <td class="px-6 py-4">
+                                    <a asp-action="Details" asp-route-id="@item.Id"
+                                        class="font-semibold hover:text-primary">
+                                        @item.Title
+                                    </a>
+                                    <div class="text-xs text-slate-500 mt-1">
+                                        @item.Location
                                     </div>
                                 </td>
 
-                                <td class="px-6 py-4 align-top hidden lg:table-cell">
-                                    <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" title="@item.Description">
+                                <td class="px-6 py-4 hidden lg:table-cell">
+                                    <p class="text-sm text-slate-600 line-clamp-2">
                                         @(item.Description ?? "Không có mô tả")
                                     </p>
                                 </td>
 
-                                <td class="px-6 py-4 align-top">
-                                    <div class="flex flex-col">
-                                        <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                                            <span class="material-symbols-outlined text-[18px] text-primary">calendar_month</span>
-                                            <span class="text-sm font-medium">@item.EventDate.ToString("dd/MM/yyyy")</span>
-                                        </div>
-                                        <span class="text-xs text-slate-500 pl-6.5 mt-0.5">@item.EventDate.ToString("HH:mm")</span>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm font-medium">
+                                        @item.EventDate.ToString("dd/MM/yyyy")
+                                    </div>
+                                    <div class="text-xs text-slate-500">
+                                        @item.EventDate.ToString("HH:mm")
                                     </div>
                                 </td>
 
-                                <td class="px-6 py-4 align-middle">
-                                    <div class="w-full">
-                                        <div class="flex justify-between text-xs mb-1.5">
-                                            <span class="font-medium text-slate-700 dark:text-slate-300">Tổng: @item.TotalTickets</span>
-                                        </div>
-                                        <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                                            <div class="bg-primary h-2 rounded-full" style="width: @soldPercent%"></div>
-                                        </div>
-                                        <span class="inline-block mt-2 px-2 py-0.5 text-[10px] font-bold @statusColor rounded-full">
-                                            @statusText
+                                <td class="px-6 py-4">
+                                    <span class="font-semibold">@item.TotalTickets</span> vé
+                                    <div class="mt-1">
+                                        <span
+                                            class="text-xs px-2 py-0.5 rounded-full
+                                                                @(isUpcoming ? "bg-green-100 text-green-700" : "bg-slate-200 text-slate-600")">
+                                            @(isUpcoming ? "Sắp diễn ra" : "Đã kết thúc")
                                         </span>
                                     </div>
                                 </td>
 
-                                <td class="px-6 py-4 align-middle text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="p-1.5 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-md transition-colors" title="Chi tiết">
-                                            <span class="material-symbols-outlined text-[20px]">visibility</span>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex justify-end gap-2">
+                                        <a asp-action="Details" asp-route-id="@item.Id"
+                                            class="text-slate-400 hover:text-primary">
+                                            <span class="material-symbols-outlined">visibility</span>
                                         </a>
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors" title="Chỉnh sửa">
-                                            <span class="material-symbols-outlined text-[20px]">edit_square</span>
+                                        <a asp-action="Edit" asp-route-id="@item.Id"
+                                            class="text-slate-400 hover:text-blue-600">
+                                            <span class="material-symbols-outlined">edit</span>
                                         </a>
-                                        <a asp-action="Tickets" asp-route-id="@item.Id" class="p-1.5 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-md transition-colors" title="Quản lý vé bán">
-                                            <span class="material-symbols-outlined text-[20px] -rotate-45">confirmation_number</span>
-                                        </a>
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors" title="Xóa">
-                                            <span class="material-symbols-outlined text-[20px]">delete</span>
+                                        <a asp-action="Delete" asp-route-id="@item.Id"
+                                            class="text-slate-400 hover:text-red-600">
+                                            <span class="material-symbols-outlined">delete</span>
                                         </a>
                                     </div>
                                 </td>
@@ -185,10 +147,8 @@
                 </table>
             </div>
 
-            <div class="px-6 py-4 bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="text-sm text-slate-500">
-                    Hiển thị <span class="font-medium text-slate-900 dark:text-white">@Model.Count()</span> kết quả
-                </div>
+            <div class="px-6 py-4 bg-slate-50 border-t text-sm text-slate-500">
+                Tổng cộng <b>@Model.Count()</b> sự kiện
             </div>
         </div>
     </div>
